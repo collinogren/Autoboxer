@@ -18,11 +18,13 @@
 
 package ogren.collin.autoboxer.process;
 
+import ogren.collin.autoboxer.pdf.DocumentSet;
+
 import java.util.ArrayList;
 
 public class Official {
     private String name;
-    private ArrayList assignments = new ArrayList();
+    private ArrayList documents = new ArrayList<DocumentSet>();
 
     public Official(String name) {
         this.name = name;
@@ -32,11 +34,7 @@ public class Official {
         return name;
     }
 
-    public void addAssignment(Assignment assignment) {
-        assignments.add(assignment);
-    }
-
-    public void generatePaperwork() {
-
+    public void addDocument(DocumentSet documentSet) {
+        documents.add(documentSet);
     }
 }

@@ -20,8 +20,44 @@
 
 package ogren.collin.autoboxer;
 
-public class Main {
-    public static void main(String[] args) {
+import ogren.collin.autoboxer.pdf.FileType;
+import ogren.collin.autoboxer.pdf.PDFManipulator;
+import ogren.collin.autoboxer.process.Schedule;
 
+import javax.swing.*;
+import java.io.File;
+
+public class Main {
+
+    private static String competitionName = "2023 Pony Express Championships";
+
+    public static String getCompetitionName() {
+        return competitionName;
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        JFileChooser fc = new JFileChooser();
+        JFrame jframe = new JFrame();
+        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fc.showOpenDialog(jframe);
+        JFileChooser fc2 = new JFileChooser();
+        JFrame jframe2 = new JFrame();
+        jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fc.showOpenDialog(jframe2);
+        try {
+            File scheduleFile = fc.getSelectedFile();
+            Schedule schedule = new Schedule(scheduleFile);
+            File file = fc2.getSelectedFile();
+            PDFManipulator pdfM = new PDFManipulator(file, FileType.IJS_TS2_SHEET, schedule);
+            System.out.println(pdfM.getEventName());
+        } catch (Exception e) {}
+
+        jframe.dispose();
+        System.exit(0);
     }
 }
