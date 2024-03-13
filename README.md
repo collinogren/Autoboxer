@@ -1,6 +1,6 @@
 # Autoboxer
-This program is in early developmental stages and does not yet perform its intended functionality. Check back later.
-A massive thank you to all of you wonderful accountants who are my inspiration to provide utilities to this fantastic community;
+This program is in early developmental stages and does not yet perform its intended functionality. Check back later.<br>
+A massive thank you to all of you wonderful accountants who are my inspiration to provide utilities to this fantastic community.
 # License
 Autoboxer to make creating "boxes" for Figure Skating competitions easier.
 Copyright (C) 2024 Collin Ogren
