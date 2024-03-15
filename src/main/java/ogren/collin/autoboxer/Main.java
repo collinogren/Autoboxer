@@ -20,6 +20,7 @@
 
 package ogren.collin.autoboxer;
 
+import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.Schedule;
@@ -42,21 +43,17 @@ public class Main {
             ex.printStackTrace();
         }
         JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         JFrame jframe = new JFrame();
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fc.showOpenDialog(jframe);
-        JFileChooser fc2 = new JFileChooser();
-        JFrame jframe2 = new JFrame();
-        jframe2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fc.showOpenDialog(jframe2);
         try {
-            File scheduleFile = fc.getSelectedFile();
-            Schedule schedule = new Schedule(scheduleFile);
-            File file = fc2.getSelectedFile();
-            PDFManipulator pdfM = new PDFManipulator(file, FileType.IJS_TS2_SHEET, schedule);
-            System.out.println(pdfM.getEventName());
-        } catch (Exception e) {}
-
+            File file = fc.getSelectedFile();
+            MasterController mc = new MasterController(file.getPath());
+            mc.begin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         jframe.dispose();
         System.exit(0);
     }

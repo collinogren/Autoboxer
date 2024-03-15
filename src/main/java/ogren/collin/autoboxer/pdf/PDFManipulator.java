@@ -19,36 +19,108 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Main;
-import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.process.ScheduleElement;
+import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PDFManipulator {
     private PDDocument document;
     private FileType fileType;
 
-    private ScheduleElement scheduleElement;
+    private String eventName;
 
-    public PDFManipulator(File file, FileType fileType, Schedule schedule) throws IOException {
-        document = PDDocument.load(file);
+    private File file;
+
+    private boolean isRenamed = false;
+
+    private static final String EVENT_NAME_DELIMITER = " - ";
+
+    public PDFManipulator(File file, FileType fileType) {
+        this.file = file;
+        try {
+            document = PDDocument.load(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         this.fileType = fileType;
-        String eventName = parseEventName();
-        matchToSchedule(eventName, schedule);
+        eventName = parseEventName();
     }
 
-    private void matchToSchedule(String eventName, Schedule schedule) {
-        for (ScheduleElement se : schedule.getElements()) {
-            if (se.isProcessed()) {
-                continue;
-            }
+    public void close() {
+        try {
+            document.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            if (eventName.contains(se.getEventNumber())) {
-
+    public boolean matchNameToSchedule(ScheduleElement scheduleElement) {
+        for (String eventName : scrutinizeName()) {
+            if (eventName.toLowerCase().equals(scheduleElement.getEventNumber().toLowerCase())) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    private ArrayList<String> scrutinizeName() {
+        String eventNumberSection = eventName.split(EVENT_NAME_DELIMITER)[0];
+        ArrayList<String> eventNumbers = new ArrayList<>();
+        StringBuilder eventNumber = new StringBuilder();
+        for (char c : eventNumberSection.toCharArray()) {
+            if (isNumberOrLetter(c)) {
+                //System.out.println(c);
+                eventNumber.append(c);
+            } else {
+                String eventNumberString = eventNumber.toString();
+                System.out.println(eventNumberString);
+                if (!eventNumberString.isEmpty()) {
+                    System.out.println(eventNumber);
+                    eventNumbers.add(eventNumberString);
+                    eventNumber = new StringBuilder();
+                }
+            }
+        }
+
+        eventNumbers.add(eventNumber.toString());
+
+        return eventNumbers;
+    }
+
+    private boolean isNumberOrLetter(char element) {
+        for (char c = 'a'; c <= 'z'; c++) {
+            if (element == c) {
+                return true;
+            }
+        }
+
+        for (char c = 'A'; c <= 'Z'; c++) {
+            if (element == c) {
+                return true;
+            }
+        }
+
+        for (char c = '0'; c <= '9'; c++) {
+            if (element == c) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void rename(String eventNumber) {
+        String destination = file.getPath().split(file.getName())[0] + eventNumber + ".pdf";
+        try {
+            FileUtils.moveFile(file, new File(destination));
+            setRenamed(true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -107,5 +179,13 @@ public class PDFManipulator {
     public String getEventName() {
         String name = parseEventName();
         return name;
+    }
+
+    public boolean isRenamed() {
+        return isRenamed;
+    }
+
+    public void setRenamed(boolean b) {
+        isRenamed = b;
     }
 }

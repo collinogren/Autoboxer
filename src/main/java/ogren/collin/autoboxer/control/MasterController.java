@@ -18,13 +18,18 @@
 
 package ogren.collin.autoboxer.control;
 
+import ogren.collin.autoboxer.pdf.FileType;
+import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.Official;
+import ogren.collin.autoboxer.process.Schedule;
+import ogren.collin.autoboxer.process.ScheduleElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -39,16 +44,39 @@ public class MasterController {
 
     private String baseDir;
 
+    private Schedule schedule;
+
     public MasterController(String baseDir) {
         this.baseDir = baseDir;
+        schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
     public void begin() {
-
+        renameFiles();
     }
 
     private void renameFiles() {
+        ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR);
+        try {
+            rename(coversheets, FileType.IJS_COVERSHEET);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    private void rename(ArrayList<File> files, FileType fileType) throws IOException {
+        ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
+        for (File file : files) {
+            pdfManipulators.add(new PDFManipulator(file, fileType));
+        }
+        for (ScheduleElement se : schedule.getElements()) {
+            for (PDFManipulator pdfManipulator : pdfManipulators) {
+                if (pdfManipulator.matchNameToSchedule(se) && !pdfManipulator.isRenamed()) {
+                    pdfManipulator.close();
+                    pdfManipulator.rename(se.getEventNumber());
+                }
+            }
+        }
     }
 
     private ArrayList<File> getAllFiles(String relativeDir) {
