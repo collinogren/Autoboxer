@@ -1,7 +1,7 @@
 # Autoboxer
 This program is in early developmental stages and does not yet perform its intended functionality. Check back later.<br>
 A massive thank you to this wonderful community, I hope you find this software useful, let me know if you have any issues.<br>
-And a very special thank you to my friend and mentor John Marasco for his many years of excellent guidance and highly enjoyable weekends; this one's for you.
+And to my friend and mentor John Marasco, for his many years of excellent guidance and highly enjoyable weekends, this one's for you.
 # Free and Open Source Software
 This software is completely free and open source. Feel free to edit and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3 license, any derivative works must also use the GNU GPL v3 license and therefore must also be free and open source software.
 # Disclaimer
