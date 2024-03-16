@@ -1,7 +1,7 @@
 # Autoboxer
 This program is in early developmental stages and does not yet perform its intended functionality. Check back later.<br>
 A massive thank you to this wonderful community, I hope you find this software useful, let me know if you have any issues.<br>
-And a very special thank you to my friend and mentor John Marasco for his many years of guidance and highly enjoyable weekends; this one's for you.
+And a very special thank you to my friend and mentor John Marasco for his many years of excellent guidance and highly enjoyable weekends; this one's for you.
 # License
 Autoboxer to make creating "boxes" for Figure Skating competitions easier.<br>
 Copyright (C) 2024 Collin Ogren<br>
