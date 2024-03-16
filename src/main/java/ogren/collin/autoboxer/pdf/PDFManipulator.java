@@ -28,6 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static ogren.collin.autoboxer.control.MasterController.TEST_MODE;
+import static ogren.collin.autoboxer.pdf.FileType.IJS_JUDGE_SHEET;
+
 public class PDFManipulator {
     private PDDocument document;
     private FileType fileType;
@@ -36,9 +39,13 @@ public class PDFManipulator {
 
     private File file;
 
+    private String contents;
+
     private boolean isRenamed = false;
 
     private static final String EVENT_NAME_DELIMITER = " - ";
+
+    public static final String WRONG_FILE_TYPE = "wrongfiletype";
 
     public PDFManipulator(File file, FileType fileType) {
         this.file = file;
@@ -48,7 +55,27 @@ public class PDFManipulator {
             throw new RuntimeException(e);
         }
         this.fileType = fileType;
-        eventName = parseEventName();
+        contents = readContents();
+        if (!isReallyFileType()) {
+            eventName = WRONG_FILE_TYPE;
+        } else {
+            eventName = parseEventName();
+        }
+    }
+
+    private String readContents() {
+        String contents = "Could not find event name!";
+        try {
+            contents = parseToString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return contents;
+    }
+
+    private boolean isReallyFileType() {
+        return contents.contains(getRegex());
     }
 
     public void close() {
@@ -61,7 +88,7 @@ public class PDFManipulator {
 
     public boolean matchNameToSchedule(ScheduleElement scheduleElement) {
         for (String eventName : scrutinizeName()) {
-            if (eventName.toLowerCase().equals(scheduleElement.getEventNumber().toLowerCase())) {
+            if (eventName.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
             }
         }
@@ -74,7 +101,6 @@ public class PDFManipulator {
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
             if (isNumberOrLetter(c)) {
-                //System.out.println(c);
                 eventNumber.append(c);
             } else {
                 String eventNumberString = eventNumber.toString();
@@ -115,9 +141,33 @@ public class PDFManipulator {
     }
 
     public void rename(String eventNumber) {
-        String destination = file.getPath().split(file.getName())[0] + eventNumber + ".pdf";
+        String offset = "";
+        if (TEST_MODE) {
+            offset = "/renamed/";
+        }
+        int i = 1;
+        String multiplicity = "";
+        if (fileType == IJS_JUDGE_SHEET) {
+            multiplicity += " " + i;
+        }
+
+        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + multiplicity + ".pdf";
+        boolean exists = new File(destination).exists();
+
+        while (exists && fileType == IJS_JUDGE_SHEET) {
+            i++;
+            String[] split;
+            split = destination.split(" " + (i - 1) + ".pdf");
+            split[0] += " " + i;
+            destination = split[0] + ".pdf";
+            exists = new File(destination).exists();
+        }
         try {
-            FileUtils.moveFile(file, new File(destination));
+            if (TEST_MODE) {
+                FileUtils.copyFile(file, new File(destination));
+            } else {
+                FileUtils.moveFile(file, new File(destination));
+            }
             setRenamed(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -127,21 +177,26 @@ public class PDFManipulator {
     private String parseEventName() {
         String eventName = "Could not find event name!";
         switch (fileType) {
-            case FileType.IJS_COVERSHEET, FileType.IJS_JUDGE_SHEET, FileType.IJS_REFEREE_SHEET, FileType.IJS_TC_SHEET, FileType.IJS_TS2_SHEET -> eventName = parseEventNameIJS();
-            case FileType.SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> System.err.println("Not implemented");
+            case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET -> eventName = parseEventNameIJS();
+            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> System.err.println("Not implemented");
         }
 
         return eventName;
     }
 
-    private String parseEventNameIJS() {
-        String contents = "Could not find event name!";
-        try {
-            contents = parseToString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private String getRegex() {
+        String regex = null;
+        switch (fileType) {
+            case IJS_COVERSHEET, IJS_JUDGE_SHEET -> regex = " / ";
+            case IJS_REFEREE_SHEET -> regex = " - REFEREE SHEET";
+            case IJS_TC_SHEET -> regex = " - TECHNICAL CONTROLLER SHEET";
+            case IJS_TS2_SHEET -> regex = " - TECHNICAL SPECIALIST SHEET";
         }
 
+        return regex;
+    }
+
+    private String parseEventNameIJS() {
         String[] lines = contents.split("\n");
         int line;
         for (line = 0; line < lines.length; line++) {
@@ -158,16 +213,16 @@ public class PDFManipulator {
 
     private String extractName(String line) {
         String eventName = line;
-        String regex = null;
-        switch (fileType) {
-            case IJS_COVERSHEET, IJS_JUDGE_SHEET -> regex = " / ";
-            case IJS_REFEREE_SHEET -> regex = " - REFEREE SHEET";
-            case IJS_TC_SHEET -> regex = " - TECHNICAL CONTROLLER SHEET";
-            case IJS_TS2_SHEET -> regex = " - TECHNICAL SPECIALIST SHEET";
-        }
 
-        String[] split = eventName.split(regex);
-        String correctedName = split[0] + " " + split[1];
+        String[] split = eventName.split(getRegex());
+        String correctedName = "Error";
+        try {
+            correctedName = split[0] + " " + split[1];
+        } catch (Exception e) {
+            System.err.println(eventName);
+            System.err.println(getRegex());
+            System.err.println(fileType.name());
+        }
         correctedName = correctedName.toUpperCase();
         return correctedName;
     }

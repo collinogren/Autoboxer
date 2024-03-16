@@ -21,9 +21,6 @@
 package ogren.collin.autoboxer;
 
 import ogren.collin.autoboxer.control.MasterController;
-import ogren.collin.autoboxer.pdf.FileType;
-import ogren.collin.autoboxer.pdf.PDFManipulator;
-import ogren.collin.autoboxer.process.Schedule;
 
 import javax.swing.*;
 import java.io.File;

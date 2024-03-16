@@ -18,6 +18,25 @@
 
 package ogren.collin.autoboxer.pdf;
 
-public class DocumentSet {
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 
+import java.util.ArrayList;
+
+public class EventSet {
+    ArrayList<PDDocument> documents = new ArrayList();
+    public void push(PDDocument document) {
+        documents.add(document);
+    }
+
+    public PDDocument mergeDocuments() {
+        PDDocument mergedDocument = new PDDocument();
+        for (PDDocument document : documents) {
+            for (PDPage page : document.getPages()) {
+                mergedDocument.addPage(page);
+            }
+        }
+
+        return mergedDocument;
+    }
 }

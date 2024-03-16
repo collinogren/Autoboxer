@@ -18,13 +18,15 @@
 
 package ogren.collin.autoboxer.process;
 
-import ogren.collin.autoboxer.pdf.DocumentSet;
+import ogren.collin.autoboxer.pdf.EventSet;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 
 import java.util.ArrayList;
 
 public class Official {
     private String name;
-    private ArrayList documents = new ArrayList<DocumentSet>();
+    private ArrayList<EventSet> events = new ArrayList<EventSet>();
 
     public Official(String name) {
         this.name = name;
@@ -34,7 +36,18 @@ public class Official {
         return name;
     }
 
-    public void addDocument(DocumentSet documentSet) {
-        documents.add(documentSet);
+    public void addDocument(EventSet eventSet) {
+        events.add(eventSet);
+    }
+
+    public PDDocument getAllOfficials() {
+        PDDocument mergedDocument = new PDDocument();
+        for (EventSet event : events) {
+            for (PDPage page : event.mergeDocuments().getPages()) {
+                mergedDocument.addPage(page);
+            }
+        }
+
+        return mergedDocument;
     }
 }

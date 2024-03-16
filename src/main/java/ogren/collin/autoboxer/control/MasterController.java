@@ -24,16 +24,17 @@ import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.process.ScheduleElement;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class MasterController {
+
+    public static final boolean TEST_MODE = true;
 
     private static final String COVERSHEET_DIR = "coversheets";
     private static final String JUDGE_SHEETS_DIR = "judges";
@@ -57,8 +58,15 @@ public class MasterController {
 
     private void renameFiles() {
         ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR);
+        ArrayList<File> judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
+        ArrayList<File> technicalSheets = getAllFiles(TECH_PANEL_DIR);
+        //ArrayList<File> six0Sheets = getAllFiles(SIX0); INOP
         try {
             rename(coversheets, FileType.IJS_COVERSHEET);
+            rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
+            rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
+            rename(technicalSheets, FileType.IJS_TC_SHEET);
+            rename(technicalSheets, FileType.IJS_TS2_SHEET);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +75,11 @@ public class MasterController {
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
         ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
         for (File file : files) {
-            pdfManipulators.add(new PDFManipulator(file, fileType));
+            PDFManipulator pdfManipulator = new PDFManipulator(file, fileType);
+            if (pdfManipulator.getEventName().equals(PDFManipulator.WRONG_FILE_TYPE)) { // Handle the fact that all technical panel sheets are printed into the same directory.
+                continue;
+            }
+            pdfManipulators.add(pdfManipulator);
         }
         for (ScheduleElement se : schedule.getElements()) {
             for (PDFManipulator pdfManipulator : pdfManipulators) {
