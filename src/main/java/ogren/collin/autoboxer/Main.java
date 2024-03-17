@@ -65,7 +65,7 @@ public class Main {
         fc.showOpenDialog(jframe);
         try {
             File file = fc.getSelectedFile();
-            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_JUDGE_SHEET);
+            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_WORKSHEET);
             System.out.println(pdfManipulator.parseToString());
         } catch (Exception e) {
             e.printStackTrace();

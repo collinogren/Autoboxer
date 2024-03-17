@@ -62,13 +62,16 @@ public class MasterController {
         ArrayList<File> judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
         ArrayList<File> technicalSheets = getAllFiles(TECH_PANEL_DIR);
         ArrayList<File> six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
+        ArrayList<File> six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
         try {
             rename(coversheets, FileType.IJS_COVERSHEET);
             rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
             rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
             rename(technicalSheets, FileType.IJS_TC_SHEET);
             rename(technicalSheets, FileType.IJS_TS2_SHEET);
-            rename(six0Sheets, FileType.SIX0_JUDGE_SHEET);
+            rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+            rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
+            rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

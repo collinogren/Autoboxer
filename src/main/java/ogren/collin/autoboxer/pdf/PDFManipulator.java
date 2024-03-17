@@ -29,11 +29,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static ogren.collin.autoboxer.control.MasterController.TEST_MODE;
-import static ogren.collin.autoboxer.pdf.FileType.IJS_JUDGE_SHEET;
+import static ogren.collin.autoboxer.pdf.FileType.*;
 
 public class PDFManipulator {
 
-    private static final String judgeSheet60NameKey = "REFEREE AND JUDGES PERSONAL RECORD SHEET";
+    private static final String judgeSheet60NameKey = " - ";
     private PDDocument document;
     private FileType fileType;
 
@@ -81,7 +81,7 @@ public class PDFManipulator {
     }
 
     private boolean isReallyFileType() {
-        return contents.contains(getRegex());
+        return contents.contains(getUniqueTextByType());
     }
 
     public void close() {
@@ -185,23 +185,25 @@ public class PDFManipulator {
         String eventName = "Could not find event name!";
         switch (fileType) {
             case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET -> eventName = parseEventNameIJS();
-            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> eventName = parseEventName60();
+            case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY -> eventName = parseEventName60();
         }
 
         return eventName;
     }
 
-    private String getRegex() {
-        String regex = null;
+    private String getUniqueTextByType() {
+        String text = null;
         switch (fileType) {
-            case IJS_COVERSHEET, IJS_JUDGE_SHEET -> regex = " / ";
-            case IJS_REFEREE_SHEET -> regex = " - REFEREE SHEET";
-            case IJS_TC_SHEET -> regex = " - TECHNICAL CONTROLLER SHEET";
-            case IJS_TS2_SHEET -> regex = " - TECHNICAL SPECIALIST SHEET";
-            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> regex = "";
+            case IJS_COVERSHEET, IJS_JUDGE_SHEET -> text = " / ";
+            case IJS_REFEREE_SHEET -> text = " - REFEREE SHEET";
+            case IJS_TC_SHEET -> text = " - TECHNICAL CONTROLLER SHEET";
+            case IJS_TS2_SHEET -> text = " - TECHNICAL SPECIALIST SHEET";
+            case SIX0_PRIMARY_JUDGE_SHEET -> text = "REFEREE AND JUDGES PERSONAL RECORD SHEET";
+            case SIX0_PRIMARY_WORKSHEET -> text = "Signature US Figure Skating # End";
+            case SIX0_SECONDARY -> text = ""; // This file is so plain, it's basically a saltine cracker.
         }
 
-        return regex;
+        return text;
     }
 
     private String parseEventNameIJS() {
@@ -222,14 +224,33 @@ public class PDFManipulator {
     private String parseEventName60() {
         String[] lines = contents.split("\n");
         int line;
+        System.out.println(contents);
+        System.out.println(fileType.toString());
+        System.out.println(getUniqueTextByType());
+        loop:
         for (line = 0; line < lines.length; line++) {
-            if (lines[line].toLowerCase().contains(judgeSheet60NameKey.toLowerCase())) {
-                line--;
-                break;
+            switch (fileType) {
+                case SIX0_PRIMARY_JUDGE_SHEET -> {
+                    if (lines[line].toLowerCase().contains(getUniqueTextByType().toLowerCase())) {
+                        line--;
+                        break loop;
+                    }
+                }
+                case SIX0_PRIMARY_WORKSHEET -> {
+                    if (lines[line].toLowerCase().contains(Main.getCompetitionName().toLowerCase())) {
+                        line++;
+                        break loop;
+                    }
+                }
+                case SIX0_SECONDARY -> {
+                    break loop; // Should be 0.
+                }
+                default -> System.err.println("Something's gone horribly wrong");
             }
+
         }
 
-        String correctedName = lines[line].toUpperCase();
+        String correctedName = lines[ line].toUpperCase();
 
         return correctedName;
     }
@@ -237,13 +258,13 @@ public class PDFManipulator {
     private String extractName(String line) {
         String eventName = line;
 
-        String[] split = eventName.split(getRegex());
+        String[] split = eventName.split(getUniqueTextByType());
         String correctedName = "Error";
         try {
             correctedName = split[0] + " " + split[1];
         } catch (Exception e) {
             System.err.println(eventName);
-            System.err.println(getRegex());
+            System.err.println(getUniqueTextByType());
             System.err.println(fileType.name());
         }
         correctedName = correctedName.toUpperCase();
