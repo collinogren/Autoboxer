@@ -39,7 +39,8 @@ public class MasterController {
     private static final String COVERSHEET_DIR = "coversheets";
     private static final String JUDGE_SHEETS_DIR = "judges";
     private static final String TECH_PANEL_DIR = "tech";
-    private static final String SIX0 = "60";
+    private static final String SIX0_PRIMARY_DIR = "60";
+    private static final String SIX0_SUBSEQUENT_DIR = "60_sub";
 
     private ArrayList officials = new ArrayList<Official>();
 
@@ -60,13 +61,14 @@ public class MasterController {
         ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR);
         ArrayList<File> judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
         ArrayList<File> technicalSheets = getAllFiles(TECH_PANEL_DIR);
-        //ArrayList<File> six0Sheets = getAllFiles(SIX0); INOP
+        ArrayList<File> six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
         try {
             rename(coversheets, FileType.IJS_COVERSHEET);
             rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
             rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
             rename(technicalSheets, FileType.IJS_TC_SHEET);
             rename(technicalSheets, FileType.IJS_TS2_SHEET);
+            rename(six0Sheets, FileType.SIX0_JUDGE_SHEET);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,7 +85,8 @@ public class MasterController {
         }
         for (ScheduleElement se : schedule.getElements()) {
             for (PDFManipulator pdfManipulator : pdfManipulators) {
-                if (pdfManipulator.matchNameToSchedule(se) && !pdfManipulator.isRenamed()) {
+                String eventName = pdfManipulator.retrieveEventName();
+                if (pdfManipulator.matchNameToSchedule(se, eventName) && !pdfManipulator.isRenamed()) {
                     pdfManipulator.close();
                     pdfManipulator.rename(se.getEventNumber());
                 }

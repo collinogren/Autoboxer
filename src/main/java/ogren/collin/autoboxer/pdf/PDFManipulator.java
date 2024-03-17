@@ -32,10 +32,10 @@ import static ogren.collin.autoboxer.control.MasterController.TEST_MODE;
 import static ogren.collin.autoboxer.pdf.FileType.IJS_JUDGE_SHEET;
 
 public class PDFManipulator {
+
+    private static final String judgeSheet60NameKey = "REFEREE AND JUDGES PERSONAL RECORD SHEET";
     private PDDocument document;
     private FileType fileType;
-
-    private String eventName;
 
     private File file;
 
@@ -56,11 +56,17 @@ public class PDFManipulator {
         }
         this.fileType = fileType;
         contents = readContents();
+    }
+
+    public String retrieveEventName() {
+        String eventName;
         if (!isReallyFileType()) {
             eventName = WRONG_FILE_TYPE;
         } else {
             eventName = parseEventName();
         }
+
+        return eventName;
     }
 
     private String readContents() {
@@ -86,16 +92,17 @@ public class PDFManipulator {
         }
     }
 
-    public boolean matchNameToSchedule(ScheduleElement scheduleElement) {
-        for (String eventName : scrutinizeName()) {
-            if (eventName.equalsIgnoreCase(scheduleElement.getEventNumber())) {
+    public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
+        System.out.println(eventName);
+        for (String e : scrutinizeName(eventName)) {
+            if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
             }
         }
         return false;
     }
 
-    private ArrayList<String> scrutinizeName() {
+    private ArrayList<String> scrutinizeName(String eventName) {
         String eventNumberSection = eventName.split(EVENT_NAME_DELIMITER)[0];
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
@@ -178,7 +185,7 @@ public class PDFManipulator {
         String eventName = "Could not find event name!";
         switch (fileType) {
             case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET -> eventName = parseEventNameIJS();
-            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> System.err.println("Not implemented");
+            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> eventName = parseEventName60();
         }
 
         return eventName;
@@ -191,6 +198,7 @@ public class PDFManipulator {
             case IJS_REFEREE_SHEET -> regex = " - REFEREE SHEET";
             case IJS_TC_SHEET -> regex = " - TECHNICAL CONTROLLER SHEET";
             case IJS_TS2_SHEET -> regex = " - TECHNICAL SPECIALIST SHEET";
+            case SIX0_JUDGE_SHEET, SIX0_WORKSHEET -> regex = "";
         }
 
         return regex;
@@ -207,6 +215,21 @@ public class PDFManipulator {
         }
 
         String correctedName = extractName(lines[line]);
+
+        return correctedName;
+    }
+
+    private String parseEventName60() {
+        String[] lines = contents.split("\n");
+        int line;
+        for (line = 0; line < lines.length; line++) {
+            if (lines[line].toLowerCase().contains(judgeSheet60NameKey.toLowerCase())) {
+                line--;
+                break;
+            }
+        }
+
+        String correctedName = lines[line].toUpperCase();
 
         return correctedName;
     }

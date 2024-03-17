@@ -21,6 +21,8 @@
 package ogren.collin.autoboxer;
 
 import ogren.collin.autoboxer.control.MasterController;
+import ogren.collin.autoboxer.pdf.FileType;
+import ogren.collin.autoboxer.pdf.PDFManipulator;
 
 import javax.swing.*;
 import java.io.File;
@@ -36,9 +38,10 @@ public class Main {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }catch(Exception ex) {
+        } catch(Exception ex) {
             ex.printStackTrace();
         }
+        //readFile();
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         JFrame jframe = new JFrame();
@@ -48,6 +51,22 @@ public class Main {
             File file = fc.getSelectedFile();
             MasterController mc = new MasterController(file.getPath());
             mc.begin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jframe.dispose();
+        System.exit(0);
+    }
+
+    private static void readFile() {
+        JFileChooser fc = new JFileChooser();
+        JFrame jframe = new JFrame();
+        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fc.showOpenDialog(jframe);
+        try {
+            File file = fc.getSelectedFile();
+            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_JUDGE_SHEET);
+            System.out.println(pdfManipulator.parseToString());
         } catch (Exception e) {
             e.printStackTrace();
         }
