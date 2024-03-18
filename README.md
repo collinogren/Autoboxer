@@ -9,7 +9,7 @@ And to my friend and mentor John Marasco, for his many years of excellent guidan
 ## TODO
 - [x] Read a file derived from the 104 to serve as a guide for sorting paperwork.
 - [x] Assign event numbers and file types for PDF print outputs from ISUCalc and IJSCompanion.
-- [ ] Assign event numbers and file types for PDF print outputs from Hal2.
+- [x] Assign event numbers and file types for PDF print outputs from Hal2.
 - [ ] Create a "box" out of processed paperwork.
 ## Free and Open Source Software
 This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3 license, any derivative works must also use the GNU GPL v3 license and therefore must also be free and open source software.
