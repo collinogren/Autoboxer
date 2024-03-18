@@ -17,6 +17,8 @@ And to my friend and mentor John Marasco, for his many years of excellent guidan
 This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3 license, any derivative works must also use the GNU GPL v3 license and therefore must also be free and open source software.
 ## Disclaimer
 This is a tool designed to make your job easier but this is alpha software with little testing so please make sure you proof the outputs of the program and remember it is your responsibility to ensure the accuracy of the paperwork. Even after this program becomes more stable and tested I still highly recommend always double checking to make sure everything is accurate. Regardless, I greatly appreciate feedback, so if something does not work or could be expanded upon, please, do not hesitate to let me know or to attempt to fix it yourself as this is 100% free and open source software.
+## See Also
+https://www.youtube.com/watch?v=l3LFML_pxlY
 ## License
 Autoboxer to make creating "boxes" for Figure Skating competitions easier.<br>
 Copyright (C) 2024 Collin Ogren<br>
