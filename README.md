@@ -31,10 +31,10 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
 GNU General Public License for more details.<br>
 <br>
+You should have received a copy of the GNU General Public License<br>
+along with this program.  If not, see <https ->//www.gnu.org/licenses/>.<br>
 ## See Also
 https://www.youtube.com/watch?v=l3LFML_pxlY<br>
 https://medium.com/@kennethbridgham/the-100-greatest-boxers-of-all-time-the-full-list-9729c182542<br>
 https://www.uhaul.com/MovingSupplies/Boxes/<br>
 https://en.wikipedia.org/wiki/Boxing_Day
-You should have received a copy of the GNU General Public License<br>
-along with this program.  If not, see <https ->//www.gnu.org/licenses/>.<br>
