@@ -27,13 +27,13 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ogren.collin.autoboxer.control.MasterController.TEST_MODE;
 import static ogren.collin.autoboxer.pdf.FileType.*;
 
 public class PDFManipulator {
-
-    private static final String judgeSheet60NameKey = " - ";
     private PDDocument document;
     private FileType fileType;
 
@@ -93,7 +93,6 @@ public class PDFManipulator {
     }
 
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
-        System.out.println(eventName);
         for (String e : scrutinizeName(eventName)) {
             if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
@@ -111,9 +110,7 @@ public class PDFManipulator {
                 eventNumber.append(c);
             } else {
                 String eventNumberString = eventNumber.toString();
-                System.out.println(eventNumberString);
                 if (!eventNumberString.isEmpty()) {
-                    System.out.println(eventNumber);
                     eventNumbers.add(eventNumberString);
                     eventNumber = new StringBuilder();
                 }
@@ -150,7 +147,7 @@ public class PDFManipulator {
     public void rename(String eventNumber) {
         String offset = "";
         if (TEST_MODE) {
-            offset = "/renamed/";
+            offset = "renamed/";
         }
         int i = 1;
         String multiplicity = "";
@@ -158,7 +155,16 @@ public class PDFManipulator {
             multiplicity += " " + i;
         }
 
-        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + multiplicity + ".pdf";
+        String officialName = "";
+        if (fileType != IJS_COVERSHEET && fileType != SIX0_PRIMARY_JUDGE_SHEET && fileType != SIX0_PRIMARY_WORKSHEET && fileType != SIX0_SECONDARY) {
+            officialName = " " + getOfficialName().trim().replace(' ', '_');
+        }
+
+        System.out.println(fileType);
+        System.out.println("Official's name: " + officialName);
+
+        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + multiplicity + ".pdf";
+        System.out.println(destination);
         boolean exists = new File(destination).exists();
 
         while (exists && fileType == IJS_JUDGE_SHEET) {
@@ -169,6 +175,7 @@ public class PDFManipulator {
             destination = split[0] + ".pdf";
             exists = new File(destination).exists();
         }
+        System.out.println(destination);
         try {
             if (TEST_MODE) {
                 FileUtils.copyFile(file, new File(destination));
@@ -224,9 +231,6 @@ public class PDFManipulator {
     private String parseEventName60() {
         String[] lines = contents.split("\n");
         int line;
-        System.out.println(contents);
-        System.out.println(fileType.toString());
-        System.out.println(getUniqueTextByType());
         loop:
         for (line = 0; line < lines.length; line++) {
             switch (fileType) {
@@ -286,5 +290,52 @@ public class PDFManipulator {
 
     public void setRenamed(boolean b) {
         isRenamed = b;
+    }
+
+    public PDDocument getDocument() {
+        return document;
+    }
+
+    private String getOfficialName() {
+        String[] lines = contents.split("\n");
+        int line;
+        if (fileType == IJS_JUDGE_SHEET) {
+            Pattern pattern = Pattern.compile("J\\d. {2}");
+            for (line = 0; line < lines.length; line++) {
+                if (lines[line].contains("Ref.  ")) {
+                    return lines[line].split(". {2}")[1];
+                }
+                Matcher matcher = pattern.matcher(lines[line]);
+                if (matcher.find()) {
+                    return lines[line].split(". {2}")[1];
+                }
+            }
+        }
+
+        if (fileType == IJS_REFEREE_SHEET) {
+            for (line = 0; line < lines.length; line++) {
+                if (lines[line].contains(" - REFEREE SHEET")) {
+                    return lines[line + 1];
+                }
+            }
+        }
+
+        if (fileType == IJS_TC_SHEET) {
+            for (line = 0; line < lines.length; line++) {
+                if (lines[line].startsWith("Technical Controller:   ")) {
+                    return lines[line].split("Technical Controller: {3}")[1];
+                }
+            }
+        }
+
+        if (fileType == IJS_TS2_SHEET) {
+            for (line = 0; line < lines.length; line++) {
+                if (lines[line].startsWith("Technical Specialist 2:   ")) {
+                    return lines[line].split("Technical Specialist 2: {3}")[1];
+                }
+            }
+        }
+
+        return "";
     }
 }

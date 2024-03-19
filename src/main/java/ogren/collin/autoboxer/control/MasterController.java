@@ -55,6 +55,7 @@ public class MasterController {
 
     public void begin() {
         renameFiles();
+        //doTheBox();
     }
 
     private void renameFiles() {
@@ -100,5 +101,23 @@ public class MasterController {
     private ArrayList<File> getAllFiles(String relativeDir) {
         ArrayList files = (ArrayList) FileUtils.listFiles(new File(baseDir + "/" + relativeDir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
         return  files;
+    }
+
+    //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
+    // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
+    private void doTheBox() {
+        for (ScheduleElement se : schedule.getElements()) {
+            ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR + "/renamed/");
+            for (File file : coversheets) {
+                if (matchFileNameToEventNumber(se, file)) {
+                    
+                }
+            }
+        }
+    }
+
+    private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
+        String eventNumber = file.getName().split(" ")[0];
+        return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
     }
 }

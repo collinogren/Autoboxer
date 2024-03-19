@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Official {
     private String name;
-    private ArrayList<EventSet> events = new ArrayList<EventSet>();
+    private ArrayList<EventSet> events = new ArrayList();
 
     public Official(String name) {
         this.name = name;
