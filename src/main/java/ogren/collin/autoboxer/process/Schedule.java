@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Schedule {
-    ArrayList elements = new ArrayList<ScheduleElement>();
+    ArrayList<ScheduleElement> elements = new ArrayList<>();
 
     public Schedule(File file) {
         List<String> lines;
@@ -38,10 +38,10 @@ public class Schedule {
         }
 
         for (String line : lines) {
-            String[] split = line.split("\t");
-            String eventName = split[0];
-            long time = Time.parseTimeMinutes(split[1]);
-            elements.add(new ScheduleElement(eventName, time, false));
+            if (line.isEmpty()) {
+                continue;
+            }
+            elements.add(new ScheduleElement(line));
         }
     }
 

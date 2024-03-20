@@ -20,29 +20,13 @@ package ogren.collin.autoboxer.process;
 
 public class ScheduleElement {
 
-    private String eventNumber;
-    private long time;
-    private boolean processed;
+    private final String eventNumber;
 
-    public ScheduleElement(String eventNumber, long time, boolean processed) {
+    public ScheduleElement(String eventNumber) {
         this.eventNumber = eventNumber;
-        this.time = time;
-        this.processed = processed;
-    }
-
-    public void setProcessed(boolean b) {
-        processed = b;
     }
 
     public String getEventNumber() {
         return eventNumber;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public boolean isProcessed() {
-        return processed;
     }
 }
