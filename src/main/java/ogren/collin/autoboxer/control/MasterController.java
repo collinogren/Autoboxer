@@ -43,17 +43,17 @@ public class MasterController {
     private static final String SIX0_PRIMARY_DIR = "60";
     private static final String SIX0_SUBSEQUENT_DIR = "60_sub";
 
-    private ArrayList<Official> officials = new ArrayList<>();
+    private final ArrayList<Official> officials = new ArrayList<>();
 
     private static String baseDir;
 
-    private Schedule schedule;
+    private final Schedule schedule;
 
-    private ArrayList<File> coversheets = new ArrayList();
-    private ArrayList<File> judgeSheets = new ArrayList();
-    private ArrayList<File> technicalSheets = new ArrayList();
-    private ArrayList<File> six0Sheets = new ArrayList();
-    private ArrayList<File> six0SecondarySheets = new ArrayList();
+    private ArrayList<File> coversheets = new ArrayList<>();
+    private ArrayList<File> judgeSheets = new ArrayList<>();
+    private ArrayList<File> technicalSheets = new ArrayList<>();
+    private ArrayList<File> six0Sheets = new ArrayList<>();
+    private ArrayList<File> six0SecondarySheets = new ArrayList<>();
 
     public static String getBaseDir() {
         return baseDir;
@@ -129,8 +129,7 @@ public class MasterController {
     }
 
     private ArrayList<File> getAllFiles(String relativeDir) {
-        ArrayList files = (ArrayList) FileUtils.listFiles(new File(baseDir + "/" + relativeDir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-        return  files;
+        return (ArrayList<File>) FileUtils.listFiles(new File(baseDir + "/" + relativeDir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
     }
 
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
