@@ -18,7 +18,7 @@ And to my friend and mentor John Marasco, for his many years of excellent guidan
 7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets', IJSCompanion judges' sheets into 'judges', ISUCalc technical panel sheets into 'tech', Hal2 judges' sheets and worksheets (when used as the only sheet) into '60', and Hal2 worksheets into '60_sub' when also using a judges' sheet.
 8. Run 'Autoboxer.bat' and select the box directory which stores the other newly created directories.
 9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called box.
-10. Proof the box to ensure no unforeseen mistakes occurred.
+10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
 11. Do something else with all the time you just saved.
 ### Usage Guidelines
 - Make sure that officials’ names for Hal2 match those in ISUCalc because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
