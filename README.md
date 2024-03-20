@@ -4,7 +4,7 @@ Autoboxer aims to make lengthy stretches of highlighting and sorting papers for 
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
 To my friend and mentor John Marasco, for your many years of excellent guidance and highly enjoyable weekends, this one's for you.
 ## Usage Instructions
-1. Download the program from releases or build from source.
+1. Download the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download an automatic PDF printer to dramatically save your time and sanity (I like this open-source one called clawPDF https://github.com/clawsoftware/clawPDF/releases).
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
