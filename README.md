@@ -1,7 +1,7 @@
 # Autoboxer
 This program is experimental. Always proof its outputs before using them.<br>
 Autoboxer aims to make lengthy stretches of highlighting and sorting papers for the box a thing of the past.<br>
-I would like to extend massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
+I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
 And to my friend and mentor John Marasco, for his many years of excellent guidance and highly enjoyable weekends, this one's for you.
 ## Usage Instructions
 1. Download the program from releases or build from source.
