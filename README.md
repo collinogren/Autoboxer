@@ -2,7 +2,6 @@
 This program is experimental. Always proof its outputs before using them.<br>
 Autoboxer aims to make lengthy stretches of highlighting and sorting papers for the box a thing of the past.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
-To my friend and mentor John Marasco, for your many years of excellent guidance and highly enjoyable weekends, this one's for you.
 ## Usage Instructions
 1. Download the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). While I do not fully expect that using a different PDF printer will break the program, it could. So if you choose to use a different PDF printer and experience issues related to parsing the PDFs, please try clawPDF before reaching out for support since clawPDF is the only supported PDF printer.
