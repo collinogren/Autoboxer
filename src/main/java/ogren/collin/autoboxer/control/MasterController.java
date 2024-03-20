@@ -150,6 +150,9 @@ public class MasterController {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                    for (IdentityBundle id : identityBundles) {
+                        System.out.println("6.0 judge "+id.name());
+                    }
                     processEvent(eventNumber, identityBundles, pdfManipulator, false);
                 }
             }
@@ -160,7 +163,6 @@ public class MasterController {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
-            System.out.println("Event number = "+eventNumber);
             PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, 1);
             EventSet eventSet = new EventSet();
             eventSet.push(circledCoversheet);

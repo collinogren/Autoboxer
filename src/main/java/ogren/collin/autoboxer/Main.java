@@ -68,7 +68,7 @@ public class Main {
             File file = fc.getSelectedFile();
             PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
             //System.out.println(pdfManipulator.parseToString());
-            PDDocument circledDocument = PDFManipulator.boxOfficial("Hyaat Aldahwi", pdfManipulator.getDocument(), 1);
+            PDDocument circledDocument = PDFManipulator.boxOfficial("Ann Hannah", pdfManipulator.getDocument(), 1);
             circledDocument.save(new File(file.getPath().split(file.getName())[0]+"Circled.pdf"));
         } catch (Exception e) {
             e.printStackTrace();

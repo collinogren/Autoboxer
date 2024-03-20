@@ -318,11 +318,11 @@ public class PDFManipulator {
             Pattern pattern = Pattern.compile("J\\d. {2}");
             for (int line = 0; line < lines.length; line++) {
                 if (lines[line].contains("Ref.  ")) {
-                    return lines[line].split(". {2}")[1];
+                    return lines[line].split(". {2}")[1].trim();
                 }
                 Matcher matcher = pattern.matcher(lines[line]);
                 if (matcher.find()) {
-                    return lines[line].split(". {2}")[1];
+                    return lines[line].split(". {2}")[1].trim();
                 }
             }
         }
@@ -330,7 +330,7 @@ public class PDFManipulator {
         if (fileType == IJS_REFEREE_SHEET) {
             for (int line = 0; line < lines.length; line++) {
                 if (lines[line].contains(" - REFEREE SHEET")) {
-                    return lines[line + 1];
+                    return lines[line + 1].trim();
                 }
             }
         }
@@ -338,7 +338,7 @@ public class PDFManipulator {
         if (fileType == IJS_TC_SHEET) {
             for (int line = 0; line < lines.length; line++) {
                 if (lines[line].startsWith("Technical Controller:   ")) {
-                    return lines[line].split("Technical Controller: {3}")[1];
+                    return lines[line].split("Technical Controller: {3}")[1].trim();
                 }
             }
         }
@@ -346,7 +346,7 @@ public class PDFManipulator {
         if (fileType == IJS_TS2_SHEET) {
             for (int line = 0; line < lines.length; line++) {
                 if (lines[line].startsWith("Technical Specialist 2:   ")) {
-                    return lines[line].split("Technical Specialist 2: {3}")[1];
+                    return lines[line].split("Technical Specialist 2: {3}")[1].trim();
                 }
             }
         }
@@ -360,45 +360,45 @@ public class PDFManipulator {
         if (fileType == IJS_COVERSHEET) {
             for (int line = 0; line < lines.length; line++) {
                 if (lines[line].contains("Referee ")) {
-                    String name = lines[line].split("Referee ")[1].split(",")[0];
+                    String name = lines[line].split("Referee ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.REFEREE));
                 }
                 if (lines[line].contains("TC ")) {
-                    String name = lines[line].split("TC ")[1].split(",")[0];
+                    String name = lines[line].split("TC ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.TC));
                 }
                 if (lines[line].contains("TS1 ")) {
-                    String name = lines[line].split("TS1 ")[1].split(",")[0];
+                    String name = lines[line].split("TS1 ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.TS1));
                 }
                 if (lines[line].contains("TS2 ")) {
-                    String name = lines[line].split("TS2 ")[1].split(",")[0];
+                    String name = lines[line].split("TS2 ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.TS2));
                 }
                 if (lines[line].contains("DEO ")) {
-                    String name = lines[line].split("DEO ")[1].split(",")[0];
+                    String name = lines[line].split("DEO ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.DEO));
                 }
                 Pattern judgePattern = Pattern.compile("Judge \\d ");
                 Matcher judgeMatcher = judgePattern.matcher(lines[line]);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
-                    String name = lines[line].split(delimiter)[1].split(",")[0];
+                    String name = lines[line].split(delimiter)[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.JUDGE));
                 }
             }
         } else if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
-            Pattern judgePattern = Pattern.compile("J \\d ");
+            Pattern judgePattern = Pattern.compile("J\\d ");
             for (int line = 0; line < lines.length; line++) {
                 Matcher judgeMatcher = judgePattern.matcher(lines[line]);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
-                    String name = lines[line].split(delimiter)[1];
+                    String name = lines[line].split(delimiter)[1].trim();
                     officialNames.add(new IdentityBundle(name, Role.JUDGE));
                 }
 
                 if (lines[line].startsWith("Ref. ")) {
-                    String name = lines[line].split("Ref. ")[1];
+                    String name = lines[line].split("Ref. ")[1].trim();
                     officialNames.add(new IdentityBundle(name, Role.REFEREE));
                 }
             }
