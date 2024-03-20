@@ -18,10 +18,13 @@
 
 package ogren.collin.autoboxer.process;
 
+import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Official {
@@ -40,7 +43,7 @@ public class Official {
         events.add(eventSet);
     }
 
-    public PDDocument getAllOfficials() {
+    public PDDocument merge() {
         PDDocument mergedDocument = new PDDocument();
         for (EventSet event : events) {
             for (PDPage page : event.mergeDocuments().getPages()) {
@@ -49,5 +52,19 @@ public class Official {
         }
 
         return mergedDocument;
+    }
+
+    public void save() {
+        System.out.println("Printing for "+getName());
+        if (!new File(MasterController.getBaseDir()+"/box/"+name).exists()) {
+            new File(MasterController.getBaseDir()+"/box/"+name).mkdirs();
+        }
+        try {
+            PDDocument merged = merge();
+            merged.save(new File(MasterController.getBaseDir()+"/box/"+name+"/"+name+".pdf"));
+            merged.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

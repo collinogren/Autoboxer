@@ -19,13 +19,18 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Main;
+import ogren.collin.autoboxer.process.IdentityBundle;
+import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.text.PDFTextStripper;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -296,12 +301,22 @@ public class PDFManipulator {
         return document;
     }
 
+    public PDDocument reloadDocument() {
+        try {
+            //document.close();
+            document = PDDocument.load(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return document;
+    }
+
     private String getOfficialName() {
         String[] lines = contents.split("\n");
-        int line;
         if (fileType == IJS_JUDGE_SHEET) {
             Pattern pattern = Pattern.compile("J\\d. {2}");
-            for (line = 0; line < lines.length; line++) {
+            for (int line = 0; line < lines.length; line++) {
                 if (lines[line].contains("Ref.  ")) {
                     return lines[line].split(". {2}")[1];
                 }
@@ -313,7 +328,7 @@ public class PDFManipulator {
         }
 
         if (fileType == IJS_REFEREE_SHEET) {
-            for (line = 0; line < lines.length; line++) {
+            for (int line = 0; line < lines.length; line++) {
                 if (lines[line].contains(" - REFEREE SHEET")) {
                     return lines[line + 1];
                 }
@@ -321,7 +336,7 @@ public class PDFManipulator {
         }
 
         if (fileType == IJS_TC_SHEET) {
-            for (line = 0; line < lines.length; line++) {
+            for (int line = 0; line < lines.length; line++) {
                 if (lines[line].startsWith("Technical Controller:   ")) {
                     return lines[line].split("Technical Controller: {3}")[1];
                 }
@@ -329,7 +344,7 @@ public class PDFManipulator {
         }
 
         if (fileType == IJS_TS2_SHEET) {
-            for (line = 0; line < lines.length; line++) {
+            for (int line = 0; line < lines.length; line++) {
                 if (lines[line].startsWith("Technical Specialist 2:   ")) {
                     return lines[line].split("Technical Specialist 2: {3}")[1];
                 }
@@ -337,5 +352,81 @@ public class PDFManipulator {
         }
 
         return "";
+    }
+
+    public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
+        ArrayList<IdentityBundle> officialNames = new ArrayList<>();
+        String[] lines = contents.split("\n");
+        if (fileType == IJS_COVERSHEET) {
+            for (int line = 0; line < lines.length; line++) {
+                if (lines[line].contains("Referee ")) {
+                    String name = lines[line].split("Referee ")[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.REFEREE));
+                }
+                if (lines[line].contains("TC ")) {
+                    String name = lines[line].split("TC ")[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.TC));
+                }
+                if (lines[line].contains("TS1 ")) {
+                    String name = lines[line].split("TS1 ")[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.TS1));
+                }
+                if (lines[line].contains("TS2 ")) {
+                    String name = lines[line].split("TS2 ")[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.TS2));
+                }
+                if (lines[line].contains("DEO ")) {
+                    String name = lines[line].split("DEO ")[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.DEO));
+                }
+                Pattern judgePattern = Pattern.compile("Judge \\d ");
+                Matcher judgeMatcher = judgePattern.matcher(lines[line]);
+                if (judgeMatcher.find()) {
+                    String delimiter = judgeMatcher.group();
+                    String name = lines[line].split(delimiter)[1].split(",")[0];
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE));
+                }
+            }
+        } else if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
+            Pattern judgePattern = Pattern.compile("J \\d ");
+            for (int line = 0; line < lines.length; line++) {
+                Matcher judgeMatcher = judgePattern.matcher(lines[line]);
+                if (judgeMatcher.find()) {
+                    String delimiter = judgeMatcher.group();
+                    String name = lines[line].split(delimiter)[1];
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE));
+                }
+
+                if (lines[line].startsWith("Ref. ")) {
+                    String name = lines[line].split("Ref. ")[1];
+                    officialNames.add(new IdentityBundle(name, Role.REFEREE));
+                }
+            }
+        }
+
+        return officialNames;
+    }
+
+    public static PDDocument boxOfficial(String name, PDDocument document, int occurrenceToBox) {
+        try {
+            TextLocator stripper = new TextLocator(name, occurrenceToBox);
+            Writer writer = new OutputStreamWriter(new ByteArrayOutputStream());
+            stripper.writeText(document, writer);
+            StringLocationBundle locationBundle = stripper.getLocationBundle();
+            if (locationBundle == null) {
+                System.err.println("Failed to find judge "+name);
+                return document;
+            }
+            PDPage page = document.getPage(0);
+            PDPageContentStream stream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, false);
+            stream.setStrokingColor(Color.BLACK);
+            stream.addRect((float) locationBundle.x() - 4f, PDRectangle.LETTER.getHeight() - (float) locationBundle.y() - 4f, (float) locationBundle.width() + 8f, (float) locationBundle.height() + 10f);
+            stream.stroke();
+            stream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return document;
     }
 }

@@ -18,19 +18,20 @@
 
 package ogren.collin.autoboxer.control;
 
+import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
+import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.process.ScheduleElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class MasterController {
 
@@ -42,28 +43,51 @@ public class MasterController {
     private static final String SIX0_PRIMARY_DIR = "60";
     private static final String SIX0_SUBSEQUENT_DIR = "60_sub";
 
-    private ArrayList officials = new ArrayList<Official>();
+    private ArrayList<Official> officials = new ArrayList<>();
 
-    private String baseDir;
+    private static String baseDir;
 
     private Schedule schedule;
 
+    private ArrayList<File> coversheets = new ArrayList();
+    private ArrayList<File> judgeSheets = new ArrayList();
+    private ArrayList<File> technicalSheets = new ArrayList();
+    private ArrayList<File> six0Sheets = new ArrayList();
+    private ArrayList<File> six0SecondarySheets = new ArrayList();
+
+    public static String getBaseDir() {
+        return baseDir;
+    }
+
     public MasterController(String baseDir) {
-        this.baseDir = baseDir;
+        MasterController.baseDir = baseDir;
+        try {
+            FileUtils.deleteDirectory(new File(baseDir+"/"+COVERSHEET_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+JUDGE_SHEETS_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+TECH_PANEL_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_PRIMARY_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_SUBSEQUENT_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/box"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
     public void begin() {
         renameFiles();
-        //doTheBox();
+        doTheBox();
+        for (Official official : officials) {
+            official.save();
+        }
     }
 
     private void renameFiles() {
-        ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR);
-        ArrayList<File> judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
-        ArrayList<File> technicalSheets = getAllFiles(TECH_PANEL_DIR);
-        ArrayList<File> six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
-        ArrayList<File> six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
+        coversheets = getAllFiles(COVERSHEET_DIR);
+        judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
+        technicalSheets = getAllFiles(TECH_PANEL_DIR);
+        six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
+        six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
         try {
             rename(coversheets, FileType.IJS_COVERSHEET);
             rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
@@ -76,6 +100,12 @@ public class MasterController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
+        judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
+        technicalSheets = getAllFiles(TECH_PANEL_DIR+"/renamed/");
+        six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
+        six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
     }
 
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
@@ -107,13 +137,86 @@ public class MasterController {
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
         for (ScheduleElement se : schedule.getElements()) {
-            ArrayList<File> coversheets = getAllFiles(COVERSHEET_DIR + "/renamed/");
             for (File file : coversheets) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    
+                    String eventNumber = se.getEventNumber();
+                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
+                    ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                    processEvent(eventNumber, identityBundles, pdfManipulator, true);
+                }
+            }
+            for (File file : six0Sheets) {
+                if (matchFileNameToEventNumber(se, file)) {
+                    String eventNumber = se.getEventNumber();
+                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+                    ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                    processEvent(eventNumber, identityBundles, pdfManipulator, false);
                 }
             }
         }
+    }
+
+    private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, boolean ijs) {
+        for (IdentityBundle identity : identityBundles) {
+            int officialIndex = getOfficialIndex(identity.name());
+            PDDocument coversheet = pdfManipulator.reloadDocument();
+            System.out.println("Event number = "+eventNumber);
+            PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, 1);
+            EventSet eventSet = new EventSet();
+            eventSet.push(circledCoversheet);
+            if (ijs) {
+                switch (identity.role()) {
+                    case REFEREE -> {
+                        retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_REFEREE_SHEET);
+                        retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                    }
+                    case JUDGE -> retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                    case TC -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TC_SHEET);
+                    case TS2 -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
+                }
+            } else {
+                retrieveSix0SecondarySheets(eventNumber, eventSet);
+            }
+
+            officials.get(officialIndex).addDocument(eventSet);
+        }
+    }
+
+    private void retrieveSix0SecondarySheets(String eventNumber, EventSet eventSet) {
+        for (File file : six0SecondarySheets) {
+            String[] split = file.getName().split(" ");
+            if (split[0].equals(eventNumber)) {
+                try {
+                    eventSet.push(PDDocument.load(file));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    private void retrieveSheets(String eventNumber, IdentityBundle identity, EventSet eventSet, ArrayList<File> sheets, FileType fileType) {
+        for (File file : sheets) {
+            String[] split = file.getName().split(" ");
+            if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
+                try {
+                    eventSet.push(PDDocument.load(file));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    private int getOfficialIndex(String name) {
+        for (int i = 0; i < officials.size(); i++) {
+            if (officials.get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+
+        officials.add(new Official(name));
+        return officials.size() - 1;
     }
 
     private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {

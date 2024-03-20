@@ -23,6 +23,7 @@ package ogren.collin.autoboxer;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 import javax.swing.*;
 import java.io.File;
@@ -65,8 +66,10 @@ public class Main {
         fc.showOpenDialog(jframe);
         try {
             File file = fc.getSelectedFile();
-            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_WORKSHEET);
-            System.out.println(pdfManipulator.parseToString());
+            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
+            //System.out.println(pdfManipulator.parseToString());
+            PDDocument circledDocument = PDFManipulator.boxOfficial("Hyaat Aldahwi", pdfManipulator.getDocument(), 1);
+            circledDocument.save(new File(file.getPath().split(file.getName())[0]+"Circled.pdf"));
         } catch (Exception e) {
             e.printStackTrace();
         }
