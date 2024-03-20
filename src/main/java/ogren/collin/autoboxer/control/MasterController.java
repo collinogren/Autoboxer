@@ -1,5 +1,5 @@
 /*
-    Autoboxer to make creating "boxes" for Figure Skating competitions easier.
+    Autoboxer to make creating "boxes" for figure skating competitions easier.
     Copyright (C) 2024 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ public class MasterController {
                 String eventName = pdfManipulator.retrieveEventName();
                 if (pdfManipulator.matchNameToSchedule(se, eventName) && !pdfManipulator.isRenamed()) {
                     pdfManipulator.close();
-                    pdfManipulator.rename(se.getEventNumber());
+                    pdfManipulator.rename(se.eventNumber());
                 }
             }
         }
@@ -138,7 +138,7 @@ public class MasterController {
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    String eventNumber = se.getEventNumber();
+                    String eventNumber = se.eventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, true);
@@ -146,7 +146,7 @@ public class MasterController {
             }
             for (File file : six0Sheets) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    String eventNumber = se.getEventNumber();
+                    String eventNumber = se.eventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     for (IdentityBundle id : identityBundles) {
@@ -225,6 +225,6 @@ public class MasterController {
 
     private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
         String eventNumber = file.getName().split(" ")[0];
-        return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
+        return eventNumber.equalsIgnoreCase(scheduleElement.eventNumber());
     }
 }

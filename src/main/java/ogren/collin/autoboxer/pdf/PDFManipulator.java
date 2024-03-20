@@ -1,8 +1,8 @@
 /*
-    Autoboxer to make creating "boxes" for Figure Skating competitions easier.
+    Autoboxer to make creating "boxes" for figure skating competitions easier.
     Copyright (C) 2024 Collin Ogren
 
-    This program is free software -> you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -13,7 +13,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https ->//www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ogren.collin.autoboxer.pdf;
@@ -99,7 +99,7 @@ public class PDFManipulator {
 
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
         for (String e : scrutinizeName(eventName)) {
-            if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
+            if (e.equalsIgnoreCase(scheduleElement.eventNumber())) {
                 return true;
             }
         }

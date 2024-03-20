@@ -1,5 +1,5 @@
 /*
-    Autoboxer to make creating "boxes" for Figure Skating competitions easier.
+    Autoboxer to make creating "boxes" for figure skating competitions easier.
     Copyright (C) 2024 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
@@ -18,15 +18,4 @@
 
 package ogren.collin.autoboxer.process;
 
-public class ScheduleElement {
-
-    private final String eventNumber;
-
-    public ScheduleElement(String eventNumber) {
-        this.eventNumber = eventNumber;
-    }
-
-    public String getEventNumber() {
-        return eventNumber;
-    }
-}
+public record ScheduleElement(String eventNumber) {}
