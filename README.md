@@ -31,21 +31,8 @@ This software is completely free and open source. Feel free to use, edit, and co
 ## Disclaimer
 This is a tool designed to make your job easier but this is alpha software with little testing so please make sure you proof the outputs of the program and remember it is your responsibility to ensure the accuracy of the paperwork. Even after this program becomes more stable and tested I still highly recommend always double checking to make sure everything is accurate. Regardless, I greatly appreciate feedback, so if something does not work or could be expanded upon, please, do not hesitate to let me know or to attempt to fix it yourself as this is 100% free and open source software.
 ## Copyright
-Autoboxer to make creating "boxes" for figure skating competitions easier.<br>
+This program is licensed under the GNU GPLv3 license.<br>
 Copyright (C) 2024 Collin Ogren<br>
-
-This program is free software -> you can redistribute it and/or modify<br>
-it under the terms of the GNU General Public License as published by<br>
-the Free Software Foundation, either version 3 of the License, or<br>
-(at your option) any later version.<br>
-<br>
-This program is distributed in the hope that it will be useful,<br>
-but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
-GNU General Public License for more details.<br>
-<br>
-You should have received a copy of the GNU General Public License<br>
-along with this program.  If not, see <https ->//www.gnu.org/licenses/>.<br>
 ## See Also
 https://www.youtube.com/watch?v=l3LFML_pxlY<br>
 https://medium.com/@kennethbridgham/the-100-greatest-boxers-of-all-time-the-full-list-9729c182542<br>
