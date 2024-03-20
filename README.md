@@ -1,8 +1,26 @@
 # Autoboxer
-This program is in early developmental stages and does not yet perform its intended functionality. Check back later.<br>
-A massive thank you to this wonderful community, I hope you find this software useful, let me know if you have any issues.<br>
-And to my friend and mentor John Marasco, for his many years of excellent guidance and highly enjoyable weekends, this one's for you.
-## Usage Guidelines
+This program is experimental. Always proof its outputs before using them.<br>
+Autoboxer aims to make lengthy stretches of highlighting and sorting papers for the box a thing of the past.<br>
+I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
+To my friend and mentor John Marasco, for your many years of excellent guidance and highly enjoyable weekends, this one's for you.
+## Usage Instructions
+1. Download the program from releases or build from source.
+2. Download an automatic PDF printer to dramatically save your time and sanity (I like this open-source one called clawPDF https://github.com/clawsoftware/clawPDF/releases).
+3. Create a directory in which you will begin building your box.
+4. Inside this directory place schedule.txt.
+5. Copy all event numbers in order from the 104 into schedule.txt.
+6. Create directories as follows
+   - 60
+   - 60_sub
+   - coversheets
+   - judges
+   - tech
+7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets', IJSCompanion judges' sheets into 'judges', ISUCalc technical panel sheets into 'tech', Hal2 judges' sheets and worksheets (when used as the only sheet) into '60', and Hal2 worksheets into '60_sub' when also using a judges' sheet.
+8. Run 'Autoboxer.bat' and select the box directory which stores the other newly created directories.
+9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called box.
+10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
+11. Do something else with all the time you just saved.
+### Usage Guidelines
 - Make sure that officials’ names for Hal2 match those in ISUCalc because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
