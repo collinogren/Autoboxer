@@ -25,7 +25,8 @@ To my friend and mentor John Marasco, for your many years of excellent guidance 
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
 ## clawPDF Setup
-After installing clawPDF, launch its utility application which you can do easily by searching clawPDF in the Windows search box. In the utility, go to 'profile settings,' then 'Auto-Save' check 'enable automatic saving' checkbox, then provide the path to any of the aforementioned directories depending on which sheet type you are going to print next into the target field.<br>
+After installing clawPDF, launch its utility application which you can do easily by searching clawPDF in the Windows search box. In the utility, go to 'profile settings,' then 'auto-save' check 'enable automatic saving' checkbox, then provide the path to any of the aforementioned directories depending on which sheet type you are going to print next into the target field.<br>
+Keep the clawPDF settings utility open during the printing process because you are going to need to change output directories in the 'auto-save' tab as described in the 'usage instructions' section above.
 Make sure you set clawPDF as your default printer so that Hal2 and IJSCompanion will use it and make sure that you select it, if it is not already, in ISUCalc when performing a batch print.
 ## TODO
 - Ensure and finish implementing correct functionality for when an official is the referee and a judge.
