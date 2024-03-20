@@ -5,7 +5,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 To my friend and mentor John Marasco, for your many years of excellent guidance and highly enjoyable weekends, this one's for you.
 ## Usage Instructions
 1. Download the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
-2. Download an automatic PDF printer to dramatically save your time and sanity (I like this open-source one called clawPDF https://github.com/clawsoftware/clawPDF/releases).
+2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). Since this program is designed specifically with clawPDF in mind, I will not be providing any support if a different PDF printer is used.
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
 5. Copy all event numbers in order from the 104 into schedule.txt.
