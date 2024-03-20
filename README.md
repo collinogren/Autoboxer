@@ -20,7 +20,7 @@ And to my friend and mentor John Marasco, for his many years of excellent guidan
 9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called box.
 10. Proof the box to ensure no unforeseen mistakes occurred.
 11. Do something else with all the time you just saved.
-## Usage Guidelines
+### Usage Guidelines
 - Make sure that officials’ names for Hal2 match those in ISUCalc because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
