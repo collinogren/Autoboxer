@@ -198,6 +198,9 @@ public class MasterController {
     private void retrieveSheets(String eventNumber, IdentityBundle identity, EventSet eventSet, ArrayList<File> sheets, FileType fileType) {
         for (File file : sheets) {
             String[] split = file.getName().split(" ");
+            if (fileType != FileType.IJS_JUDGE_SHEET) {
+                split[2] = split[2].split(".pdf")[0];
+            }
             if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
                 try {
                     eventSet.push(PDDocument.load(file));
