@@ -221,11 +221,21 @@ public class PDFManipulator {
     private String parseEventNameIJS() {
         String[] lines = contents.split("\n");
         int line;
-        for (line = 0; line < lines.length; line++) {
-            if (lines[line].toLowerCase().contains(Main.getCompetitionName().toLowerCase())) {
-                line++;
-                break;
+
+        if (fileType == IJS_JUDGE_SHEET) {
+            int notesValueOccurred = 0;
+            for (line = 0; line < lines.length; line++) {
+                if (lines[line].toLowerCase().contains("notes value")) {
+                    System.out.println("Notes Value");
+                    notesValueOccurred++;
+                    if (notesValueOccurred >= 3) {
+                        line += 2;
+                        break;
+                    }
+                }
             }
+        } else {
+            line = 1;
         }
 
         String correctedName = extractName(lines[line]);
@@ -236,6 +246,7 @@ public class PDFManipulator {
     private String parseEventName60() {
         String[] lines = contents.split("\n");
         int line;
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+(?:\\s*\\w*)*\\s-\\s.*$");
         loop:
         for (line = 0; line < lines.length; line++) {
             switch (fileType) {
@@ -246,8 +257,8 @@ public class PDFManipulator {
                     }
                 }
                 case SIX0_PRIMARY_WORKSHEET -> {
-                    if (lines[line].toLowerCase().contains(Main.getCompetitionName().toLowerCase())) {
-                        line++;
+                    Matcher matcher = pattern.matcher(lines[line]);
+                    if (matcher.find()) {
                         break loop;
                     }
                 }

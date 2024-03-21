@@ -28,12 +28,6 @@ import java.io.File;
 
 public class Main {
 
-    private static String competitionName = "2023 Pony Express Championships";
-
-    public static String getCompetitionName() {
-        return competitionName;
-    }
-
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -64,9 +58,8 @@ public class Main {
         fc.showOpenDialog(jframe);
         try {
             File file = fc.getSelectedFile();
-            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-            //System.out.println(pdfManipulator.parseToString());
-            PDDocument circledDocument = PDFManipulator.boxOfficial("Ann Hannah", pdfManipulator.getDocument(), 1);
+            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+            PDDocument circledDocument = PDFManipulator.boxOfficial("Hope Wheeler", pdfManipulator.getDocument(), 1);
             circledDocument.save(new File(file.getPath().split(file.getName())[0]+"Circled.pdf"));
         } catch (Exception e) {
             e.printStackTrace();
