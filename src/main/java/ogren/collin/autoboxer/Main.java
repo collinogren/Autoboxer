@@ -45,9 +45,13 @@ public class Main {
             MasterController mc = new MasterController(file.getPath());
             mc.begin();
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Failed to generate the box.", "Error", JOptionPane.ERROR_MESSAGE);
+            jframe.dispose();
             e.printStackTrace();
+            return;
         }
         jframe.dispose();
+        JOptionPane.showMessageDialog(null, "Successfully generated the box.", "Success", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
 
