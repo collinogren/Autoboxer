@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Official {
-    private String name;
-    private ArrayList<EventSet> events = new ArrayList();
+    private final String name;
+    private final ArrayList<EventSet> events = new ArrayList<>();
 
     public Official(String name) {
         this.name = name;
@@ -57,12 +57,18 @@ public class Official {
     public void save() {
         System.out.println("Printing for "+getName());
         if (!new File(MasterController.getBaseDir()+"/box/"+name).exists()) {
-            new File(MasterController.getBaseDir()+"/box/"+name).mkdirs();
+            boolean success = new File(MasterController.getBaseDir()+"/box/"+name).mkdirs();
+            if (!success) {
+                throw new RuntimeException("Failed to create directory /box/"+name);
+            }
         }
         try {
             PDDocument merged = merge();
             merged.save(new File(MasterController.getBaseDir()+"/box/"+name+"/"+name+".pdf"));
             merged.close();
+            for (EventSet eventSet : events) {
+                eventSet.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

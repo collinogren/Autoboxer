@@ -21,10 +21,11 @@ package ogren.collin.autoboxer.pdf;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class EventSet {
-    ArrayList<PDDocument> documents = new ArrayList();
+    ArrayList<PDDocument> documents = new ArrayList<>();
     public void push(PDDocument document) {
         documents.add(document);
     }
@@ -38,5 +39,15 @@ public class EventSet {
         }
 
         return mergedDocument;
+    }
+
+    public void close() {
+        for (PDDocument document : documents) {
+            try {
+                document.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -34,7 +34,7 @@ public class Main {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        //readFile();
+        //test();
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         JFrame jframe = new JFrame();
@@ -51,7 +51,7 @@ public class Main {
         System.exit(0);
     }
 
-    private static void readFile() {
+    private static void test() {
         JFileChooser fc = new JFileChooser();
         JFrame jframe = new JFrame();
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

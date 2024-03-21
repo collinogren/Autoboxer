@@ -35,8 +35,6 @@ import java.util.ArrayList;
 
 public class MasterController {
 
-    public static final boolean TEST_MODE = true;
-
     private static final String COVERSHEET_DIR = "coversheets";
     private static final String JUDGE_SHEETS_DIR = "judges";
     private static final String TECH_PANEL_DIR = "tech";
@@ -125,6 +123,10 @@ public class MasterController {
                     pdfManipulator.rename(se.eventNumber());
                 }
             }
+        }
+
+        for (PDFManipulator pdfManipulator : pdfManipulators) {
+            pdfManipulator.close();
         }
     }
 

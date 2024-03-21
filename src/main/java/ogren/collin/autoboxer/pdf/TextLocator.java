@@ -26,9 +26,9 @@ import java.util.List;
 
 public class TextLocator extends PDFTextStripper {
 
-    private String name;
+    private final String name;
 
-    private int occurrenceToBox;
+    private final int occurrenceToBox;
     private StringLocationBundle locationBundle;
 
     public TextLocator(String name, int occurrenceToBox) throws IOException {
@@ -45,10 +45,10 @@ public class TextLocator extends PDFTextStripper {
 
     @Override
     protected void writeString(String string, List<TextPosition> positions) {
-        double startingX = 0;
-        double startingY = 0;
-        double width = 0;
-        double height = 0;
+        double startingX;
+        double startingY;
+        double width;
+        double height;
         int occurrences = 0;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < positions.size(); i++) {
