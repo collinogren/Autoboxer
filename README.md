@@ -2,10 +2,9 @@
 This program is experimental. Always proof its outputs before using them.<br>
 Autoboxer aims to make lengthy stretches of highlighting and sorting papers for the box a thing of the past.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
-To my friend and mentor John Marasco, for your many years of excellent guidance and highly enjoyable weekends, this one's for you.
 ## Usage Instructions
 1. Download the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
-2. Download an automatic PDF printer to dramatically save your time and sanity (I like this open-source one called clawPDF https://github.com/clawsoftware/clawPDF/releases).
+2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). While I do not fully expect that using a different PDF printer will break the program, it could. So if you choose to use a different PDF printer and experience issues related to parsing the PDFs, please try clawPDF before reaching out for support since clawPDF is the only supported PDF printer.
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
 5. Copy all event numbers in order from the 104 into schedule.txt.
@@ -21,31 +20,22 @@ To my friend and mentor John Marasco, for your many years of excellent guidance 
 10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
 11. Do something else with all the time you just saved.
 ### Usage Guidelines
-- Make sure that officials’ names for Hal2 match those in ISUCalc because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
+- **IMPORTANT Make sure that officials’ names for Hal2 match those in ISUCalc** because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
+## clawPDF Setup
+After installing clawPDF, launch its utility application which you can do easily by searching clawPDF in the Windows search box. In the utility, go to 'profile settings,' then 'auto-save' check 'enable automatic saving' checkbox, then provide the path to any of the aforementioned directories depending on which sheet type you are going to print next into the target field.<br>
+Keep the clawPDF settings utility open during the printing process because you are going to need to change output directories in the 'auto-save' tab as described in the 'usage instructions' section above.
+Make sure you set clawPDF as your default printer so that Hal2 and IJSCompanion will use it and make sure that you select it, if it is not already, in ISUCalc when performing a batch print.
 ## TODO
 - Ensure and finish implementing correct functionality for when an official is the referee and a judge.
 ## Free and Open Source Software
 This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3 license, any derivative works must also use the GNU GPL v3 license and therefore must also be free and open source software.
 ## Disclaimer
 This is a tool designed to make your job easier but this is alpha software with little testing so please make sure you proof the outputs of the program and remember it is your responsibility to ensure the accuracy of the paperwork. Even after this program becomes more stable and tested I still highly recommend always double checking to make sure everything is accurate. Regardless, I greatly appreciate feedback, so if something does not work or could be expanded upon, please, do not hesitate to let me know or to attempt to fix it yourself as this is 100% free and open source software.
-## Copyright
-Autoboxer to make creating "boxes" for figure skating competitions easier.<br>
+## License
+This program is licensed under the GNU GPLv3 license.<br>
 Copyright (C) 2024 Collin Ogren<br>
-
-This program is free software -> you can redistribute it and/or modify<br>
-it under the terms of the GNU General Public License as published by<br>
-the Free Software Foundation, either version 3 of the License, or<br>
-(at your option) any later version.<br>
-<br>
-This program is distributed in the hope that it will be useful,<br>
-but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
-GNU General Public License for more details.<br>
-<br>
-You should have received a copy of the GNU General Public License<br>
-along with this program.  If not, see <https ->//www.gnu.org/licenses/>.<br>
 ## See Also
 https://www.youtube.com/watch?v=l3LFML_pxlY<br>
 https://medium.com/@kennethbridgham/the-100-greatest-boxers-of-all-time-the-full-list-9729c182542<br>
