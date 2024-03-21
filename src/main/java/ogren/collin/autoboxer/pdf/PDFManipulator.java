@@ -178,11 +178,7 @@ public class PDFManipulator {
             officialName = " " + getOfficialName().trim().replace(' ', '_');
         }
 
-        System.out.println(fileType);
-        System.out.println("Official's name: " + officialName);
-
         String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + multiplicity + ".pdf";
-        System.out.println(destination);
         boolean exists = new File(destination).exists();
 
         while (exists && fileType == IJS_JUDGE_SHEET) {
@@ -193,7 +189,6 @@ public class PDFManipulator {
             destination = split[0] + ".pdf";
             exists = new File(destination).exists();
         }
-        System.out.println(destination);
         try {
             FileUtils.copyFile(file, new File(destination));
             setRenamed(true);

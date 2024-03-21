@@ -151,9 +151,6 @@ public class MasterController {
                     String eventNumber = se.eventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                    for (IdentityBundle id : identityBundles) {
-                        System.out.println("6.0 judge "+id.name());
-                    }
                     processEvent(eventNumber, identityBundles, pdfManipulator, false);
                 }
             }
