@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.EventSet;
+import ogren.collin.autoboxer.pdf.FileType;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 

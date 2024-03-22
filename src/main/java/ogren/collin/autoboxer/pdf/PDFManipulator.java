@@ -93,7 +93,11 @@ public class PDFManipulator {
     private String readContents() {
         String contents;
         try {
-            contents = parseToString();
+            boolean sortByPosition = false;
+            if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
+                sortByPosition = true;
+            }
+            contents = parseToString(sortByPosition);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -168,8 +172,14 @@ public class PDFManipulator {
     public void rename(String eventNumber) {
         String offset = "renamed/";
         int i = 1;
+        String judgeSheetType = "";
         String multiplicity = "";
         if (fileType == IJS_JUDGE_SHEET) {
+            if (contents.contains("Ref. ")) {
+                judgeSheetType = " referee";
+            } else {
+                judgeSheetType = " judge";
+            }
             multiplicity += " " + i;
         }
 
@@ -178,7 +188,7 @@ public class PDFManipulator {
             officialName = " " + getOfficialName().trim().replace(' ', '_');
         }
 
-        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + multiplicity + ".pdf";
+        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + judgeSheetType + multiplicity + ".pdf";
         boolean exists = new File(destination).exists();
 
         while (exists && fileType == IJS_JUDGE_SHEET) {
@@ -242,37 +252,16 @@ public class PDFManipulator {
             line = 1;
         }
 
-
-
         return extractName(lines[line]);
     }
 
     private String parseEventName60() {
         String[] lines = contents.split("\n");
-        int line;
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+(?:\\s*\\w*)*\\s-\\s.*$");
-        loop:
-        for (line = 0; line < lines.length; line++) {
-            switch (fileType) {
-                case SIX0_PRIMARY_JUDGE_SHEET -> {
-                    if (lines[line].toLowerCase().contains(getUniqueTextByType().toLowerCase())) {
-                        line--;
-                        break loop;
-                    }
-                }
-                case SIX0_PRIMARY_WORKSHEET -> {
-                    Matcher matcher = pattern.matcher(lines[line]);
-                    if (matcher.find()) {
-                        break loop;
-                    }
-                }
-                case SIX0_SECONDARY -> {
-                    break loop; // Should be 0.
-                }
-                default -> System.err.println("Something's gone horribly wrong");
-            }
-
-        }
+        int line = switch (fileType) {
+            case SIX0_PRIMARY_WORKSHEET -> 2;
+            case SIX0_PRIMARY_JUDGE_SHEET -> 3;
+            default -> 0;
+        };
 
         return lines[line].toUpperCase();
     }
@@ -291,8 +280,10 @@ public class PDFManipulator {
         return correctedName;
     }
 
-    public String parseToString() throws IOException {
-        return new PDFTextStripper().getText(document);
+    public String parseToString(boolean sortByPosition) throws IOException {
+        PDFTextStripper pdfTextStripper = new PDFTextStripper();
+        pdfTextStripper.setSortByPosition(sortByPosition);
+        return pdfTextStripper.getText(document);
     }
 
     public String getEventName() {
@@ -366,54 +357,79 @@ public class PDFManipulator {
 
     public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
         ArrayList<IdentityBundle> officialNames = new ArrayList<>();
+        boolean refSecond = false;
+        if (contents.contains("Judge 5 ")) { // This is horrible.
+            refSecond = true;
+        }
         String[] lines = contents.split("\n");
         if (fileType == IJS_COVERSHEET) {
             for (String s : lines) {
-                if (s.contains("Referee ")) {
-                    String name = s.split("Referee ")[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.REFEREE));
-                }
-                if (s.contains("TC ")) {
-                    String name = s.split("TC ")[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.TC));
-                }
-                if (s.contains("TS1 ")) {
-                    String name = s.split("TS1 ")[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.TS1));
-                }
-                if (s.contains("TS2 ")) {
-                    String name = s.split("TS2 ")[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.TS2));
-                }
-                if (s.contains("DEO ")) {
-                    String name = s.split("DEO ")[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.DEO));
+                if (!refSecond) {
+                    if (s.contains("Referee ")) {
+                        String name = s.split("Referee ")[1].split(",")[0].trim();
+                        officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
+                    }
                 }
                 Pattern judgePattern = Pattern.compile("Judge \\d ");
                 Matcher judgeMatcher = judgePattern.matcher(s);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
                     String name = s.split(delimiter)[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.JUDGE));
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE, countOfficialOccurrences(officialNames, name)));
+                }
+                if (refSecond) {
+                    if (s.contains("Referee ")) {
+                        String name = s.split("Referee ")[1].split(",")[0].trim();
+                        officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
+                    }
+                }
+                if (s.contains("TC ")) {
+                    String name = s.split("TC ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.TC, countOfficialOccurrences(officialNames, name)));
+                }
+                if (s.contains("TS1 ")) {
+                    String name = s.split("TS1 ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.TS1, countOfficialOccurrences(officialNames, name)));
+                }
+                if (s.contains("TS2 ")) {
+                    String name = s.split("TS2 ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.TS2, countOfficialOccurrences(officialNames, name)));
+                }
+                if (s.contains("DEO ")) {
+                    String name = s.split("DEO ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.DEO, countOfficialOccurrences(officialNames, name)));
                 }
             }
         } else if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
             Pattern judgePattern = Pattern.compile("J\\d ");
             for (String s : lines) {
+                System.out.println(s);
                 Matcher judgeMatcher = judgePattern.matcher(s);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
                     String name = s.split(delimiter)[1].trim();
-                    officialNames.add(new IdentityBundle(name, Role.JUDGE));
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE, countOfficialOccurrences(officialNames, name)));
                 }
 
-                if (s.startsWith("Ref. ")) {
+                if (s.contains("Ref. ")) {
                     String name = s.split("Ref. ")[1].trim();
-                    officialNames.add(new IdentityBundle(name, Role.REFEREE));
+                    officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
                 }
             }
         }
 
         return officialNames;
+    }
+
+    private int countOfficialOccurrences(ArrayList<IdentityBundle> officialNames, String name) {
+        int count = 1;
+        for (IdentityBundle officialName : officialNames) {
+            //System.out.println("Does "+officialName.name()+" = "+name+"?");
+            if (officialName.name().contains(name)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }

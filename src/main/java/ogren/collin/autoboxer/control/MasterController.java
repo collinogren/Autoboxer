@@ -21,10 +21,7 @@ package ogren.collin.autoboxer.control;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
-import ogren.collin.autoboxer.process.IdentityBundle;
-import ogren.collin.autoboxer.process.Official;
-import ogren.collin.autoboxer.process.Schedule;
-import ogren.collin.autoboxer.process.ScheduleElement;
+import ogren.collin.autoboxer.process.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -161,7 +158,8 @@ public class MasterController {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
-            PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, 1);
+            PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
+            System.out.println(identity.name()+" occurrences: "+identity.occurrenceToBox());
             EventSet eventSet = new EventSet();
             eventSet.push(circledCoversheet);
             if (ijs) {
@@ -198,17 +196,68 @@ public class MasterController {
     private void retrieveSheets(String eventNumber, IdentityBundle identity, EventSet eventSet, ArrayList<File> sheets, FileType fileType) {
         for (File file : sheets) {
             String[] split = file.getName().split(" ");
-            if (fileType != FileType.IJS_JUDGE_SHEET) {
-                split[2] = split[2].split(".pdf")[0];
-            }
-            if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
-                try {
-                    eventSet.push(PDDocument.load(file));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            System.out.println("Role: " + identity.role() + " name: " + identity.name() + " for " + eventNumber);
+            boolean incorrectFile = true;
+            for (FileType ft : matchRoleToFileTypeIJS(identity)) {
+                if (fileType == ft) {
+                    incorrectFile = false;
                 }
             }
+
+            if (incorrectFile) {
+                continue;
+            }
+
+            try {
+                if (fileType != FileType.IJS_JUDGE_SHEET) {
+                    split[2] = split[2].split(".pdf")[0];
+                } else {
+                    if ((split[3].equals("judge") && identity.role() == Role.REFEREE) || (split[3].equals("referee") && identity.role() == Role.JUDGE)) {
+                        System.out.println("Hmm yes the floor here is made out of floor");
+                        continue;
+                    }
+                }
+
+                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
+                    try {
+                        eventSet.push(PDDocument.load(file));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+                System.out.println("Could not find match for "+file.getName()+". Maybe it is an extra file?");
+            }
         }
+    }
+
+    private ArrayList<FileType> matchRoleToFileTypeIJS(IdentityBundle identityBundle) {
+        ArrayList<FileType> types = new ArrayList<>();
+        types.add(FileType.IJS_COVERSHEET);
+        switch(identityBundle.role()) {
+            case REFEREE -> {
+                types.add(FileType.IJS_REFEREE_SHEET);
+                types.add(FileType.IJS_JUDGE_SHEET);
+                return types;
+            }
+            case JUDGE -> {
+                types.add(FileType.IJS_JUDGE_SHEET);
+                return types;
+            }
+            case TC -> {
+                types.add(FileType.IJS_TC_SHEET);
+                return types;
+            }
+            case TS2 -> {
+                types.add(FileType.IJS_TS2_SHEET);
+                return types;
+            }
+            case TS1, VIDEO, DEO -> {
+                return types;
+            }
+        }
+
+        return types;
     }
 
     private int getOfficialIndex(String name) {

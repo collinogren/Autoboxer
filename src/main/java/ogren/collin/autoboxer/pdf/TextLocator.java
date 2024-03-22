@@ -31,6 +31,10 @@ public class TextLocator extends PDFTextStripper {
     private final int occurrenceToBox;
     private StringLocationBundle locationBundle;
 
+    private int occurrences = 0;
+
+    private boolean finished = false;
+
     public TextLocator(String name, int occurrenceToBox) throws IOException {
         super.setSortByPosition(true);
         super.setStartPage(0);
@@ -45,17 +49,23 @@ public class TextLocator extends PDFTextStripper {
 
     @Override
     protected void writeString(String string, List<TextPosition> positions) {
+        if (finished) {
+            return;
+        }
         double startingX;
         double startingY;
         double width;
         double height;
-        int occurrences = 0;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < positions.size(); i++) {
             String text = positions.get(i).getUnicode();
             builder.append(text);
             if (builder.toString().endsWith(name)) {
-                occurrences++;
+                occurrences += 1;
+                System.out.println(name+" occurrencesToBox: "+occurrenceToBox);
+                if (occurrences < occurrenceToBox) {
+                    continue;
+                }
                 startingX = positions.get(i - (name.length() - 1)).getXDirAdj();
                 startingY = positions.get(i - (name.length() - 1)).getYDirAdj();
                 width = 0;
@@ -67,10 +77,9 @@ public class TextLocator extends PDFTextStripper {
                     }
                 }
 
-                if (occurrences >= occurrenceToBox) {
-                    locationBundle = new StringLocationBundle(startingX, startingY, width, height);
-                    return;
-                }
+                locationBundle = new StringLocationBundle(startingX, startingY, width, height);
+                finished = true;
+                return;
             }
         }
     }
