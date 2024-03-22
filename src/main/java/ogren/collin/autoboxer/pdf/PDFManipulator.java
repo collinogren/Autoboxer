@@ -403,7 +403,6 @@ public class PDFManipulator {
         } else if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
             Pattern judgePattern = Pattern.compile("J\\d ");
             for (String s : lines) {
-                System.out.println(s);
                 Matcher judgeMatcher = judgePattern.matcher(s);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
@@ -424,7 +423,6 @@ public class PDFManipulator {
     private int countOfficialOccurrences(ArrayList<IdentityBundle> officialNames, String name) {
         int count = 1;
         for (IdentityBundle officialName : officialNames) {
-            //System.out.println("Does "+officialName.name()+" = "+name+"?");
             if (officialName.name().contains(name)) {
                 count++;
             }

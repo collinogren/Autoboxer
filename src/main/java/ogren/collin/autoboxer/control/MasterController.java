@@ -159,7 +159,6 @@ public class MasterController {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
             PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
-            System.out.println(identity.name()+" occurrences: "+identity.occurrenceToBox());
             EventSet eventSet = new EventSet();
             eventSet.push(circledCoversheet);
             if (ijs) {
@@ -196,7 +195,6 @@ public class MasterController {
     private void retrieveSheets(String eventNumber, IdentityBundle identity, EventSet eventSet, ArrayList<File> sheets, FileType fileType) {
         for (File file : sheets) {
             String[] split = file.getName().split(" ");
-            System.out.println("Role: " + identity.role() + " name: " + identity.name() + " for " + eventNumber);
             boolean incorrectFile = true;
             for (FileType ft : matchRoleToFileTypeIJS(identity)) {
                 if (fileType == ft) {
@@ -213,7 +211,6 @@ public class MasterController {
                     split[2] = split[2].split(".pdf")[0];
                 } else {
                     if ((split[3].equals("judge") && identity.role() == Role.REFEREE) || (split[3].equals("referee") && identity.role() == Role.JUDGE)) {
-                        System.out.println("Hmm yes the floor here is made out of floor");
                         continue;
                     }
                 }

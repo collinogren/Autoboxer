@@ -62,7 +62,6 @@ public class TextLocator extends PDFTextStripper {
             builder.append(text);
             if (builder.toString().endsWith(name)) {
                 occurrences += 1;
-                System.out.println(name+" occurrencesToBox: "+occurrenceToBox);
                 if (occurrences < occurrenceToBox) {
                     continue;
                 }
