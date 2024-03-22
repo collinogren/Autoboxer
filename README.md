@@ -28,7 +28,7 @@ After installing clawPDF, launch its utility application which you can do easily
 Keep the clawPDF settings utility open during the printing process because you are going to need to change output directories in the 'auto-save' tab as described in the 'usage instructions' section above.
 Make sure you set clawPDF as your default printer so that Hal2 and IJSCompanion will use it and make sure that you select it, if it is not already, in ISUCalc when performing a batch print.
 ## TODO
-- Ensure and finish implementing correct functionality for when an official is the referee and a judge.
+- Lots of testing.
 ## Free and Open Source Software
 This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3 license, any derivative works must also use the GNU GPL v3 license and therefore must also be free and open source software.
 ## Disclaimer
