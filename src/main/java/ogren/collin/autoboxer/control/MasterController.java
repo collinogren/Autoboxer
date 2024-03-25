@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.control;
 
+import ogren.collin.autoboxer.Main;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
@@ -75,6 +76,8 @@ public class MasterController {
         for (Official official : officials) {
             official.save();
         }
+        Main.setProgress(100);
+        Main.setDone(true);
     }
 
     private void renameFiles() {
@@ -104,6 +107,7 @@ public class MasterController {
     }
 
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
+        int numberOfEvents = schedule.getElements().size();
         ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
         for (File file : files) {
             PDFManipulator pdfManipulator = new PDFManipulator(file, fileType);
@@ -120,6 +124,8 @@ public class MasterController {
                     pdfManipulator.rename(se.eventNumber());
                 }
             }
+
+            Main.addProgress(((1.0 / numberOfEvents) / 8.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
@@ -134,6 +140,7 @@ public class MasterController {
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
+        int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
                 if (matchFileNameToEventNumber(se, file)) {
@@ -151,6 +158,8 @@ public class MasterController {
                     processEvent(eventNumber, identityBundles, pdfManipulator, false);
                 }
             }
+
+            Main.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
     }
 
@@ -199,6 +208,7 @@ public class MasterController {
             for (FileType ft : matchRoleToFileTypeIJS(identity)) {
                 if (fileType == ft) {
                     incorrectFile = false;
+                    break;
                 }
             }
 

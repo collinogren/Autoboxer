@@ -25,8 +25,25 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
+
+    private static double progress = 0.0;
+    private static boolean isDone = false;
+
+    public static void setProgress(double d) {
+        progress = d;
+    }
+
+    public static void addProgress(double d) {
+        progress += d;
+    }
+
+    public static void setDone(boolean b) {
+        isDone = b;
+    }
 
     public static void main(String[] args) {
         try {
@@ -43,6 +60,7 @@ public class Main {
         try {
             File file = fc.getSelectedFile();
             MasterController mc = new MasterController(file.getPath());
+            showProgressScreen();
             mc.begin();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Failed to generate the box.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -70,5 +88,29 @@ public class Main {
         }
         jframe.dispose();
         System.exit(0);
+    }
+
+    private static void showProgressScreen() {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        executor.execute(() -> {
+            JFrame progressFrame = new JFrame("Box Progress");
+            JProgressBar progressBar = new JProgressBar();
+            progressBar.setValue(0);
+            progressBar.setStringPainted(true);
+            progressFrame.add(progressBar);
+            progressFrame.setSize(275, 125);
+            progressFrame.setVisible(true);
+
+            while (!isDone) {
+                try {
+                    Thread.sleep(16);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                progressBar.setValue((int) (progress * 100.0));
+            }
+        });
+
+        executor.shutdown();
     }
 }

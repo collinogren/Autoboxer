@@ -93,10 +93,7 @@ public class PDFManipulator {
     private String readContents() {
         String contents;
         try {
-            boolean sortByPosition = false;
-            if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
-                sortByPosition = true;
-            }
+            boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -172,23 +169,7 @@ public class PDFManipulator {
     public void rename(String eventNumber) {
         String offset = "renamed/";
         int i = 1;
-        String judgeSheetType = "";
-        String multiplicity = "";
-        if (fileType == IJS_JUDGE_SHEET) {
-            if (contents.contains("Ref. ")) {
-                judgeSheetType = " referee";
-            } else {
-                judgeSheetType = " judge";
-            }
-            multiplicity += " " + i;
-        }
-
-        String officialName = "";
-        if (fileType != IJS_COVERSHEET && fileType != SIX0_PRIMARY_JUDGE_SHEET && fileType != SIX0_PRIMARY_WORKSHEET && fileType != SIX0_SECONDARY) {
-            officialName = " " + getOfficialName().trim().replace(' ', '_');
-        }
-
-        String destination = file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + judgeSheetType + multiplicity + ".pdf";
+        String destination = getDestination(eventNumber, i, offset);
         boolean exists = new File(destination).exists();
 
         while (exists && fileType == IJS_JUDGE_SHEET) {
@@ -205,6 +186,26 @@ public class PDFManipulator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getDestination(String eventNumber, int i, String offset) {
+        String judgeSheetType = "";
+        String multiplicity = "";
+        if (fileType == IJS_JUDGE_SHEET) {
+            if (contents.contains("Ref. ")) {
+                judgeSheetType = " referee";
+            } else {
+                judgeSheetType = " judge";
+            }
+            multiplicity += " " + i;
+        }
+
+        String officialName = "";
+        if (fileType != IJS_COVERSHEET && fileType != SIX0_PRIMARY_JUDGE_SHEET && fileType != SIX0_PRIMARY_WORKSHEET && fileType != SIX0_SECONDARY) {
+            officialName = " " + getOfficialName().trim().replace(' ', '_');
+        }
+
+        return file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + judgeSheetType + multiplicity + ".pdf";
     }
 
     private String parseEventName() {
@@ -357,10 +358,7 @@ public class PDFManipulator {
 
     public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
         ArrayList<IdentityBundle> officialNames = new ArrayList<>();
-        boolean refSecond = false;
-        if (contents.contains("Judge 5 ")) { // This is horrible.
-            refSecond = true;
-        }
+        boolean refSecond = contents.contains("Judge 5 "); // This is horrible.
         String[] lines = contents.split("\n");
         if (fileType == IJS_COVERSHEET) {
             for (String s : lines) {
