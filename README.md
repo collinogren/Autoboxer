@@ -19,8 +19,9 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
 10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
 11. Do something else with all the time you just saved.
-### Usage Guidelines
-- **IMPORTANT Make sure that officials’ names for Hal2 match those in ISUCalc** because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
+### Competition Building Guidelines When Using Autoboxer
+- **IMPORTANT make sure all event names are in the format of alphanumeric event number followed by a space, a hyphen, and then a space followed by the event name.** Example: 12A - Excel Pre-Preliminary Girls Free Skate.
+- **IMPORTANT make sure that officials’ names for Hal2 match those in ISUCalc** because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
 ## clawPDF Setup
