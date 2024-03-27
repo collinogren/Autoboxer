@@ -7,7 +7,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). While I do not fully expect that using a different PDF printer will break the program, it could. So if you choose to use a different PDF printer and experience issues related to parsing the PDFs, please try clawPDF before reaching out for support since clawPDF is the only supported PDF printer.
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
-5. Copy all event numbers in order from the 104 into schedule.txt.
+5. On the first line, type the day that the box is for (i.e. "Friday"). Then, on the next lines, copy all event numbers, start times, and end times in order from the 104 into schedule.txt. Copy all three columns at once.
 6. Create directories as follows
    - 60
    - 60_sub
