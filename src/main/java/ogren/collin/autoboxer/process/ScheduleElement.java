@@ -25,11 +25,14 @@ public class ScheduleElement {
 
     private final String endTime;
 
-    public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime) {
+    private final String day;
+
+    public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime, String day) {
         this.eventNumber = eventNumber;
         this.eventName = eventName;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.day = day;
     }
 
     public String getEventNumber() {
@@ -50,5 +53,9 @@ public class ScheduleElement {
 
     public void setEventName(String name) {
         eventName = name;
+    }
+
+    public String getDay() {
+        return day;
     }
 }

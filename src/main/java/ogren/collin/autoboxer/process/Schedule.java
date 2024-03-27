@@ -37,6 +37,9 @@ public class Schedule {
             throw new RuntimeException(e);
         }
 
+        String day = lines.getFirst();
+        lines.removeFirst();
+
         for (String line : lines) {
             if (line.isEmpty()) {
                 continue;
@@ -45,11 +48,11 @@ public class Schedule {
             String[] split = line.split("\t");
 
             if (split.length < 2) {
-                elements.add(new ScheduleElement(line, "", "", ""));
+                elements.add(new ScheduleElement(line, "", "", "", day));
             } else if(split.length < 3){
-                elements.add(new ScheduleElement(line, "", split[1], ""));
+                elements.add(new ScheduleElement(line, "", split[1], "", day));
             } else {
-                elements.add(new ScheduleElement(split[0], "", split[1], split[2]));
+                elements.add(new ScheduleElement(split[0], "", split[1], split[2], day));
             }
         }
     }
