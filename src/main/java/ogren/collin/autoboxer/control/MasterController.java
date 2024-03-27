@@ -120,11 +120,11 @@ public class MasterController {
             for (PDFManipulator pdfManipulator : pdfManipulators) {
                 String eventName = pdfManipulator.retrieveEventName();
                 if (pdfManipulator.matchNameToSchedule(se, eventName) && !pdfManipulator.isRenamed()) {
-                    if (se.eventName().isEmpty()) {
+                    if (se.getEventName().isEmpty()) {
                         se.setEventName(eventName.trim());
                     }
                     pdfManipulator.close();
-                    pdfManipulator.rename(se.eventNumber());
+                    pdfManipulator.rename(se.getEventNumber());
                 }
             }
 
@@ -147,7 +147,7 @@ public class MasterController {
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    String eventNumber = se.eventNumber();
+                    String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
@@ -155,7 +155,7 @@ public class MasterController {
             }
             for (File file : six0Sheets) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    String eventNumber = se.eventNumber();
+                    String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
@@ -284,6 +284,6 @@ public class MasterController {
 
     private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
         String eventNumber = file.getName().split(" ")[0];
-        return eventNumber.equalsIgnoreCase(scheduleElement.eventNumber());
+        return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
     }
 }

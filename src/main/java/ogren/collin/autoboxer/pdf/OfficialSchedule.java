@@ -2,6 +2,7 @@ package ogren.collin.autoboxer.pdf;
 
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
+import be.quodlibet.boxable.HorizontalAlignment;
 import be.quodlibet.boxable.Row;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
@@ -13,9 +14,10 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import java.io.IOException;
 public class OfficialSchedule {
 
-    private static final int ROLE_WIDTH = 15;
-    private static final int EVENT_NAME_WIDTH = 75;
-    private static final int TIME_WIDTH = 10;
+    private static final int ROLE_WIDTH = 16;
+    private static final int EVENT_NUMBER_WIDTH = 5;
+    private static final int EVENT_NAME_WIDTH = 55;
+    private static final int TIME_WIDTH = 12;
 
     public static PDDocument generateSchedule(Official official) {
         PDPage page = new PDPage(PDRectangle.LETTER);
@@ -37,9 +39,13 @@ public class OfficialSchedule {
             cell.setFont(PDType1Font.HELVETICA_BOLD);
             table.addHeaderRow(name);
             Row<PDPage> header = table.createRow(14);
-            header.createCell(ROLE_WIDTH, "ROLE").setFont(PDType1Font.HELVETICA_BOLD);;
-            header.createCell(EVENT_NAME_WIDTH, "EVENT NAME").setFont(PDType1Font.HELVETICA_BOLD);;
-            header.createCell(TIME_WIDTH, "TIME").setFont(PDType1Font.HELVETICA_BOLD);;
+            header.createCell(TIME_WIDTH, "START TIME").setFont(PDType1Font.HELVETICA_BOLD);
+            header.createCell(TIME_WIDTH, "END TIME").setFont(PDType1Font.HELVETICA_BOLD);
+            Cell<PDPage> c = header.createCell(EVENT_NUMBER_WIDTH, "#");
+            c.setFont(PDType1Font.HELVETICA_BOLD);
+            c.setAlign(HorizontalAlignment.CENTER);
+            header.createCell(EVENT_NAME_WIDTH, "EVENT NAME").setFont(PDType1Font.HELVETICA_BOLD);
+            header.createCell(ROLE_WIDTH, "ROLE").setFont(PDType1Font.HELVETICA_BOLD);
             table.addHeaderRow(header);
             for (OfficialScheduleBundle scheduleElement : official.getScheduleElements()) {
                 StringBuilder roles = new StringBuilder();
@@ -52,9 +58,13 @@ public class OfficialSchedule {
                 }
 
                 Row<PDPage> row = table.createRow(10);
-                row.createCell(ROLE_WIDTH, roles.toString()).setFont(PDType1Font.HELVETICA);;
-                row.createCell(EVENT_NAME_WIDTH, scheduleElement.scheduleElement().eventName()).setFont(PDType1Font.HELVETICA);;
-                row.createCell(TIME_WIDTH, scheduleElement.scheduleElement().humanTime()).setFont(PDType1Font.HELVETICA);;
+                row.createCell(TIME_WIDTH, scheduleElement.scheduleElement().getStartTime()).setFont(PDType1Font.HELVETICA);
+                row.createCell(TIME_WIDTH, scheduleElement.scheduleElement().getEndTime()).setFont(PDType1Font.HELVETICA);
+                Cell<PDPage> c2 = row.createCell(EVENT_NUMBER_WIDTH, scheduleElement.scheduleElement().getEventNumber());
+                c2.setFont(PDType1Font.HELVETICA);
+                c2.setAlign(HorizontalAlignment.CENTER);
+                row.createCell(EVENT_NAME_WIDTH, scheduleElement.scheduleElement().getEventName().split(" - ")[1]).setFont(PDType1Font.HELVETICA);
+                row.createCell(ROLE_WIDTH, roles.toString()).setFont(PDType1Font.HELVETICA);
             }
             table.draw();
         } catch (IOException ioe) {

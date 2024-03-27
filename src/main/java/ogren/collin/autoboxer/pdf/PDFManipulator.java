@@ -116,7 +116,7 @@ public class PDFManipulator {
 
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
         for (String e : scrutinizeName(eventName)) {
-            if (e.equalsIgnoreCase(scheduleElement.eventNumber())) {
+            if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
             }
         }
@@ -266,8 +266,36 @@ public class PDFManipulator {
 
         String name = lines[line].toUpperCase();
 
+        // Do this better when it's not 1:00 AM.
         if (name.contains(" REF. ")) {
             name = name.split(" REF. ")[0];
+        }
+        if (name.contains(" J1 ")) {
+            name = name.split(" J1 ")[0];
+        }
+        if (name.contains(" J2 ")) {
+            name = name.split(" J2 ")[0];
+        }
+        if (name.contains(" J3 ")) {
+            name = name.split(" J3 ")[0];
+        }
+        if (name.contains(" J4 ")) {
+            name = name.split(" J4 ")[0];
+        }
+        if (name.contains(" J5 ")) {
+            name = name.split(" J5 ")[0];
+        }
+        if (name.contains(" J6 ")) {
+            name = name.split(" J6 ")[0];
+        }
+        if (name.contains(" J7 ")) {
+            name = name.split(" J7 ")[0];
+        }
+        if (name.contains(" J8 ")) {
+            name = name.split(" J8 ")[0];
+        }
+        if (name.contains(" J9 ")) {
+            name = name.split(" J9 ")[0];
         }
 
         return name;

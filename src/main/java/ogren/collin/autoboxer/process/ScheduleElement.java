@@ -21,24 +21,31 @@ package ogren.collin.autoboxer.process;
 public class ScheduleElement {
     private final String eventNumber;
     private String eventName;
-    private final String humanTime;
+    private final String startTime;
 
-    public ScheduleElement(String eventNumber, String eventName, String humanTime) {
+    private final String endTime;
+
+    public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime) {
         this.eventNumber = eventNumber;
         this.eventName = eventName;
-        this.humanTime = humanTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public String eventNumber() {
+    public String getEventNumber() {
         return eventNumber;
     }
 
-    public String eventName() {
+    public String getEventName() {
         return eventName;
     }
 
-    public String humanTime() {
-        return humanTime;
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
     }
 
     public void setEventName(String name) {
