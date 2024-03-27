@@ -20,16 +20,19 @@ package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.EventSet;
+import ogren.collin.autoboxer.pdf.OfficialSchedule;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Official {
     private final String name;
     private final ArrayList<EventSet> events = new ArrayList<>();
+    private final ArrayList<OfficialScheduleBundle> scheduleElements = new ArrayList<>();
 
     public Official(String name) {
         this.name = name;
@@ -44,7 +47,7 @@ public class Official {
     }
 
     public PDDocument merge() {
-        PDDocument mergedDocument = new PDDocument();
+        PDDocument mergedDocument = OfficialSchedule.generateSchedule(this);
         for (EventSet event : events) {
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);
@@ -72,5 +75,19 @@ public class Official {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ArrayList<OfficialScheduleBundle> getScheduleElements() {
+        return scheduleElements;
+    }
+
+    public void tryAddScheduleBundle(ScheduleElement scheduleElement, Role role) {
+        for (OfficialScheduleBundle officialScheduleBundle : scheduleElements) {
+            if (officialScheduleBundle.scheduleElement().equals(scheduleElement)) {
+                officialScheduleBundle.role().add(role.toString());
+                return;
+            }
+        }
+        scheduleElements.add(new OfficialScheduleBundle(scheduleElement, new ArrayList<>(Collections.singletonList(role.name()))));
     }
 }

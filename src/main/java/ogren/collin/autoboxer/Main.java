@@ -99,6 +99,7 @@ public class Main {
             progressBar.setStringPainted(true);
             progressFrame.add(progressBar);
             progressFrame.setSize(275, 125);
+            progressFrame.setLocationRelativeTo(null);
             progressFrame.setVisible(true);
 
             while (!isDone) {

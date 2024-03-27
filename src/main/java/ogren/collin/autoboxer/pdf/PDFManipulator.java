@@ -264,7 +264,13 @@ public class PDFManipulator {
             default -> 0;
         };
 
-        return lines[line].toUpperCase();
+        String name = lines[line].toUpperCase();
+
+        if (name.contains(" REF. ")) {
+            name = name.split(" REF. ")[0];
+        }
+
+        return name;
     }
 
     private String extractName(String line) {

@@ -120,6 +120,9 @@ public class MasterController {
             for (PDFManipulator pdfManipulator : pdfManipulators) {
                 String eventName = pdfManipulator.retrieveEventName();
                 if (pdfManipulator.matchNameToSchedule(se, eventName) && !pdfManipulator.isRenamed()) {
+                    if (se.eventName().isEmpty()) {
+                        se.setEventName(eventName.trim());
+                    }
                     pdfManipulator.close();
                     pdfManipulator.rename(se.eventNumber());
                 }
@@ -147,7 +150,7 @@ public class MasterController {
                     String eventNumber = se.eventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                    processEvent(eventNumber, identityBundles, pdfManipulator, true);
+                    processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
                 }
             }
             for (File file : six0Sheets) {
@@ -155,7 +158,7 @@ public class MasterController {
                     String eventNumber = se.eventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                    processEvent(eventNumber, identityBundles, pdfManipulator, false);
+                    processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
                 }
             }
 
@@ -163,7 +166,7 @@ public class MasterController {
         }
     }
 
-    private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, boolean ijs) {
+    private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, ScheduleElement scheduleElement, boolean ijs) {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
@@ -185,6 +188,7 @@ public class MasterController {
             }
 
             officials.get(officialIndex).addDocument(eventSet);
+            officials.get(officialIndex).tryAddScheduleBundle(scheduleElement, identity.role());
         }
     }
 

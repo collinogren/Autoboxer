@@ -18,4 +18,30 @@
 
 package ogren.collin.autoboxer.process;
 
-public record ScheduleElement(String eventNumber) {}
+public class ScheduleElement {
+    private final String eventNumber;
+    private String eventName;
+    private final String humanTime;
+
+    public ScheduleElement(String eventNumber, String eventName, String humanTime) {
+        this.eventNumber = eventNumber;
+        this.eventName = eventName;
+        this.humanTime = humanTime;
+    }
+
+    public String eventNumber() {
+        return eventNumber;
+    }
+
+    public String eventName() {
+        return eventName;
+    }
+
+    public String humanTime() {
+        return humanTime;
+    }
+
+    public void setEventName(String name) {
+        eventName = name;
+    }
+}

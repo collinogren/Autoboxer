@@ -41,7 +41,14 @@ public class Schedule {
             if (line.isEmpty()) {
                 continue;
             }
-            elements.add(new ScheduleElement(line));
+
+            String[] split = line.split("\t");
+
+            if (split.length < 2) {
+                elements.add(new ScheduleElement(line, "", ""));
+            } else {
+                elements.add(new ScheduleElement(split[0], "", split[1]));
+            }
         }
     }
 
