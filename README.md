@@ -1,5 +1,5 @@
 # Autoboxer
-This program is experimental. Always proof its outputs before using them.<br>
+This program is beta software. Always proof its outputs before using them.<br>
 Autoboxer aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
 ## Usage Instructions
