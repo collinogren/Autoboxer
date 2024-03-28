@@ -1,9 +1,9 @@
 # Autoboxer
 This program is beta software. Always proof its outputs before using them.<br>
-Autoboxer aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
+*Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
 ## Usage Instructions
-1. Download the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
+1. Download and install the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). While I do not fully expect that using a different PDF printer will break the program, it could. So if you choose to use a different PDF printer and experience issues related to parsing the PDFs, please try clawPDF before reaching out for support since clawPDF is the only supported PDF printer.
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
@@ -15,7 +15,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
    - judges
    - tech
 7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' and Hal2 worksheets into '60_sub' when also using a judges' sheet.
-8. Run 'Autoboxer.exe' and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
+8. Run *Autoboxer* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
 9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
 10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
 11. Do something else with all the time you just saved.
