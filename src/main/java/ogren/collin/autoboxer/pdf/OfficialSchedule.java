@@ -18,73 +18,88 @@
 
 package ogren.collin.autoboxer.pdf;
 
-import be.quodlibet.boxable.BaseTable;
-import be.quodlibet.boxable.Cell;
-import be.quodlibet.boxable.HorizontalAlignment;
-import be.quodlibet.boxable.Row;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.vandeseer.easytable.RepeatedHeaderTableDrawer;
+import org.vandeseer.easytable.settings.HorizontalAlignment;
+import org.vandeseer.easytable.structure.Row;
+import org.vandeseer.easytable.structure.Table;
+import org.vandeseer.easytable.structure.cell.TextCell;
 
+import java.awt.*;
 import java.io.IOException;
+
 public class OfficialSchedule {
 
-    private static final int ROLE_WIDTH = 16;
-    private static final int EVENT_NUMBER_WIDTH = 5;
-    private static final int EVENT_NAME_WIDTH = 55;
-    private static final int TIME_WIDTH = 12;
+    private static final float ROLE_WIDTH = 16f;
+    private static final float EVENT_NUMBER_WIDTH = 5f;
+    private static final float EVENT_NAME_WIDTH = 55f;
+    private static final float TIME_WIDTH = 12f;
+
+    private static final float MARGIN = 10f;
 
     public static PDDocument generateSchedule(Official official) {
         PDPage page = new PDPage(PDRectangle.LETTER);
         PDDocument document = new PDDocument();
+        document.addPage(page);
         String day = official.getScheduleElements().getFirst().scheduleElement().getDay();
 
-        try {
-            float margin = 10;
-            float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
-            float tableWidth = page.getMediaBox().getWidth() - (2 * margin);
+        try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+            float pageWidth = page.getMediaBox().getWidth() - MARGIN * 2;
+            Table.TableBuilder tableBuilder = Table.builder()
+                    .addColumnsOfWidth(pageWidth * TIME_WIDTH / 100f,
+                            pageWidth * TIME_WIDTH / 100f,
+                            pageWidth * EVENT_NUMBER_WIDTH / 100f,
+                            pageWidth * EVENT_NAME_WIDTH / 100f,
+                            pageWidth * ROLE_WIDTH / 100f)
+                    .fontSize(10)
+                    .font(Standard14Fonts.FontName.HELVETICA)
+                    .horizontalAlignment(HorizontalAlignment.CENTER)
+                    .borderColor(Color.BLACK);
+            tableBuilder.addRow(
+                    Row.builder()
+                            .add(
+                                    TextCell.builder()
+                                            .text(official.getName())
+                                            .horizontalAlignment(HorizontalAlignment.LEFT)
+                                            //.borderWidth(1)
+                                            .colSpan(4)
+                                            //.borderWidth(0)
+                                            .font(Standard14Fonts.FontName.HELVETICA_BOLD)
+                                            .fontSize(14)
+                                            .padding(10)
+                                            .build())
+                            .add(
+                                    TextCell.builder()
+                                            .text(day.replaceAll("\t", " "))
+                                            .horizontalAlignment(HorizontalAlignment.RIGHT)
+                                            //.borderWidth(1)
+                                            .colSpan(1)
+                                            //.borderWidthLeft(0)
+                                            .font(Standard14Fonts.FontName.HELVETICA_BOLD)
+                                            .fontSize(14)
+                                            .padding(10)
+                                            .build()
+                            ).build());
+            tableBuilder.addRow(
+                    Row.builder()
+                            .add(TextCell.builder().text("START TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text("END TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text("#").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text("EVENT NAME").horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                            .add(TextCell.builder().text("ROLE").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .backgroundColor(Color.WHITE)
+                            .textColor(Color.BLACK)
+                            .font(Standard14Fonts.FontName.HELVETICA_BOLD)
+                            .fontSize(10)
+                            .horizontalAlignment(HorizontalAlignment.CENTER)
+                            .build());
 
-            boolean drawContent = true;
-            float bottomMargin = 0;
-            float yPosition = 0;
-
-            BaseTable table = new BaseTable(yPosition, yStartNewPage, bottomMargin, tableWidth, margin, document, page, true, drawContent);
-            Row<PDPage> name = table.createRow(14);
-            Cell<PDPage> cell = name.createCell(100, official.getName() + "—" + day);
-            cell.setFontSize(14);
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(2);
-            cell.setTopPadding(4);
-            table.addHeaderRow(name);
-            Row<PDPage> header = table.createRow(10);
-            cell = header.createCell(TIME_WIDTH, "START TIME");
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(1);
-            cell.setTopPadding(3);
-            cell.setAlign(HorizontalAlignment.CENTER);
-            cell = header.createCell(TIME_WIDTH, "END TIME");
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(1);
-            cell.setTopPadding(3);
-            cell.setAlign(HorizontalAlignment.CENTER);
-            cell = header.createCell(EVENT_NUMBER_WIDTH, "#");
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(1);
-            cell.setTopPadding(3);
-            cell.setAlign(HorizontalAlignment.CENTER);
-            cell = header.createCell(EVENT_NAME_WIDTH, "EVENT NAME");
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(1);
-            cell.setTopPadding(3);
-            cell = header.createCell(ROLE_WIDTH, "ROLE");
-            cell.setFont(PDType1Font.HELVETICA_BOLD);
-            cell.setBottomPadding(1);
-            cell.setTopPadding(3);
-            cell.setAlign(HorizontalAlignment.CENTER);
-            table.addHeaderRow(header);
             for (OfficialScheduleBundle scheduleElement : official.getScheduleElements()) {
                 StringBuilder roles = new StringBuilder();
                 scheduleElement.role().sort(String::compareToIgnoreCase);
@@ -95,35 +110,31 @@ public class OfficialSchedule {
                     }
                 }
 
-                Row<PDPage> row = table.createRow(10);
-                cell = row.createCell(TIME_WIDTH, scheduleElement.scheduleElement().getStartTime());
-                cell.setAlign(HorizontalAlignment.CENTER);
-                cell.setFont(PDType1Font.HELVETICA);
-                cell.setBottomPadding(1);
-                cell.setTopPadding(3);
-                cell = row.createCell(TIME_WIDTH, scheduleElement.scheduleElement().getEndTime());
-                cell.setAlign(HorizontalAlignment.CENTER);
-                cell.setFont(PDType1Font.HELVETICA);
-                cell.setBottomPadding(1);
-                cell.setTopPadding(3);
-                cell = row.createCell(EVENT_NUMBER_WIDTH, scheduleElement.scheduleElement().getEventNumber());
-                cell.setFont(PDType1Font.HELVETICA);
-                cell.setBottomPadding(1);
-                cell.setTopPadding(3);
-                cell.setAlign(HorizontalAlignment.CENTER);
-                cell = row.createCell(EVENT_NAME_WIDTH, scheduleElement.scheduleElement().getEventName().split(" - ")[1]);
-                cell.setFont(PDType1Font.HELVETICA);
-                cell.setBottomPadding(1);
-                cell.setTopPadding(3);
-                cell = row.createCell(ROLE_WIDTH, roles.toString());
-                cell.setAlign(HorizontalAlignment.CENTER);
-                cell.setFont(PDType1Font.HELVETICA);
-                cell.setBottomPadding(1);
-                cell.setTopPadding(3);
+                tableBuilder.addRow(
+                        Row.builder()
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(" - ")[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                                .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                .backgroundColor(Color.WHITE)
+                                .textColor(Color.BLACK)
+                                .font(Standard14Fonts.FontName.HELVETICA)
+                                .fontSize(10)
+                                .horizontalAlignment(HorizontalAlignment.CENTER)
+                                .build());
             }
-            table.draw();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+
+
+            RepeatedHeaderTableDrawer.builder()
+                    .numberOfRowsToRepeat(2)
+                    .contentStream(contentStream)
+                    .startX(MARGIN)
+                    .startY(page.getMediaBox().getUpperRightY() - MARGIN)
+                    .table(tableBuilder.build())
+                    .build().draw(() -> document, () -> page, MARGIN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return document;

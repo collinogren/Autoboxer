@@ -48,6 +48,7 @@ public class Official {
 
     public PDDocument merge() {
         PDDocument mergedDocument = OfficialSchedule.generateSchedule(this);
+        //PDDocument mergedDocument = new PDDocument();
         for (EventSet event : events) {
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);

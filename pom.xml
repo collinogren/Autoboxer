@@ -6,7 +6,7 @@
 
     <groupId>ogren.collin</groupId>
     <artifactId>Autoboxer</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -41,13 +41,11 @@
             </plugin>
         </plugins>
     </build>
-
-
     <dependencies>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>2.0.31</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -55,11 +53,9 @@
             <version>2.15.1</version>
         </dependency>
         <dependency>
-            <groupId>com.github.dhorions</groupId>
-            <artifactId>boxable</artifactId>
-            <version>1.7.0</version>
+            <groupId>com.github.vandeseer</groupId>
+            <artifactId>easytable</artifactId>
+            <version>1.0.0</version>
         </dependency>
-
     </dependencies>
-
 </project>

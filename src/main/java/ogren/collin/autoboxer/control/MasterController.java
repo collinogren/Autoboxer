@@ -18,7 +18,6 @@
 
 package ogren.collin.autoboxer.control;
 
-import ogren.collin.autoboxer.Main;
 import ogren.collin.autoboxer.UI;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
@@ -26,6 +25,7 @@ import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
@@ -198,7 +198,7 @@ public class MasterController {
             String[] split = file.getName().split(" ");
             if (split[0].equals(eventNumber)) {
                 try {
-                    eventSet.push(PDDocument.load(file));
+                    eventSet.push(Loader.loadPDF(file));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -232,7 +232,7 @@ public class MasterController {
 
                 if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
                     try {
-                        eventSet.push(PDDocument.load(file));
+                        eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

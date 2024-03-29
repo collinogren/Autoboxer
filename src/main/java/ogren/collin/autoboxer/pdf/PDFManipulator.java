@@ -22,6 +22,7 @@ import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
 import org.apache.commons.io.FileUtils;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -39,7 +40,7 @@ import static ogren.collin.autoboxer.pdf.FileType.*;
 public class PDFManipulator {
     public static final String WRONG_FILE_TYPE = "wrongfiletype";
     private static final String EVENT_NAME_DELIMITER = " - ";
-    private PDDocument document;
+    private final PDDocument document;
     private final FileType fileType;
     private final File file;
     private final String contents;
@@ -48,7 +49,7 @@ public class PDFManipulator {
     public PDFManipulator(File file, FileType fileType) {
         this.file = file;
         try {
-            document = PDDocument.load(file);
+            document = Loader.loadPDF(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -338,14 +339,17 @@ public class PDFManipulator {
     }
 
     public PDDocument reloadDocument() {
-        try {
-            //document.close();
-            document = PDDocument.load(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        PDDocument temp = new PDDocument();
+
+        for (PDPage page : document.getPages()) {
+            try {
+                temp.importPage(page);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        return document;
+        return temp;
     }
 
     private String getOfficialName() {
