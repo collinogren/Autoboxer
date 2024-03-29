@@ -19,6 +19,7 @@
 package ogren.collin.autoboxer.control;
 
 import ogren.collin.autoboxer.Main;
+import ogren.collin.autoboxer.UI;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
@@ -76,8 +77,8 @@ public class MasterController {
         for (Official official : officials) {
             official.save();
         }
-        Main.setProgress(100);
-        Main.setDone(true);
+        UI.setProgress(100);
+        UI.setDone(true);
     }
 
     private void renameFiles() {
@@ -128,7 +129,7 @@ public class MasterController {
                 }
             }
 
-            Main.addProgress(((1.0 / numberOfEvents) / 8.0) / 2.0);
+            UI.addProgress(((1.0 / numberOfEvents) / 8.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
@@ -162,7 +163,7 @@ public class MasterController {
                 }
             }
 
-            Main.addProgress(((1.0 / numberOfEvents)) / 2.0);
+            UI.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
     }
 
