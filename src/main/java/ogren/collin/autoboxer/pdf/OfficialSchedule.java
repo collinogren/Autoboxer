@@ -36,12 +36,12 @@ import java.io.IOException;
 
 public class OfficialSchedule {
 
-    private static final float ROLE_WIDTH = 16f;
+    private static final float ROLE_WIDTH = 20f;
     private static final float EVENT_NUMBER_WIDTH = 5f;
-    private static final float EVENT_NAME_WIDTH = 55f;
+    private static final float EVENT_NAME_WIDTH = 51f;
     private static final float TIME_WIDTH = 12f;
 
-    private static final float MARGIN = 10f;
+    private static final float MARGIN = 14f;
 
     public static PDDocument generateSchedule(Official official) {
         PDPage page = new PDPage(PDRectangle.LETTER);
