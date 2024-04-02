@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -89,23 +90,20 @@ public class UI {
         generateSchedule.setSelected(true);
         generateSchedule.addActionListener(e -> {
             setGenerateSchedule(generateSchedule.isSelected());
-            System.out.println(getGenerateSchedule());
         });
         JCheckBox generateStartingOrders = new JCheckBox("Generate Starting Orders");
         generateStartingOrders.setSelected(true);
         generateStartingOrders.addActionListener(e -> {
             setGenerateStartingOrders(generateStartingOrders.isSelected());
-            System.out.println(getGenerateStartingOrders());
         });
         JCheckBox generateTASheets = new JCheckBox("Generate TA Sheets");
         generateTASheets.setSelected(true);
         generateTASheets.addActionListener(e -> {
             setGenerateTASheets(generateTASheets.isSelected());
-            System.out.println(getGenerateTASheets());
         });
 
         JPanel buttonPanel = getButtonPanel(jframe);
-                panel.add(generateSchedule);
+        panel.add(generateSchedule);
         panel.add(generateStartingOrders);
         panel.add(generateTASheets);
         panel.add(buttonPanel);
@@ -140,12 +138,19 @@ public class UI {
     }
 
     private static void generate() {
-        JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         JFrame jframe = new JFrame();
         jframe.setIconImage(new ImageIcon(icon).getImage());
+        //jframe.setVisible(true);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fc.showOpenDialog(jframe);
+        JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView());
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Autoboxer");
+        int result = fc.showOpenDialog(jframe);
+        if (result == JFileChooser.CANCEL_OPTION) {
+            jframe.dispose();
+            System.exit(0); // This is bad but for some reason when I don't use it, it always just keeps running!
+            return;
+        }
         try {
             File file = fc.getSelectedFile();
             MasterController mc = new MasterController(file.getPath());
@@ -159,7 +164,7 @@ public class UI {
         }
         jframe.dispose();
         JOptionPane.showMessageDialog(null, "Successfully generated the box.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);
+        System.exit(0); // This is bad but for some reason when I don't use it, it always just keeps running! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     }
 
     public static void setGenerateSchedule(boolean b) {
@@ -208,6 +213,8 @@ public class UI {
                 }
                 progressBar.setValue((int) (progress * 100.0));
             }
+
+            progressFrame.dispose();
         });
 
         executor.shutdown();

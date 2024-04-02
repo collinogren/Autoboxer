@@ -32,6 +32,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MasterController {
 
@@ -44,7 +47,7 @@ public class MasterController {
 
     private static final String BOX_DIR = "box";
     private static final String TA_DIR = "box/TA";
-    private static final String STARTING_ORDER_DIR = "box/starting orders";
+    private static final String STARTING_ORDER_DIR = "box/Starting Orders";
 
     private final ArrayList<Official> officials = new ArrayList<>();
 
@@ -81,43 +84,107 @@ public class MasterController {
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
-    public void begin() {
+    public void begin() throws InterruptedException {
         renameFiles();
         doTheBox();
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
         for (Official official : officials) {
-            official.save();
+            executor.execute(() -> {
+                official.save();
+            });
         }
+        executor.shutdown();
+        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         UI.setProgress(100);
         UI.setDone(true);
     }
 
     private void renameFiles() {
-        coversheets = getAllFiles(COVERSHEET_DIR);
-        judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
         six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
-        six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
-        six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR);
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+        executor.execute(() -> {
+            try {
+                coversheets = getAllFiles(COVERSHEET_DIR);
+                rename(coversheets, FileType.IJS_COVERSHEET);
+                coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        executor.execute(() -> {
+            try {
+                judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
+                rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
+                judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                rename(technicalSheets, FileType.IJS_TC_SHEET);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                rename(technicalSheets, FileType.IJS_TS2_SHEET);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
+                rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
+                six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.execute(() -> {
+            try {
+                six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR);
+                rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
+                six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        executor.shutdown();
+
         try {
-            rename(coversheets, FileType.IJS_COVERSHEET);
-            rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
-            rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
-            rename(technicalSheets, FileType.IJS_TC_SHEET);
-            rename(technicalSheets, FileType.IJS_TS2_SHEET);
-            rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
-            rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
-            rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
-            rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
-        } catch (IOException e) {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
-        judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
         technicalSheets = getAllFiles(TECH_PANEL_DIR+"/renamed/");
         six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
-        six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
-        six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
     }
 
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
