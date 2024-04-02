@@ -18,16 +18,6 @@
 
 package ogren.collin.autoboxer;
 
-import ogren.collin.autoboxer.control.MasterController;
-import ogren.collin.autoboxer.pdf.FileType;
-import ogren.collin.autoboxer.pdf.PDFManipulator;
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class Main {
 
     public static void main(String[] args) {

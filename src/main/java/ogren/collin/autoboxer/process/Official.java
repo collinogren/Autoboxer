@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.process;
 
+import ogren.collin.autoboxer.UI;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.OfficialSchedule;
@@ -47,7 +48,12 @@ public class Official {
     }
 
     public PDDocument merge() {
-        PDDocument mergedDocument = OfficialSchedule.generateSchedule(this);
+        PDDocument mergedDocument;
+        if (UI.getGenerateSchedule()) {
+            mergedDocument = OfficialSchedule.generateSchedule(this);
+        } else {
+            mergedDocument = new PDDocument();
+        }
         //PDDocument mergedDocument = new PDDocument();
         for (EventSet event : events) {
             for (PDPage page : event.mergeDocuments().getPages()) {

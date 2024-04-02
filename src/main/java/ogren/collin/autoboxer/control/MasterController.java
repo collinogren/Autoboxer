@@ -27,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,11 @@ public class MasterController {
     private static final String TECH_PANEL_DIR = "tech";
     private static final String SIX0_PRIMARY_DIR = "60";
     private static final String SIX0_SUBSEQUENT_DIR = "60_sub";
+    private static final String SIX0_STARTING_ORDERS_DIR = "60_starting_orders";
+
+    private static final String BOX_DIR = "box";
+    private static final String TA_DIR = "box/TA";
+    private static final String STARTING_ORDER_DIR = "box/starting orders";
 
     private final ArrayList<Official> officials = new ArrayList<>();
 
@@ -51,6 +57,7 @@ public class MasterController {
     private ArrayList<File> technicalSheets = new ArrayList<>();
     private ArrayList<File> six0Sheets = new ArrayList<>();
     private ArrayList<File> six0SecondarySheets = new ArrayList<>();
+    private ArrayList<File> six0StartingOrders = new ArrayList<>();
 
     public static String getBaseDir() {
         return baseDir;
@@ -64,7 +71,10 @@ public class MasterController {
             FileUtils.deleteDirectory(new File(baseDir+"/"+TECH_PANEL_DIR+"/"+"renamed"));
             FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_PRIMARY_DIR+"/"+"renamed"));
             FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_SUBSEQUENT_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/box"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_STARTING_ORDERS_DIR+"/"+"renamed"));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+TA_DIR));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+STARTING_ORDER_DIR));
+            FileUtils.deleteDirectory(new File(baseDir+"/"+BOX_DIR));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,6 +97,7 @@ public class MasterController {
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
         six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
         six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
+        six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR);
         try {
             rename(coversheets, FileType.IJS_COVERSHEET);
             rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
@@ -96,6 +107,7 @@ public class MasterController {
             rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
             rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
             rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
+            rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -105,6 +117,7 @@ public class MasterController {
         technicalSheets = getAllFiles(TECH_PANEL_DIR+"/renamed/");
         six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
         six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
+        six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
     }
 
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
@@ -144,16 +157,35 @@ public class MasterController {
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
+        PDDocument taSheets = new PDDocument();
+        PDDocument startingOrders = new PDDocument();
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
                 if (matchFileNameToEventNumber(se, file)) {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
+                    if (UI.getGenerateStartingOrders()) {
+                        addToPDF(pdfManipulator.getDocument(), startingOrders);
+                    }
+
+                    if (UI.getGenerateTASheets()) {
+                        addToPDF(pdfManipulator.getDocument(), taSheets);
+                    }
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
                 }
             }
+
+            for (File file : six0StartingOrders) {
+                if (matchFileNameToEventNumber(se, file)) {
+                    if (UI.getGenerateStartingOrders()) {
+                        PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
+                        addToPDF(pdfManipulator.getDocument(), startingOrders);
+                    }
+                }
+            }
+
             for (File file : six0Sheets) {
                 if (matchFileNameToEventNumber(se, file)) {
                     String eventNumber = se.getEventNumber();
@@ -164,6 +196,40 @@ public class MasterController {
             }
 
             UI.addProgress(((1.0 / numberOfEvents)) / 2.0);
+        }
+
+        if (UI.getGenerateTASheets()) {
+            try {
+                File file = new File(baseDir+"/"+TA_DIR+"/TA Sheets.pdf");
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                taSheets.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (UI.getGenerateStartingOrders()) {
+            try {
+                File file = new File(baseDir+"/"+STARTING_ORDER_DIR+"/Starting Orders.pdf");
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                startingOrders.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void addToPDF(PDDocument src, PDDocument dest) {
+        try {
+            for (PDPage page : src.getPages()) {
+                dest.importPage(page);
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 
@@ -286,5 +352,9 @@ public class MasterController {
     private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
         String eventNumber = file.getName().split(" ")[0];
         return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
+    }
+
+    private void saveTASheets() {
+
     }
 }

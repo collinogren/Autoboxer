@@ -94,7 +94,7 @@ public class PDFManipulator {
     private String readContents() {
         String contents;
         try {
-            boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET;
+            boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET || fileType == SIX0_STARTING_ORDERS;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -214,7 +214,7 @@ public class PDFManipulator {
         switch (fileType) {
             case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET ->
                     eventName = parseEventNameIJS();
-            case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY -> eventName = parseEventName60();
+            case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY, SIX0_STARTING_ORDERS -> eventName = parseEventName60();
         }
 
         return eventName;
@@ -230,6 +230,7 @@ public class PDFManipulator {
             case SIX0_PRIMARY_JUDGE_SHEET -> text = "REFEREE AND JUDGES PERSONAL RECORD SHEET";
             case SIX0_PRIMARY_WORKSHEET -> text = "Signature US Figure Skating # End";
             case SIX0_SECONDARY -> text = ""; // This file is so plain, it's basically a saltine cracker.
+            case SIX0_STARTING_ORDERS -> text = "";
         }
 
         return text;
@@ -262,6 +263,7 @@ public class PDFManipulator {
         int line = switch (fileType) {
             case SIX0_PRIMARY_WORKSHEET -> 2;
             case SIX0_PRIMARY_JUDGE_SHEET -> 3;
+            case SIX0_STARTING_ORDERS -> 1;
             default -> 0;
         };
 
