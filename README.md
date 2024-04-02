@@ -11,6 +11,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 6. Create directories as follows
    - 60
    - 60_sub
+   - 60_starting_orders
    - coversheets
    - judges
    - tech
