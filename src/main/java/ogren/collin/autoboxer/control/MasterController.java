@@ -84,7 +84,7 @@ public class MasterController {
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
-    public void begin() throws InterruptedException {
+    public void begin() {
         renameFiles();
         doTheBox();
         for (Official official : officials) {
@@ -96,7 +96,6 @@ public class MasterController {
 
     private void renameFiles() {
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
-        six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
         executor.execute(() -> {
             try {
@@ -140,20 +139,10 @@ public class MasterController {
         });
         executor.execute(() -> {
             try {
+                six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
                 rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        executor.execute(() -> {
-            try {
                 rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        executor.execute(() -> {
-            try {
+                six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
                 six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
                 rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
                 six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
@@ -179,7 +168,6 @@ public class MasterController {
         }
 
         technicalSheets = getAllFiles(TECH_PANEL_DIR+"/renamed/");
-        six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
     }
 
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {

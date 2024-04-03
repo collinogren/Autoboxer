@@ -488,15 +488,19 @@ public class PDFManipulator {
     }
 
     private String removeLeadingZeros(String eventNumber) {
+        eventNumber = eventNumber.trim();
+        if (!eventNumber.startsWith("0")) {
+            return eventNumber;
+        }
         int newStartIndex = 0;
         for (int i = 0; i < eventNumber.length(); i++) {
             if (eventNumber.charAt(i) == '0') {
-                newStartIndex = i + 1;
+                newStartIndex = i;
             } else {
-                return eventNumber.substring(newStartIndex, eventNumber.length() - 1);
+                return eventNumber.substring(newStartIndex);
             }
         }
 
-        return eventNumber.substring(newStartIndex, eventNumber.length() - 1);
+        return eventNumber;
     }
 }
