@@ -495,7 +495,7 @@ public class PDFManipulator {
         int newStartIndex = 0;
         for (int i = 0; i < eventNumber.length(); i++) {
             if (eventNumber.charAt(i) == '0') {
-                newStartIndex = i;
+                newStartIndex = i + 1;
             } else {
                 return eventNumber.substring(newStartIndex);
             }
