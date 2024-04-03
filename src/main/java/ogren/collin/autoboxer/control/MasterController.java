@@ -87,14 +87,9 @@ public class MasterController {
     public void begin() throws InterruptedException {
         renameFiles();
         doTheBox();
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
         for (Official official : officials) {
-            executor.execute(() -> {
-                official.save();
-            });
+            official.save();
         }
-        executor.shutdown();
-        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         UI.setProgress(100);
         UI.setDone(true);
     }

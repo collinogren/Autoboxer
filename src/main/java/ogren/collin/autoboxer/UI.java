@@ -78,19 +78,17 @@ public class UI {
     private static void boxOptions() {
         JFrame jframe = new JFrame();
         jframe.setTitle("Autoboxer");
-        jframe.setSize(300, 150);
+        jframe.setSize(300, 200);
         jframe.setLocationRelativeTo(null);
         jframe.setResizable(false);
         jframe.setIconImage(new ImageIcon(icon).getImage());
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.setLayout(new GridLayout(4, 1));
+        panel.setLayout(new GridLayout(6, 1));
         JCheckBox generateSchedule = new JCheckBox("Generate Schedule Sheets");
         generateSchedule.setSelected(true);
-        generateSchedule.addActionListener(e -> {
-            setGenerateSchedule(generateSchedule.isSelected());
-        });
+        generateSchedule.addActionListener(e -> setGenerateSchedule(generateSchedule.isSelected()));
         JCheckBox generateStartingOrders = new JCheckBox("Generate Starting Orders");
         generateStartingOrders.setSelected(true);
         generateStartingOrders.addActionListener(e -> {
@@ -98,20 +96,29 @@ public class UI {
         });
         JCheckBox generateTASheets = new JCheckBox("Generate TA Sheets");
         generateTASheets.setSelected(true);
-        generateTASheets.addActionListener(e -> {
-            setGenerateTASheets(generateTASheets.isSelected());
-        });
+        generateTASheets.addActionListener(e -> setGenerateTASheets(generateTASheets.isSelected()));
+        JCheckBox removeLeadingZeros = new JCheckBox("Remove Leading Zeros");
+        removeLeadingZeros.setSelected(true);
+        removeLeadingZeros.addActionListener(e -> PDFManipulator.setRemoveLeadingZeros(removeLeadingZeros.isSelected()));
 
-        JPanel buttonPanel = getButtonPanel(jframe);
+        JLabel label = new JLabel("Event Number Delimiter");
+        JTextField delimiterField = new JTextField(PDFManipulator.getEventNameDelimiter());
+        JPanel delimiterPanel = new JPanel(new GridLayout(1, 2));
+        delimiterPanel.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+        delimiterPanel.add(label);
+        delimiterPanel.add(delimiterField);
+        JPanel buttonPanel = getButtonPanel(jframe, delimiterField);
         panel.add(generateSchedule);
         panel.add(generateStartingOrders);
         panel.add(generateTASheets);
+        panel.add(removeLeadingZeros);
+
+        panel.add(delimiterPanel);
         panel.add(buttonPanel);
         jframe.add(panel);
         jframe.setVisible(true);
     }
-
-    private static JPanel getButtonPanel(JFrame jframe) {
+    private static JPanel getButtonPanel(JFrame jframe, JTextField delimiterField) {
         JButton generateBox = new JButton("Generate Box");
         jframe.addWindowFocusListener(new WindowAdapter() {
             public void windowGainedFocus(WindowEvent e) {
@@ -121,6 +128,7 @@ public class UI {
 
         generateBox.addActionListener(e -> {
             jframe.dispose();
+            PDFManipulator.setEventNameDelimiter(delimiterField.getText());
             ExecutorService executor = Executors.newFixedThreadPool(1);
             executor.execute(UI::generate);
         });

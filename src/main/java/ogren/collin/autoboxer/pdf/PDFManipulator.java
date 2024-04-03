@@ -39,12 +39,22 @@ import static ogren.collin.autoboxer.pdf.FileType.*;
 
 public class PDFManipulator {
     public static final String WRONG_FILE_TYPE = "wrongfiletype";
-    private static final String EVENT_NAME_DELIMITER = " - ";
+    private static String eventNameDelimiter = " - ";
+
+    private static boolean removeLeadingZeros = true;
     private final PDDocument document;
     private final FileType fileType;
     private final File file;
     private final String contents;
     private boolean isRenamed = false;
+
+    public static void setEventNameDelimiter(String delimiter) {
+        eventNameDelimiter = delimiter;
+    }
+
+    public static void setRemoveLeadingZeros(boolean b) {
+        removeLeadingZeros = b;
+    }
 
     public PDFManipulator(File file, FileType fileType) {
         this.file = file;
@@ -80,12 +90,20 @@ public class PDFManipulator {
         return document;
     }
 
+    public static String getEventNameDelimiter() {
+        return eventNameDelimiter;
+    }
+
     public String retrieveEventName() {
         String eventName;
         if (!isReallyFileType()) {
             eventName = WRONG_FILE_TYPE;
         } else {
-            eventName = parseEventName();
+            if (removeLeadingZeros) {
+                eventName = removeLeadingZeros(parseEventName());
+            } else {
+                eventName = parseEventName();
+            }
         }
 
         return eventName;
@@ -125,7 +143,7 @@ public class PDFManipulator {
     }
 
     private ArrayList<String> scrutinizeName(String eventName) {
-        String eventNumberSection = eventName.split(EVENT_NAME_DELIMITER)[0];
+        String eventNumberSection = eventName.split(eventNameDelimiter)[0];
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
@@ -467,5 +485,18 @@ public class PDFManipulator {
         }
 
         return count;
+    }
+
+    private String removeLeadingZeros(String eventNumber) {
+        int newStartIndex = 0;
+        for (int i = 0; i < eventNumber.length(); i++) {
+            if (eventNumber.charAt(i) == '0') {
+                newStartIndex = i + 1;
+            } else {
+                return eventNumber.substring(newStartIndex, eventNumber.length() - 1);
+            }
+        }
+
+        return eventNumber.substring(newStartIndex, eventNumber.length() - 1);
     }
 }

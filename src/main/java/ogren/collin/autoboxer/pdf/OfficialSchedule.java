@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
+import ogren.collin.autoboxer.utility.StringUtilities;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -36,9 +37,9 @@ import java.io.IOException;
 
 public class OfficialSchedule {
 
-    private static final float ROLE_WIDTH = 20f;
+    private static final float ROLE_WIDTH = 10f;
     private static final float EVENT_NUMBER_WIDTH = 5f;
-    private static final float EVENT_NAME_WIDTH = 51f;
+    private static final float EVENT_NAME_WIDTH = 61f;
     private static final float TIME_WIDTH = 12f;
 
     private static final float MARGIN = 14f;
@@ -86,6 +87,7 @@ public class OfficialSchedule {
                                             .padding(10)
                                             .build()
                             ).build());
+            tableBuilder.wordBreak(false);
             tableBuilder.addRow(
                     Row.builder()
                             .add(TextCell.builder().text("START TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
@@ -104,18 +106,21 @@ public class OfficialSchedule {
                 StringBuilder roles = new StringBuilder();
                 scheduleElement.role().sort(String::compareToIgnoreCase);
                 for (int i = 0; i < scheduleElement.role().size(); i++) {
-                    roles.append(scheduleElement.role().get(i));
+                    if (scheduleElement.role().size() > 1) {
+                        roles.append(truncateRole(scheduleElement.role().get(i)));
+                    } else {
+                        roles.append(scheduleElement.role().get(i));
+                    }
                     if (i < scheduleElement.role().size() - 1) {
                         roles.append(", ");
                     }
                 }
-
                 tableBuilder.addRow(
                         Row.builder()
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(" - ")[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter())[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                                 .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .backgroundColor(Color.WHITE)
                                 .textColor(Color.BLACK)
@@ -138,5 +143,21 @@ public class OfficialSchedule {
         }
 
         return document;
+    }
+
+    private static String truncateRole(String role) {
+        if (role.equals("JUDGE")) {
+            return "JDG";
+        }
+
+        if (role.equals("REFEREE")) {
+            return "REF";
+        }
+
+        if (role.equals("VIDEO")) {
+            return "VID";
+        }
+
+        return role;
     }
 }
