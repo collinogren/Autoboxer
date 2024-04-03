@@ -99,11 +99,7 @@ public class PDFManipulator {
         if (!isReallyFileType()) {
             eventName = WRONG_FILE_TYPE;
         } else {
-            if (removeLeadingZeros) {
-                eventName = removeLeadingZeros(parseEventName());
-            } else {
-                eventName = parseEventName();
-            }
+            eventName = parseEventName();
         }
 
         return eventName;
@@ -147,6 +143,9 @@ public class PDFManipulator {
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
+            if (removeLeadingZeros && c == '0' && eventNumber.isEmpty()) {
+                continue;
+            }
             if (isNumberOrLetter(c)) {
                 eventNumber.append(c);
             } else {

@@ -120,7 +120,7 @@ public class OfficialSchedule {
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter())[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                                 .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .backgroundColor(Color.WHITE)
                                 .textColor(Color.BLACK)
