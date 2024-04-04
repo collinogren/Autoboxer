@@ -8,7 +8,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 3. Create a directory in which you will begin building your box.
 4. Inside this directory place schedule.txt.
 5. On the first line, type the day that the box is for (i.e. "Friday"). Then, on the next lines, copy all event numbers, start times, and end times in order from the 104 into schedule.txt. Copy all three columns at once.
-6. Download the box template zip file from [releases](https://github.com/collinogren/Autoboxer/releases) and extract to your desired location or create directories as follows
+6. Download the box template zip file from [releases](https://github.com/collinogren/Autoboxer/releases) and extract to your desired location or create directories as follows:
    - 60
    - 60_sub
    - 60_starting_orders
