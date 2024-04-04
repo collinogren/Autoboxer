@@ -16,27 +16,27 @@ I would like to extend a massive thank you to this wonderful community. I hope y
    - judges
    - tech
 7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' and Hal2 worksheets into '60_sub' when also using a judges' sheet.
-8. Run *Autoboxer*, input the delimiter used to separate the event number from the event name* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
+8. Run *Autoboxer*, input the delimiter used to separate the event number from the event name,* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
 9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
 10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
 11. Do something else with all the time you just saved.
 
-*A delimiter is a string of characters that is used to tell the computer where two or more different data sets are. A common (and the preferred and tested delimiter) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise, though even a space should work, but be careful when naming combined events with a space as a delimiter.
+*A delimiter is a string of characters that is used to tell the computer where the separations between two or more sets of data are. An already common (and the default, preferred, and tested delimiter) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise, though even a space should work, but be careful when naming combined events with a space as a delimiter.
+Lastly, a delimiter also may not have any numbers or letters. To help visualize these rules, consider the examples below.
 Favourable examples:
-- 5 - Senior Women Short Program
-- 21 & 23 - Intermediate Women
-- 35_103 - Junior Men
+- "5 - Senior Women Short Program"
+- "21 & 23 - Intermediate Women"
+- "35_103 - Junior Men"
 Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is not limited:
-- 5 Senior Women Short Program
-- 21_23 Intermediate Women
+- "5 Senior Women Short Program"
+- "21_23 Intermediate Women"
 Examples that will result in a broken box:
-- When using space as a delimiter: 21 & 23 Intermediate Women --> results in only event number 21 being read and the event name being set to "& 23 Intermediate Women"
-- When using space, hyphen, space (" - ") as a delimiter 21 - 23 - Intermediate Women --> results in only event number 21 being read with the event name being set to "23 - Intermediate Women"
+- When using space as a delimiter: "21 & 23 Intermediate Women" results in only event number 21 being read and the event name being set to "& 23 Intermediate Women"
+- When using space, hyphen, space (" - ") as a delimiter: "21 - 23 - Intermediate Women" results in only event number 21 being read with the event name being set to "23 - Intermediate Women"
 
 To put it simply, never let your delimiter get mixed up with how you separate event numbers when the category contains two or more segments (and therefore event numbers).
 Finally, **always** be consistent, you cannot use " - " as a delimiter most of the time and then expect an event with a space delimiter to be handled correctly.
 ### Competition Building Guidelines When Using Autoboxer
-- **IMPORTANT make sure all event / category names are in the format of alphanumeric event number followed by a space, a hyphen, and then a space (" - ") followed by the event name.** Example: "12A - Excel Pre-Preliminary Girls Free Skate" or "115 - Senior Men." For category names which have more than one segment, you may use many configurations for naming so long as you do not use " - " to separate the numbers. For example "40_70 - Senior Men," "40 & 70 - Senior Men," as well as "40 70 - Senior Men." Essentially, the two or more event numbers can be separated by any character string that does not contain numbers, letters, or the pattern " - " in it.
 - **IMPORTANT make sure that officials’ names for Hal2 match those in ISUCalc** because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
 - Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
