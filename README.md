@@ -23,14 +23,14 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 
 *A delimiter is a string of characters that is used to tell the computer where the separations between two or more sets of data are. An already common (and the default, preferred, and tested delimiter) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise, though even a space should work, but be careful when naming combined events with a space as a delimiter.
 Lastly, a delimiter also may not have any numbers or letters. To help visualize these rules, consider the examples below.<br>
-Favourable examples:
+### Favourable examples:
 - "5 - Senior Women Short Program"
 - "21 & 23 - Intermediate Women"
 - "35_103 - Junior Men"
-Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is not limited:
+### Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is not limited:
 - "5 Senior Women Short Program"
 - "21_23 Intermediate Women"
-Examples that will result in a broken box:
+### Examples that will result in a broken box:
 - When using space as a delimiter: "21 & 23 Intermediate Women" results in only event number 21 being read and the event name being set to "& 23 Intermediate Women"
 - When using space, hyphen, space (" - ") as a delimiter: "21 - 23 - Intermediate Women" results in only event number 21 being read with the event name being set to "23 - Intermediate Women"
 
