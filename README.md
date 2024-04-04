@@ -22,7 +22,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 11. Do something else with all the time you just saved.
 
 *A delimiter is a string of characters that is used to tell the computer where the separations between two or more sets of data are. An already common (and the default, preferred, and tested delimiter) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise, though even a space should work, but be careful when naming combined events with a space as a delimiter.
-Lastly, a delimiter also may not have any numbers or letters. To help visualize these rules, consider the examples below.
+Lastly, a delimiter also may not have any numbers or letters. To help visualize these rules, consider the examples below.<br>
 Favourable examples:
 - "5 - Senior Women Short Program"
 - "21 & 23 - Intermediate Women"
