@@ -27,7 +27,7 @@ Lastly, a delimiter also may not have any numbers or letters. To help visualize 
 - "5 - Senior Women Short Program"
 - "21 & 23 - Intermediate Women"
 - "35_103 - Junior Men"
-### Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is not limited:
+### Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is now limited:
 - "5 Senior Women Short Program"
 - "21_23 Intermediate Women"
 ### Examples that will result in a broken box:
