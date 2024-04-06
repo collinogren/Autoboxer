@@ -17,8 +17,8 @@ I would like to extend a massive thank you to this wonderful community. I hope y
    - tech
 7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' Hal2 worksheets into '60_sub' when also using a judges' sheet, and Hal2 starting orders into '60_starting_orders.'
 8. Run *Autoboxer*, input the delimiter used to separate the event number from the event name,* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
-9. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
-10. Proof the box to ensure no unforeseen mistakes occurred. You could do this virtually before the printing step if you like.
+9. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing, it saves paper and frustration.
+10. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
 11. Do something else with all the time you just saved.
 
 *A delimiter is a string of characters that is used to tell the computer where the separations between two or more sets of data are. An already common (and the default, preferred, and tested delimiter for *Autoboxer*) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise. However, even a space should work but be careful when naming combined events with a space as a delimiter.
@@ -27,7 +27,7 @@ Lastly, it may be risky for a delimiter to have numbers or letters. To help visu
 - "5 - Senior Women Short Program"
 - "21 & 23 - Intermediate Women"
 - "35_103 - Junior Men"
-### Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is now limited:
+### Less favourable, but still completely functional examples using a space as a delimiter, notice the format for multiple event numbers is now more limited:
 - "5 Senior Women Short Program"
 - "21_23 Intermediate Women"
 ### Examples that will result in a broken box:
