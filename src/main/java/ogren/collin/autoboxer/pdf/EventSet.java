@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.pdf;
 
+import ogren.collin.autoboxer.process.Role;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
@@ -25,7 +26,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class EventSet {
-    ArrayList<PDDocument> documents = new ArrayList<>();
+    private String eventNumber;
+    private Role role;
+    private ArrayList<PDDocument> documents = new ArrayList<>();
+
+    public EventSet(String eventNumber, Role role) {
+        this.eventNumber = eventNumber;
+        this.role = role;
+    }
+
     public void push(PDDocument document) {
         documents.add(document);
     }
@@ -49,5 +58,13 @@ public class EventSet {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public String getEventNumber() {
+        return eventNumber;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

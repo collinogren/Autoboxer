@@ -24,6 +24,9 @@ import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.OfficialSchedule;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,10 +57,26 @@ public class Official {
         } else {
             mergedDocument = new PDDocument();
         }
+
+        PDDocumentOutline outline = new PDDocumentOutline();
+        mergedDocument.getDocumentCatalog().setDocumentOutline( outline );
+
+        PDOutlineItem root = new PDOutlineItem();
+        root.setTitle(getName());
+        outline.addLast(root);
+
         //PDDocument mergedDocument = new PDDocument();
         for (EventSet event : events) {
+            boolean firstPage = true;
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);
+                if (firstPage) {
+                    PDOutlineItem coversheet = new PDOutlineItem();
+                    coversheet.setTitle(event.getEventNumber() + " - " + event.getRole());
+                    coversheet.setDestination(mergedDocument.getPage(mergedDocument.getNumberOfPages() - 1));
+                    root.addLast(coversheet);
+                    firstPage = false;
+                }
             }
         }
 
@@ -66,15 +85,15 @@ public class Official {
 
     public void save() {
         System.out.println("Printing for "+getName());
-        if (!new File(MasterController.getBaseDir()+"/box/"+name).exists()) {
-            boolean success = new File(MasterController.getBaseDir()+"/box/"+name).mkdirs();
+        if (!new File(MasterController.getBaseDir()+"/box/Officials").exists()) {
+            boolean success = new File(MasterController.getBaseDir()+"/box/Officials").mkdirs();
             if (!success) {
-                throw new RuntimeException("Failed to create directory /box/"+name);
+                throw new RuntimeException("Failed to create directory /box/Officials");
             }
         }
         try {
             PDDocument merged = merge();
-            merged.save(new File(MasterController.getBaseDir()+"/box/"+name+"/"+name+".pdf"));
+            merged.save(new File(MasterController.getBaseDir()+"/box/Officials/"+name+".pdf"));
             merged.close();
             for (EventSet eventSet : events) {
                 eventSet.close();

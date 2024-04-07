@@ -27,6 +27,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
+import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.awt.*;
@@ -484,22 +486,5 @@ public class PDFManipulator {
         }
 
         return count;
-    }
-
-    private String removeLeadingZeros(String eventNumber) {
-        eventNumber = eventNumber.trim();
-        if (!eventNumber.startsWith("0")) {
-            return eventNumber;
-        }
-        int newStartIndex = 0;
-        for (int i = 0; i < eventNumber.length(); i++) {
-            if (eventNumber.charAt(i) == '0') {
-                newStartIndex = i + 1;
-            } else {
-                return eventNumber.substring(newStartIndex);
-            }
-        }
-
-        return eventNumber;
     }
 }
