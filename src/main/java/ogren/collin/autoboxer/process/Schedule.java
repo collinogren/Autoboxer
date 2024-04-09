@@ -99,7 +99,7 @@ public class Schedule {
         for (int i = 0; i < scheduleElements.size(); i++) {
             if (startTime < Time.parseTimeMinutes(scheduleElements.get(i).getStartTime())) {
                 if (i > 0) {
-                    return i - 1;
+                    return i;
                 } else {
                     return i;
                 }

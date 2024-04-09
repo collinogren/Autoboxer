@@ -38,6 +38,8 @@ public class Official {
     private final ArrayList<EventSet> events = new ArrayList<>();
     private final ArrayList<OfficialScheduleBundle> scheduleElements = new ArrayList<>();
 
+    private boolean hasPrinted = false;
+
     public Official(String name) {
         this.name = name;
     }
@@ -52,7 +54,7 @@ public class Official {
 
     public PDDocument merge(String rink) {
         PDDocument mergedDocument;
-        if (UI.getGenerateSchedule()) {
+        if (UI.getGenerateSchedule() && !hasPrinted) {
             mergedDocument = OfficialSchedule.generateSchedule(this);
         } else {
             mergedDocument = new PDDocument();
@@ -70,6 +72,7 @@ public class Official {
             if (!event.getRink().equals(rink)) {
                 continue;
             }
+            hasPrinted = true;
             boolean firstPage = true;
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);
@@ -97,7 +100,7 @@ public class Official {
             }
             try {
                 PDDocument merged = merge(rink);
-                merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + ".pdf"));
+                merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + " - " + rink + ".pdf"));
                 merged.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
