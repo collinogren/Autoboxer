@@ -37,7 +37,7 @@ public class Schedule {
         try {
             lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to read schedule.txt.\nMake sure it exists");
         }
 
         String day = lines.getFirst();
@@ -70,7 +70,7 @@ public class Schedule {
                 String[] split = line.split("\t");
 
                 if (split.length < 2) {
-                    throw new RuntimeException("A start time must exist");
+                    throw new RuntimeException("Missing a start time which must exist");
                 }
 
                 if (i == 0) {

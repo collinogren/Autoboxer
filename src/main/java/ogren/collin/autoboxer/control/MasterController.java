@@ -79,7 +79,8 @@ public class MasterController {
             FileUtils.deleteDirectory(new File(baseDir+"/"+STARTING_ORDER_DIR));
             FileUtils.deleteDirectory(new File(baseDir+"/"+BOX_DIR));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException();
         }
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
@@ -103,7 +104,8 @@ public class MasterController {
                 rename(coversheets, FileType.IJS_COVERSHEET);
                 coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse coversheets");
             }
         });
 
@@ -113,28 +115,32 @@ public class MasterController {
                 rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
                 judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse IJS judges' sheets");
             }
         });
         executor.execute(() -> {
             try {
                 rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse IJS referee sheets");
             }
         });
         executor.execute(() -> {
             try {
                 rename(technicalSheets, FileType.IJS_TC_SHEET);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse technical controller sheets");
             }
         });
         executor.execute(() -> {
             try {
                 rename(technicalSheets, FileType.IJS_TS2_SHEET);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse technical specialist 2 sheets");
             }
         });
         executor.execute(() -> {
@@ -147,7 +153,8 @@ public class MasterController {
                 rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
                 six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse 6.0 judges' sheets / worksheets / subsequent worksheets");
             }
         });
         executor.execute(() -> {
@@ -156,7 +163,8 @@ public class MasterController {
                 rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
                 six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse 6.0 starting orders");
             }
         });
         executor.shutdown();
@@ -256,7 +264,8 @@ public class MasterController {
                 }
                 taSheets.save(file);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                throw new RuntimeException("Failed to save TA sheets");
             }
         }
 
@@ -402,9 +411,5 @@ public class MasterController {
     private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
         String eventNumber = file.getName().split(" ")[0];
         return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
-    }
-
-    private void saveTASheets() {
-
     }
 }

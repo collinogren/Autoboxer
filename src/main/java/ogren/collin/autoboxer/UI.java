@@ -166,7 +166,7 @@ public class UI {
             showProgressScreen();
             mc.begin();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Failed to generate the box.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to generate the box.\n"+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             jframe.dispose();
             e.printStackTrace();
             return;
