@@ -50,7 +50,7 @@ public class Official {
         events.add(eventSet);
     }
 
-    public PDDocument merge() {
+    public PDDocument merge(String rink) {
         PDDocument mergedDocument;
         if (UI.getGenerateSchedule()) {
             mergedDocument = OfficialSchedule.generateSchedule(this);
@@ -59,7 +59,7 @@ public class Official {
         }
 
         PDDocumentOutline outline = new PDDocumentOutline();
-        mergedDocument.getDocumentCatalog().setDocumentOutline( outline );
+        mergedDocument.getDocumentCatalog().setDocumentOutline(outline);
 
         PDOutlineItem root = new PDOutlineItem();
         root.setTitle(getName());
@@ -67,6 +67,9 @@ public class Official {
 
         //PDDocument mergedDocument = new PDDocument();
         for (EventSet event : events) {
+            if (!event.getRink().equals(rink)) {
+                continue;
+            }
             boolean firstPage = true;
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);
@@ -85,21 +88,24 @@ public class Official {
 
     public void save() {
         System.out.println("Printing for "+getName());
-        if (!new File(MasterController.getBaseDir()+"/box/Officials").exists()) {
-            boolean success = new File(MasterController.getBaseDir()+"/box/Officials").mkdirs();
-            if (!success) {
-                throw new RuntimeException("Failed to create directory /box/Officials");
+        for (String rink : Schedule.getRinks()) {
+            if (!new File(MasterController.getBaseDir() + "/box/Officials/" + rink).exists()) {
+                boolean success = new File(MasterController.getBaseDir() + "/box/Officials/" + rink).mkdirs();
+                if (!success) {
+                    throw new RuntimeException("Failed to create directory /box/Officials/" + rink);
+                }
+            }
+            try {
+                PDDocument merged = merge(rink);
+                merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + ".pdf"));
+                merged.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-        try {
-            PDDocument merged = merge();
-            merged.save(new File(MasterController.getBaseDir()+"/box/Officials/"+name+".pdf"));
-            merged.close();
-            for (EventSet eventSet : events) {
-                eventSet.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        for (EventSet eventSet : events) {
+            eventSet.close();
         }
     }
 

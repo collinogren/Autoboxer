@@ -38,8 +38,9 @@ import java.io.IOException;
 public class OfficialSchedule {
 
     private static final float ROLE_WIDTH = 10f;
+    private static final float RINK_WIDTH = 10f;
     private static final float EVENT_NUMBER_WIDTH = 5f;
-    private static final float EVENT_NAME_WIDTH = 61f;
+    private static final float EVENT_NAME_WIDTH = 51f;
     private static final float TIME_WIDTH = 12f;
 
     private static final float MARGIN = 14f;
@@ -55,6 +56,7 @@ public class OfficialSchedule {
             Table.TableBuilder tableBuilder = Table.builder()
                     .addColumnsOfWidth(pageWidth * TIME_WIDTH / 100f,
                             pageWidth * TIME_WIDTH / 100f,
+                            pageWidth * RINK_WIDTH / 100f,
                             pageWidth * EVENT_NUMBER_WIDTH / 100f,
                             pageWidth * EVENT_NAME_WIDTH / 100f,
                             pageWidth * ROLE_WIDTH / 100f)
@@ -69,7 +71,7 @@ public class OfficialSchedule {
                                             .text(official.getName())
                                             .horizontalAlignment(HorizontalAlignment.LEFT)
                                             //.borderWidth(1)
-                                            .colSpan(4)
+                                            .colSpan(5)
                                             //.borderWidth(0)
                                             .font(Standard14Fonts.FontName.HELVETICA_BOLD)
                                             .fontSize(14)
@@ -92,6 +94,7 @@ public class OfficialSchedule {
                     Row.builder()
                             .add(TextCell.builder().text("START TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("END TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text("RINK").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("#").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("EVENT NAME").horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                             .add(TextCell.builder().text("ROLE").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
@@ -119,6 +122,7 @@ public class OfficialSchedule {
                         Row.builder()
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                 .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                                 .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())

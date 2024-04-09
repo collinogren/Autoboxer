@@ -288,7 +288,7 @@ public class MasterController {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
             PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
-            EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role());
+            EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role(), scheduleElement.getRink());
             eventSet.push(circledCoversheet);
             if (ijs) {
                 switch (identity.role()) {

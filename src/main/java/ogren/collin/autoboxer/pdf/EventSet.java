@@ -29,10 +29,12 @@ public class EventSet {
     private String eventNumber;
     private Role role;
     private ArrayList<PDDocument> documents = new ArrayList<>();
+    private String rink;
 
-    public EventSet(String eventNumber, Role role) {
+    public EventSet(String eventNumber, Role role, String rink) {
         this.eventNumber = eventNumber;
         this.role = role;
+        this.rink = rink;
     }
 
     public void push(PDDocument document) {
@@ -62,6 +64,10 @@ public class EventSet {
 
     public String getEventNumber() {
         return eventNumber;
+    }
+
+    public String getRink() {
+        return rink;
     }
 
     public Role getRole() {

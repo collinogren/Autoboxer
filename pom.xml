@@ -6,7 +6,7 @@
 
     <groupId>ogren.collin</groupId>
     <artifactId>Autoboxer</artifactId>
-    <version>0.3.1</version>
+    <version>0.4.0</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

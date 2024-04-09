@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Schedule {
+
+    private static ArrayList<String> rinks = new ArrayList<>();
+
     ArrayList<ScheduleElement> elements = new ArrayList<>();
 
     public Schedule(File file) {
@@ -40,21 +43,70 @@ public class Schedule {
         String day = lines.getFirst();
         lines.removeFirst();
 
+        ArrayList<Rink> rinks = new ArrayList<>();
+
+        int index = -1;
+
         for (String line : lines) {
-            if (line.isEmpty()) {
+            if (line.toLowerCase().startsWith("-r")) {
+                String rink = line.split(" ", 2)[1];
+                rinks.add(new Rink(rink));
+                index += 1;
+                if (!Schedule.rinks.contains(rink)) {
+                    Schedule.rinks.add(rink);
+                }
                 continue;
             }
 
-            String[] split = line.split("\t");
+            rinks.get(index).add(line);
+        }
 
-            if (split.length < 2) {
-                elements.add(new ScheduleElement(line, "", "", "", day));
-            } else if(split.length < 3){
-                elements.add(new ScheduleElement(line, "", split[1], "", day));
-            } else {
-                elements.add(new ScheduleElement(split[0], "", split[1], split[2], day));
+        for (int i = 0; i < rinks.size(); i++) {
+            for (String line : rinks.get(i)) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                String[] split = line.split("\t");
+
+                if (split.length < 2) {
+                    throw new RuntimeException("A start time must exist");
+                }
+
+                if (i == 0) {
+                    if (split.length < 3) {
+                        elements.add(new ScheduleElement(line, "", split[1], "", day, rinks.get(i).getRink()));
+                    } else {
+                        elements.add(new ScheduleElement(split[0], "", split[1], split[2], day, rinks.get(i).getRink()));
+                    }
+                } else {
+                    if (split.length < 3) {
+                        elements.add(getIndexToInsert(elements, split[1]), new ScheduleElement(line, "", split[1], "", day, rinks.get(i).getRink()));
+                    } else {
+                        elements.add(getIndexToInsert(elements, split[1]), new ScheduleElement(split[0], "", split[1], split[2], day, rinks.get(i).getRink()));
+                    }
+                }
             }
         }
+    }
+
+    public static ArrayList<String> getRinks() {
+        return rinks;
+    }
+
+    private int getIndexToInsert(ArrayList<ScheduleElement> scheduleElements, String time) {
+        long startTime = Time.parseTimeMinutes(time);
+        for (int i = 0; i < scheduleElements.size(); i++) {
+            if (startTime < Time.parseTimeMinutes(scheduleElements.get(i).getStartTime())) {
+                if (i > 0) {
+                    return i - 1;
+                } else {
+                    return i;
+                }
+            }
+        }
+
+        return scheduleElements.size();
     }
 
     public ArrayList<ScheduleElement> getElements() {
