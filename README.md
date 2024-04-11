@@ -10,7 +10,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 5. On the first line, type the day that the box is for (i.e. "Friday"). Then place "-R 'name of rink'" on the next line. On the next lines, copy all event numbers, start times, and end times in order from the 104 into schedule.txt. Copy all three columns at once. If you are building for a multi-rink competition, place "-R 'name of rink 2'" after you have enumerated all of the first rink's events then enumerate all of second rinks events. Continue this pattern until you have done so for all rinks being used for competition.<br>
 Example of a schedule.txt file:<br>
 ```
-Friday<br>
+Friday
 -R Olympic
 1   10:00 AM   10:30 AM
 2   10:30 AM   11:00 AM
