@@ -80,7 +80,7 @@ public class MasterController {
             FileUtils.deleteDirectory(new File(baseDir+"/"+BOX_DIR));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException("Could not delete temp directories.\nMake sure none are open in another application.");
         }
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
@@ -105,7 +105,7 @@ public class MasterController {
                 coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse coversheets");
+                throw new RuntimeException("Failed to parse coversheets.");
             }
         });
 
@@ -116,7 +116,7 @@ public class MasterController {
                 judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse IJS judges' sheets");
+                throw new RuntimeException("Failed to parse IJS judges' sheets.");
             }
         });
         executor.execute(() -> {
@@ -124,7 +124,7 @@ public class MasterController {
                 rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse IJS referee sheets");
+                throw new RuntimeException("Failed to parse IJS referee sheets.");
             }
         });
         executor.execute(() -> {
@@ -132,7 +132,7 @@ public class MasterController {
                 rename(technicalSheets, FileType.IJS_TC_SHEET);
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse technical controller sheets");
+                throw new RuntimeException("Failed to parse technical controller sheets.");
             }
         });
         executor.execute(() -> {
@@ -140,7 +140,7 @@ public class MasterController {
                 rename(technicalSheets, FileType.IJS_TS2_SHEET);
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse technical specialist 2 sheets");
+                throw new RuntimeException("Failed to parse technical specialist 2 sheets.");
             }
         });
         executor.execute(() -> {
@@ -154,7 +154,7 @@ public class MasterController {
                 six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse 6.0 judges' sheets / worksheets / subsequent worksheets");
+                throw new RuntimeException("Failed to parse 6.0 judges' sheets / worksheets / subsequent worksheets.");
             }
         });
         executor.execute(() -> {
@@ -164,7 +164,7 @@ public class MasterController {
                 six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to parse 6.0 starting orders");
+                throw new RuntimeException("Failed to parse 6.0 starting orders.");
             }
         });
         executor.shutdown();
@@ -265,7 +265,7 @@ public class MasterController {
                 taSheets.save(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Failed to save TA sheets");
+                throw new RuntimeException("Failed to save TA sheets.");
             }
         }
 
@@ -277,7 +277,7 @@ public class MasterController {
                 }
                 startingOrders.save(file);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Failed to save starting orders.");
             }
         }
     }
@@ -325,7 +325,7 @@ public class MasterController {
                 try {
                     eventSet.push(Loader.loadPDF(file));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Failed to retrieve 6.0 subsequent worksheets.");
                 }
             }
         }
@@ -359,7 +359,7 @@ public class MasterController {
                     try {
                         eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Failed to load a PDF at "+file.getPath());
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException aioobe) {

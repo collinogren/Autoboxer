@@ -37,7 +37,7 @@ public class Schedule {
         try {
             lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read schedule.txt.\nMake sure it exists");
+            throw new RuntimeException("Failed to read schedule.txt.\nMake sure it exists.");
         }
 
         String day = lines.getFirst();
@@ -58,7 +58,11 @@ public class Schedule {
                 continue;
             }
 
-            rinks.get(index).add(line);
+            try {
+                rinks.get(index).add(line);
+            } catch(IndexOutOfBoundsException e) {
+                throw new RuntimeException("No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.");
+            }
         }
 
         for (int i = 0; i < rinks.size(); i++) {
@@ -70,7 +74,7 @@ public class Schedule {
                 String[] split = line.split("\t");
 
                 if (split.length < 2) {
-                    throw new RuntimeException("Missing a start time which must exist");
+                    throw new RuntimeException("Missing a start time which must exist.");
                 }
 
                 if (i == 0) {

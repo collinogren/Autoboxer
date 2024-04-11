@@ -103,7 +103,7 @@ public class Official {
                 merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + " - " + rink + ".pdf"));
                 merged.close();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Failed to save papers for "+getName());
             }
         }
 

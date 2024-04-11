@@ -27,16 +27,19 @@ public class Time {
     public static long parseTimeMinutes(String timeString) {
         long time = 0;
         boolean pm = timeString.toLowerCase().contains("pm");
+        boolean twelveHour = timeString.toLowerCase().contains("m") || timeString.toLowerCase().contains("a") || timeString.toLowerCase().contains("p");
         String[] timeArray = timeString.split(":");
         time += hoursToMinutes(Long.parseLong(timeArray[0]));
         time += Long.parseLong(timeArray[1].split(" ")[0]);
 
-        if (pm && !timeArray[0].equals("12")) {
-            time += hoursToMinutes(12);
-        }
+        if (twelveHour) {
+            if (pm && !timeArray[0].equals("12")) {
+                time += hoursToMinutes(12);
+            }
 
-        if (!pm && timeArray[0].equals("12")) {
-            time -= hoursToMinutes(12);
+            if (!pm && timeArray[0].equals("12")) {
+                time -= hoursToMinutes(12);
+            }
         }
 
         return time;

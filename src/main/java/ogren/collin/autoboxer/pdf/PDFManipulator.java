@@ -87,7 +87,7 @@ public class PDFManipulator {
             stream.stroke();
             stream.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to add an officials' rectangle to a file.");
         }
 
         return document;
@@ -114,7 +114,7 @@ public class PDFManipulator {
             boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET || fileType == SIX0_STARTING_ORDERS;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to read a PDF at "+file.getPath());
         }
 
         return contents;
