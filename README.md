@@ -20,7 +20,7 @@ Friday
 102   10:30 AM   11:15 AM
 103   11:15 AM   12:15 PM
 ```
-Times may also be written in 24-hour format.
+Times may also be written in 24-hour format.<br>
 6. Download the box template zip file from [releases](https://github.com/collinogren/Autoboxer/releases) and extract to your desired location or create directories as follows:
    - 60
    - 60_sub
