@@ -15,9 +15,9 @@ I would like to extend a massive thank you to this wonderful community. I hope y
    - coversheets
    - judges
    - tech
-7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' Hal2 worksheets into '60_sub' when also using a judges' sheet, and Hal2 starting orders into '60_starting_orders.'
+7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' Hal2 worksheets into '60_sub' when also using a judges' sheet, and Hal2 starting orders into '60_starting_orders.' Note: a simpler way to think of 6.0 printing is that whatever sheet goes on top for an event goes in '60' while any sheets that go after the top sheet (a generic free skating worksheet) go into '60_sub.'
 8. Run *Autoboxer*, input the delimiter used to separate the event number from the event name,* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
-9. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing, it saves paper and frustration.
+9. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing which saves paper and frustration.
 10. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
 11. Do something else with all the time you just saved.
 
