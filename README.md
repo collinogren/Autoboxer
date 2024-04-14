@@ -5,9 +5,14 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 ## Usage Instructions
 1. Download and install the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download an automatic PDF printer to dramatically save your time and sanity. I like this open-source one called [clawPDF](https://github.com/clawsoftware/clawPDF/releases). While I do not fully expect that using a different PDF printer will break the program, it could. So if you choose to use a different PDF printer and experience issues related to parsing the PDFs, please try clawPDF before reaching out for support since clawPDF is the only supported PDF printer.
-3. Create a directory in which you will begin building your box.
-4. Inside this directory place schedule.txt.
-5. On the first line, type the day that the box is for (i.e. "Friday"). Then place "-R 'name of rink'" on the next line. On the next lines, copy all event numbers, start times, and end times in order from the 104 into schedule.txt. Copy all three columns at once. If you are building for a multi-rink competition, place "-R 'name of rink 2'" after you have enumerated all of the first rink's events then enumerate all of second rinks events. Continue this pattern until you have done so for all rinks being used for competition.<br>
+3. Download the box template zip file from [releases](https://github.com/collinogren/Autoboxer/releases) and extract to your desired location or create directories as follows:
+   - 60
+   - 60_sub
+   - 60_starting_orders
+   - coversheets
+   - judges
+   - tech
+4. Inside this directory you will find schedule.txt. Open it in a text editor and type on the first line the day that the box is for (i.e. "Friday"). Then place "-R 'name of rink'" on the next line. On the next lines, copy all event numbers, start times, and end times in order from the 104 into schedule.txt. Copy all three columns at once. If you are building for a multi-rink competition, place "-R 'name of rink 2'" after you have enumerated all of the first rink's events then enumerate all of second rinks events. Continue this pattern until you have done so for all rinks being used for competition.<br>
 Example of a schedule.txt file (times may also be written in 24-hour format):
    ```
    Friday
@@ -20,18 +25,11 @@ Example of a schedule.txt file (times may also be written in 24-hour format):
    102   10:30 AM   11:15 AM
    103   11:15 AM   12:15 PM
    ```
-6. Download the box template zip file from [releases](https://github.com/collinogren/Autoboxer/releases) and extract to your desired location or create directories as follows:
-   - 60
-   - 60_sub
-   - 60_starting_orders
-   - coversheets
-   - judges
-   - tech
-7. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' Hal2 worksheets into '60_sub' when also using a judges' sheet, and Hal2 starting orders into '60_starting_orders.' Note: a simpler way to think of 6.0 printing is that whatever sheet goes on top for an event goes in '60' while any sheets that go after the top sheet (a generic free skating worksheet) go into '60_sub.'
-8. Run *Autoboxer*, input the delimiter used to separate the event number from the event name,* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
-9. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing which saves paper and frustration.
-10. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
-11. Do something else with all the time you just saved.
+5. Use the automatic PDF printer to print IJSCompanion coversheets into 'coversheets,' IJSCompanion judges' sheets into 'judges,' ISUCalc technical panel sheets into 'tech,' Hal2 judges' sheets and worksheets (when used as the only sheet) into '60,' Hal2 worksheets into '60_sub' when also using a judges' sheet, and Hal2 starting orders into '60_starting_orders.' Note: a simpler way to think of 6.0 printing is that whatever sheet goes on top for an event goes in '60' while any sheets that go after the top sheet (a generic free skating worksheet) go into '60_sub.'
+6. Run *Autoboxer*, input the delimiter used to separate the event number from the event name,* and select the box directory which stores the other newly created directories. Wait until the program opens a window to alert you of its completion.
+7. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing which saves paper and frustration.
+8. Print each judge's combined PDFs stored sub-directories in an automatically created directory called 'box.'
+9. Do something else with all the time you just saved.
 
 *A delimiter is a string of characters that is used to tell the computer where the separations between two or more sets of data are. An already common (and the default, preferred, and tested delimiter for *Autoboxer*) is a space followed by a hyphen followed by a space (" - "). A good delimiter is a string that is not super common otherwise. However, even a space should work but be careful when naming combined events with a space as a delimiter.
 Lastly, it may be risky for a delimiter to have numbers or letters. To help visualize these rules, consider the examples below.<br>
