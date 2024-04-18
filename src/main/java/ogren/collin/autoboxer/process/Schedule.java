@@ -28,7 +28,7 @@ import java.util.List;
 
 public class Schedule {
 
-    private static ArrayList<String> rinks = new ArrayList<>();
+    private static final ArrayList<String> rinks = new ArrayList<>();
 
     ArrayList<ScheduleElement> elements = new ArrayList<>();
 

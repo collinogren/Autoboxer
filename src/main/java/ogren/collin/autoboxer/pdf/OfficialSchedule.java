@@ -20,7 +20,6 @@ package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
-import ogren.collin.autoboxer.utility.StringUtilities;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;

@@ -32,6 +32,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -200,7 +201,7 @@ public class MasterController {
                 }
             }
 
-            UI.addProgress(((1.0 / numberOfEvents) / 8.0) / 2.0);
+            UI.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
@@ -215,8 +216,8 @@ public class MasterController {
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
-        PDDocument taSheets = new PDDocument();
-        PDDocument startingOrders = new PDDocument();
+        HashMap<String, PDDocument> taSheets = new HashMap<>();
+        HashMap<String, PDDocument> startingOrders = new HashMap<>();
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
@@ -224,11 +225,19 @@ public class MasterController {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
                     if (UI.getGenerateStartingOrders()) {
-                        addToPDF(pdfManipulator.getDocument(), startingOrders);
+                        if (!startingOrders.containsKey(se.getRink())) {
+                            startingOrders.put(se.getRink(), new PDDocument());
+                        }
+
+                        addToPDF(pdfManipulator.getDocument(), startingOrders.get(se.getRink()));
                     }
 
                     if (UI.getGenerateTASheets()) {
-                        addToPDF(pdfManipulator.getDocument(), taSheets);
+                        if (!taSheets.containsKey(se.getRink())) {
+                            taSheets.put(se.getRink(), new PDDocument());
+                        }
+
+                        addToPDF(pdfManipulator.getDocument(), taSheets.get(se.getRink()));
                     }
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
@@ -239,7 +248,11 @@ public class MasterController {
                 if (matchFileNameToEventNumber(se, file)) {
                     if (UI.getGenerateStartingOrders()) {
                         PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
-                        addToPDF(pdfManipulator.getDocument(), startingOrders);
+                        if (!startingOrders.containsKey(se.getRink())) {
+                            startingOrders.put(se.getRink(), new PDDocument());
+                        }
+
+                        addToPDF(pdfManipulator.getDocument(), startingOrders.get(se.getRink()));
                     }
                 }
             }
@@ -257,27 +270,31 @@ public class MasterController {
         }
 
         if (UI.getGenerateTASheets()) {
-            try {
-                File file = new File(baseDir+"/"+TA_DIR+"/TA Sheets.pdf");
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
+            for (String rink : Schedule.getRinks()) {
+                try {
+                    File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
+                    taSheets.get(rink).save(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Failed to save TA sheets.");
                 }
-                taSheets.save(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to save TA sheets.");
             }
         }
 
         if (UI.getGenerateStartingOrders()) {
-            try {
-                File file = new File(baseDir+"/"+STARTING_ORDER_DIR+"/Starting Orders.pdf");
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
+            for (String rink : Schedule.getRinks()) {
+                try {
+                    File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
+                    startingOrders.get(rink).save(file);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save starting orders.");
                 }
-                startingOrders.save(file);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to save starting orders.");
             }
         }
     }
