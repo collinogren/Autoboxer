@@ -270,31 +270,44 @@ public class MasterController {
             GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
 
-        if (GUIFXController.getGenerateTASheets()) {
+        generateStartingOrders(startingOrders);
+        generateTASheets(taSheets);
+    }
+
+    private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
+        if (GUIFXController.getGenerateStartingOrders()) {
             for (String rink : Schedule.getRinks()) {
-                try {
-                    File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
+                if (startingOrders.containsKey(rink)) {
+                    try {
+                        File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");
+                        if (!file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                        PDDocument document = startingOrders.get(rink);
+                        document.save(file);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to save starting orders.");
                     }
-                    taSheets.get(rink).save(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Failed to save TA sheets.");
                 }
             }
         }
+    }
 
-        if (GUIFXController.getGenerateStartingOrders()) {
+    private void generateTASheets(HashMap<String, PDDocument> taSheets) {
+        if (GUIFXController.getGenerateTASheets()) {
             for (String rink : Schedule.getRinks()) {
-                try {
-                    File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");
-                    if (!file.getParentFile().exists()) {
-                        file.getParentFile().mkdirs();
+                if (taSheets.containsKey(rink)) {
+                    try {
+                        File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
+                        if (!file.getParentFile().exists()) {
+                            file.getParentFile().mkdirs();
+                        }
+                        PDDocument document = taSheets.get(rink);
+                        document.save(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("Failed to save TA sheets.");
                     }
-                    startingOrders.get(rink).save(file);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to save starting orders.");
                 }
             }
         }
