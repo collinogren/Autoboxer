@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.UI;
 import ogren.collin.autoboxer.control.MasterController;
+import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.OfficialSchedule;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -53,7 +54,7 @@ public class Official {
 
     public PDDocument merge(String rink) {
         PDDocument mergedDocument;
-        if (UI.getGenerateSchedule() && !hasPrinted) {
+        if (GUIFXController.getGenerateSchedule() && !hasPrinted) {
             mergedDocument = OfficialSchedule.generateSchedule(this);
         } else {
             mergedDocument = new PDDocument();

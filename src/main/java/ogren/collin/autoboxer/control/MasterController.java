@@ -19,6 +19,7 @@
 package ogren.collin.autoboxer.control;
 
 import ogren.collin.autoboxer.UI;
+import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
@@ -92,8 +93,8 @@ public class MasterController {
         for (Official official : officials) {
             official.save();
         }
-        UI.setProgress(100);
-        UI.setDone(true);
+        GUIFXController.setProgress(100);
+        GUIFXController.setDone(true);
     }
 
     private void renameFiles() {
@@ -201,7 +202,7 @@ public class MasterController {
                 }
             }
 
-            UI.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
+            GUIFXController.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
@@ -224,7 +225,7 @@ public class MasterController {
                 if (matchFileNameToEventNumber(se, file)) {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-                    if (UI.getGenerateStartingOrders()) {
+                    if (GUIFXController.getGenerateStartingOrders()) {
                         if (!startingOrders.containsKey(se.getRink())) {
                             startingOrders.put(se.getRink(), new PDDocument());
                         }
@@ -232,7 +233,7 @@ public class MasterController {
                         addToPDF(pdfManipulator.getDocument(), startingOrders.get(se.getRink()));
                     }
 
-                    if (UI.getGenerateTASheets()) {
+                    if (GUIFXController.getGenerateTASheets()) {
                         if (!taSheets.containsKey(se.getRink())) {
                             taSheets.put(se.getRink(), new PDDocument());
                         }
@@ -246,7 +247,7 @@ public class MasterController {
 
             for (File file : six0StartingOrders) {
                 if (matchFileNameToEventNumber(se, file)) {
-                    if (UI.getGenerateStartingOrders()) {
+                    if (GUIFXController.getGenerateStartingOrders()) {
                         PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
                         if (!startingOrders.containsKey(se.getRink())) {
                             startingOrders.put(se.getRink(), new PDDocument());
@@ -266,10 +267,10 @@ public class MasterController {
                 }
             }
 
-            UI.addProgress(((1.0 / numberOfEvents)) / 2.0);
+            GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
 
-        if (UI.getGenerateTASheets()) {
+        if (GUIFXController.getGenerateTASheets()) {
             for (String rink : Schedule.getRinks()) {
                 try {
                     File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
@@ -284,7 +285,7 @@ public class MasterController {
             }
         }
 
-        if (UI.getGenerateStartingOrders()) {
+        if (GUIFXController.getGenerateStartingOrders()) {
             for (String rink : Schedule.getRinks()) {
                 try {
                     File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");

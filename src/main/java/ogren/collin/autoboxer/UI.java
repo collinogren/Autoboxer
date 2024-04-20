@@ -1,6 +1,7 @@
 package ogren.collin.autoboxer;
 
 import ogren.collin.autoboxer.control.MasterController;
+import ogren.collin.autoboxer.gui.GUIFX;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -46,6 +47,7 @@ public class UI {
 
     public static void begin() {
         icon = UI.class.getResource("/Autoboxer.png");
+        /*
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch(Exception ex) {
@@ -54,7 +56,7 @@ public class UI {
 
         //test();
 
-        boxOptions();
+        boxOptions();*/
 
     }
 

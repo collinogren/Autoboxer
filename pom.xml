@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ogren.collin.autoboxer.Main</mainClass>
+                            <mainClass>ogren.collin.autoboxer.gui.GUIFX</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
