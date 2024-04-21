@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.gui;
 
+import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,13 +41,15 @@ public class GUIFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
 
-        mainScene = new Scene(root, 300, 200);
+        mainScene = new Scene(root, 350, 250);
 
         autoboxerIcon = new Image("/Autoboxer.png");
 
         stage.getIcons().add(autoboxerIcon);
+        stage.setResizable(false);
         stage.setTitle("Autoboxer");
         stage.setScene(mainScene);
         stage.show();
