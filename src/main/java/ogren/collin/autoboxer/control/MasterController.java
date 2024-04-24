@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MasterController {
 
-    private static final String COVERSHEET_DIR = "coversheets";
-    private static final String JUDGE_SHEETS_DIR = "judges";
-    private static final String TECH_PANEL_DIR = "tech";
-    private static final String SIX0_PRIMARY_DIR = "60";
-    private static final String SIX0_SUBSEQUENT_DIR = "60_sub";
-    private static final String SIX0_STARTING_ORDERS_DIR = "60_starting_orders";
+    public static final String COVERSHEET_DIR = "coversheets";
+    public static final String JUDGE_SHEETS_DIR = "judges";
+    public static final String TECH_PANEL_DIR = "tech";
+    public static final String SIX0_PRIMARY_DIR = "60";
+    public static final String SIX0_SUBSEQUENT_DIR = "60_sub";
+    public static final String SIX0_STARTING_ORDERS_DIR = "60_starting_orders";
 
     private static final String BOX_DIR = "box";
     private static final String TA_DIR = "box/TA";

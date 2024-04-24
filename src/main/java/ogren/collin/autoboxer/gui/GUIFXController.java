@@ -20,11 +20,16 @@ package ogren.collin.autoboxer.gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -32,7 +37,9 @@ import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +48,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     private static double progress = 0.0;
     private static boolean isDone = false;
+
+    private final ArrayList<String> rinkSchedules = new ArrayList<>();
 
     public static void setProgress(double d) {
         progress = d;
@@ -58,22 +67,48 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private static boolean generateStartingOrders = true;
     private static boolean generateTASheets = true;
 
+    private File boxDirectory;
+
     @FXML
-    private Button cancelButton, generateButton;
+    private Button cancelButton, browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
     private CheckBox generateSSButton, generateSOButton, generateTAButton, removeZerosButton;
 
     @FXML
-    private TextField delimiterField;
+    private TextField delimiterField, boxDirectoryField;
+
+    @FXML
+    TabPane tabPane;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        newTabButton();
+        createRinkView();
+        boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
+            boxDirectory = new File(newValue);
+            setDirDependentButtonsDisabled();
+        });
     }
 
     @FXML
     private void cancel() {
         closeStage(cancelButton);
+    }
+
+    @FXML void browse() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Autoboxer");
+        File tempBoxDirectory = directoryChooser.showDialog(generateButton.getScene().getWindow());
+        if (tempBoxDirectory != null) {
+            boxDirectory = tempBoxDirectory;
+        }
+        if (boxDirectory != null) {
+            if (boxDirectory.exists()) {
+                boxDirectoryField.setText(boxDirectory.getPath());
+            }
+        }
+        setDirDependentButtonsDisabled();
     }
 
     @FXML
@@ -101,6 +136,112 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void removeLeadingZeros() {
         PDFManipulator.setRemoveLeadingZeros(removeZerosButton.isSelected());
+    }
+
+    @FXML
+    private void setClawPrintDirCoversheets() {
+        setClawPDFRegVariable(MasterController.COVERSHEET_DIR);
+    }
+
+    @FXML
+    private void setClawPrintDirJudge() {
+        setClawPDFRegVariable(MasterController.JUDGE_SHEETS_DIR);
+    }
+
+    @FXML
+    private void setClawPrintDirTech() {
+        setClawPDFRegVariable(MasterController.TECH_PANEL_DIR);
+    }
+
+    @FXML
+    private void setClawPrintDirSix0() {
+        setClawPDFRegVariable(MasterController.SIX0_PRIMARY_DIR);
+    }
+
+    @FXML private void setClawPrintDirSix0Sub() {
+        setClawPDFRegVariable(MasterController.SIX0_SUBSEQUENT_DIR);
+    }
+
+    @FXML
+    private void setClawPrintDirSix0SS() {
+        setClawPDFRegVariable(MasterController.SIX0_STARTING_ORDERS_DIR);
+    }
+
+    private void createRinkView() {
+        Tab tab = new Tab();
+        tab.setClosable(tabPane.getTabs().size() > 2);
+        String rinkString = "Rink "+(tabPane.getTabs().size() - 1);
+        tab.setText(rinkString);
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(5, 5, 5, 5));
+        TextField textField = new TextField();
+        textField.setPromptText("Rink Name");
+
+        rinkSchedules.add(tab.getText()+"\n"+rinkString);
+        int index = rinkSchedules.size() - 1;
+
+        TextArea textArea = new TextArea();
+        VBox.setVgrow(textArea, Priority.ALWAYS);
+
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            rinkSchedules.set(index, "-R "+tab.getText()+"\n"+newValue);
+        });
+
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            tab.setText(newValue);
+            rinkSchedules.set(index, "-R "+tab.getText()+"\n"+textArea.getText());
+        });
+
+        vbox.getChildren().add(textField);
+        vbox.getChildren().add(textArea);
+
+        tab.setOnClosed(event -> rinkSchedules.set(index, ""));
+
+        tab.setContent(vbox);
+
+        tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
+    }
+
+    private void newTabButton() {
+        Tab addTab = new Tab("+"); // You can replace the text with an icon
+        addTab.setClosable(false);
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if(newTab == addTab) {
+                createRinkView(); // Adding new tab before the "button" tab
+                tabPane.getSelectionModel().select(tabPane.getTabs().size() - 2); // Selecting the tab before the button, which is the newly created one
+            }
+        });
+
+        tabPane.getTabs().add(addTab);
+    }
+
+    private void setClawPDFRegVariable(String endDir) {
+        String directory = boxDirectory.getPath().replace("/", "\\").replace("\\", "\\\\") + "\\\\" + endDir;
+        try {
+            String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\""+directory+"\"", "/f"};
+            Runtime.getRuntime().exec(regCommand);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setDirDependentButtonsDisabled() {
+        try {
+            setDirDependentButtonsDisabledDirectly(!boxDirectory.exists());
+        } catch (NullPointerException npe) {
+            setDirDependentButtonsDisabledDirectly(true);
+        }
+    }
+
+    private void setDirDependentButtonsDisabledDirectly(boolean b) {
+        generateButton.setDisable(b);
+        coversheetsButton.setDisable(b);
+        judgeButton.setDisable(b);
+        techButton.setDisable(b);
+        six0Button.setDisable(b);
+        six0SubButton.setDisable(b);
+        six0SSButton.setDisable(b);
     }
 
     public static void setGenerateSchedule(boolean b) {
@@ -133,9 +274,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
     }
 
     private void generateBox() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Autoboxer");
-        File boxDirectory = directoryChooser.showDialog(generateButton.getScene().getWindow());
         try {
             if (boxDirectory.exists()) {
                 new ProgressGUIFX().start((Stage) generateButton.getScene().getWindow());

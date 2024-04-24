@@ -44,7 +44,7 @@ public class GUIFX extends Application {
         Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
 
-        mainScene = new Scene(root, 350, 250);
+        mainScene = new Scene(root, 550, 350);
 
         autoboxerIcon = new Image("/Autoboxer.png");
 

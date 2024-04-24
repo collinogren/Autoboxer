@@ -32,55 +32,133 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
+<AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="312.0" prefWidth="475.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
    <children>
-      <VBox layoutX="10.399999618530273" layoutY="10.399999618530273" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <children>
-            <GridPane alignment="CENTER_LEFT" hgap="5.0" vgap="10.0" VBox.vgrow="ALWAYS">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <CheckBox fx:id="generateSSButton" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" />
-                  <CheckBox fx:id="generateSOButton" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="1" />
-                  <CheckBox fx:id="generateTAButton" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="2" />
-                  <CheckBox fx:id="removeZerosButton" mnemonicParsing="false" onAction="#removeLeadingZeros" selected="true" text="Remove Leading Zeros" GridPane.rowIndex="3" />
-               </children>
-            </GridPane>
-            <GridPane hgap="5.0" prefWidth="1190.0" vgap="10.0" VBox.vgrow="ALWAYS">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="137.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="137.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <TextField fx:id="delimiterField" text=" - " GridPane.columnIndex="1" />
-                  <Label text="Event Number Delimiter" />
-                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancel" prefWidth="1.0E11" text="Cancel" GridPane.rowIndex="1" />
-                  <Button fx:id="generateButton" mnemonicParsing="false" onAction="#generate" prefWidth="1.0E11" text="Generate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               </children>
-            </GridPane>
-         </children>
-      </VBox>
+      <TabPane fx:id="tabPane" layoutX="11.2" layoutY="-23.2" prefHeight="288.0" prefWidth="454.0" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <tabs>
+            <Tab closable="false" text="Control Panel">
+               <content>
+                  <HBox spacing="5.0">
+                     <children>
+                        <VBox prefHeight="179.0" prefWidth="286.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <GridPane alignment="CENTER_LEFT" hgap="5.0" vgap="5.0" VBox.vgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <CheckBox fx:id="generateSSButton" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" />
+                                    <CheckBox fx:id="generateSOButton" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="1" />
+                                    <CheckBox fx:id="generateTAButton" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="removeZerosButton" mnemonicParsing="false" onAction="#removeLeadingZeros" selected="true" text="Remove Leading Zeros" GridPane.rowIndex="3" />
+                                 </children>
+                              </GridPane>
+                              <HBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Separator HBox.hgrow="ALWAYS" />
+                                    <Label alignment="CENTER" text="Box Setup" textAlignment="CENTER" />
+                                    <Separator HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.20001220703125" minWidth="10.0" prefWidth="152.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="122.60001220703126" minWidth="10.0" prefWidth="61.599999999999994" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="159.40002441406247" minWidth="10.0" prefWidth="95.19997558593747" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label alignment="CENTER" text="Event Number Delimiter" textAlignment="CENTER" />
+                                    <TextField fx:id="delimiterField" prefWidth="69.0" text=" - " GridPane.columnIndex="1" />
+                                    <TextField promptText="Day" GridPane.columnIndex="2">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                 </children>
+                              </GridPane>
+                              <GridPane hgap="5.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.4000244140625" minWidth="10.0" prefWidth="71.8" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="239.79999999999998" minWidth="10.0" prefWidth="235.79999999999998" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Box Directory" />
+                                    <TextField fx:id="boxDirectoryField" promptText="Use the &quot;browse&quot; button below" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                              <GridPane hgap="5.0" vgap="5.0" VBox.vgrow="ALWAYS">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="137.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="137.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="137.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button fx:id="cancelButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+                                    <Button fx:id="generateButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#generate" text="Generate" GridPane.columnIndex="2" />
+                                    <Button fx:id="browseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browse" text="Browse" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        <Separator orientation="VERTICAL" prefHeight="200.0" />
+                        <GridPane vgap="5.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="ClawPDF Print Directory" textAlignment="CENTER" />
+                              <Button fx:id="six0Button" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0" text="6.0" GridPane.rowIndex="4" />
+                              <Button fx:id="six0SubButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0Sub" text="6.0 Sub" GridPane.rowIndex="5" />
+                              <Button fx:id="six0SSButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0SS" text="6.0 Starting Orders" GridPane.rowIndex="6" />
+                              <Button fx:id="coversheetsButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirCoversheets" text="IJS Coversheets" GridPane.rowIndex="1" />
+                              <Button fx:id="judgeButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirJudge" text="IJS Judge" GridPane.rowIndex="2" />
+                              <Button fx:id="techButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirTech" text="IJS Tech" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </HBox>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
    </children>
 </AnchorPane>
