@@ -47,10 +47,9 @@ public class OfficialSchedule {
     public static PDDocument generateSchedule(Official official) {
         PDPage page = new PDPage(PDRectangle.LETTER);
         PDDocument document = new PDDocument();
-        document.addPage(page);
         String day = official.getScheduleElements().getFirst().scheduleElement().getDay();
 
-        try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+        try {
             float pageWidth = page.getMediaBox().getWidth() - MARGIN * 2;
             Table.TableBuilder tableBuilder = Table.builder()
                     .addColumnsOfWidth(pageWidth * TIME_WIDTH / 100f,
@@ -141,11 +140,11 @@ public class OfficialSchedule {
 
             RepeatedHeaderTableDrawer.builder()
                     .numberOfRowsToRepeat(2)
-                    .contentStream(contentStream)
+                    .table(tableBuilder.build())
                     .startX(MARGIN)
                     .startY(page.getMediaBox().getUpperRightY() - MARGIN)
-                    .table(tableBuilder.build())
-                    .build().draw(() -> document, () -> page, MARGIN);
+                    .endY(page.getMediaBox().getLowerLeftY() + MARGIN)
+                    .build().draw(() -> document, () -> new PDPage(PDRectangle.LETTER), MARGIN);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
