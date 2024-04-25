@@ -57,6 +57,7 @@ public class EventSet {
             try {
                 document.close();
             } catch (IOException e) {
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

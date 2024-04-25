@@ -117,20 +117,25 @@ public class OfficialSchedule {
                         roles.append(", ");
                     }
                 }
-                tableBuilder.addRow(
-                        Row.builder()
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
-                                .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                .backgroundColor(Color.WHITE)
-                                .textColor(Color.BLACK)
-                                .font(Standard14Fonts.FontName.HELVETICA)
-                                .fontSize(10)
-                                .horizontalAlignment(HorizontalAlignment.CENTER)
-                                .build());
+                try {
+                    tableBuilder.addRow(
+                            Row.builder()
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                                    .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                                    .backgroundColor(Color.WHITE)
+                                    .textColor(Color.BLACK)
+                                    .font(Standard14Fonts.FontName.HELVETICA)
+                                    .fontSize(10)
+                                    .horizontalAlignment(HorizontalAlignment.CENTER)
+                                    .build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Error processing event "+scheduleElement.scheduleElement().getEventNumber() + " " + scheduleElement.scheduleElement().getEventName());
+                }
             }
 
 
@@ -142,6 +147,7 @@ public class OfficialSchedule {
                     .table(tableBuilder.build())
                     .build().draw(() -> document, () -> page, MARGIN);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

@@ -220,6 +220,7 @@ public class UI {
                 try {
                     Thread.sleep(16);
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                     throw new RuntimeException(e);
                 }
                 progressBar.setValue((int) (progress * 100.0));

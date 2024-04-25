@@ -37,6 +37,7 @@ public class Schedule {
         try {
             lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to read schedule.txt.\nMake sure it exists.");
         }
 
@@ -61,6 +62,7 @@ public class Schedule {
             try {
                 rinks.get(index).add(line);
             } catch(IndexOutOfBoundsException e) {
+                e.printStackTrace();
                 throw new RuntimeException("No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.");
             }
         }
@@ -115,5 +117,40 @@ public class Schedule {
 
     public ArrayList<ScheduleElement> getElements() {
         return elements;
+    }
+
+    public static String[] readScheduleFileToString(File directory) {
+        File file = new File(directory.getPath() + "/schedule.txt");
+        String contents = "";
+        try {
+            contents = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException ignored) {}
+
+        return contents.split("-[rR] ");
+    }
+
+    public static void saveSchedule(File directory, String day, ArrayList<String> rinks) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(day);
+        builder.append("\n");
+
+        for (String rink : rinks) {
+            if (rink.isEmpty()) {
+                continue;
+            }
+            builder.append(rink);
+            builder.append("\n");
+        }
+
+        try {
+            File file = new File(directory.getPath() + "/schedule.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileUtils.write(file, builder.toString(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

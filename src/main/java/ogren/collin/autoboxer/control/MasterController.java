@@ -174,6 +174,7 @@ public class MasterController {
         try {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
@@ -286,6 +287,7 @@ public class MasterController {
                         PDDocument document = startingOrders.get(rink);
                         document.save(file);
                     } catch (IOException e) {
+                        e.printStackTrace();
                         throw new RuntimeException("Failed to save starting orders.");
                     }
                 }
@@ -356,6 +358,7 @@ public class MasterController {
                 try {
                     eventSet.push(Loader.loadPDF(file));
                 } catch (IOException e) {
+                    e.printStackTrace();
                     throw new RuntimeException("Failed to retrieve 6.0 subsequent worksheets.");
                 }
             }
@@ -390,6 +393,7 @@ public class MasterController {
                     try {
                         eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
+                        e.printStackTrace();
                         throw new RuntimeException("Failed to load a PDF at "+file.getPath());
                     }
                 }

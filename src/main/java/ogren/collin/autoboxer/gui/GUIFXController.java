@@ -26,6 +26,13 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -35,9 +42,13 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
+import ogren.collin.autoboxer.process.Schedule;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -70,13 +81,16 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private File boxDirectory;
 
     @FXML
-    private Button cancelButton, browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
+    private MenuItem openMenu, saveMenu, closeMenu, aboutMenu;
+
+    @FXML
+    private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
     private CheckBox generateSSButton, generateSOButton, generateTAButton, removeZerosButton;
 
     @FXML
-    private TextField delimiterField, boxDirectoryField;
+    private TextField delimiterField, boxDirectoryField, dayField;
 
     @FXML
     TabPane tabPane;
@@ -84,16 +98,15 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         newTabButton();
-        createRinkView();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
             boxDirectory = new File(newValue);
             setDirDependentButtonsDisabled();
         });
     }
 
-    @FXML
-    private void cancel() {
-        closeStage(cancelButton);
+    public void setup(Scene scene) {
+        KeyCombination saveCombo = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+        scene.getAccelerators().put(saveCombo, this::saveMenuAction);
     }
 
     @FXML void browse() {
@@ -105,7 +118,34 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
         if (boxDirectory != null) {
             if (boxDirectory.exists()) {
+                rinkSchedules.clear();
                 boxDirectoryField.setText(boxDirectory.getPath());
+
+                if (tabPane.getTabs().size() >= 2) {
+                    tabPane.getTabs().removeIf(Tab::isClosable);
+                }
+
+                String[] contentsByRink = Schedule.readScheduleFileToString(boxDirectory);
+                dayField.setText(contentsByRink[0].trim());
+
+                for (int j = 1; j < contentsByRink.length; j++) {
+                    String[] lines = contentsByRink[j].split("\n");
+                    String rinkName = "";
+                    StringBuilder scheduleText = new StringBuilder();
+                    for (int i = 0; i < lines.length; i++) {
+                        if (i == 0) {
+                            rinkName = lines[i].trim();
+                            continue;
+                        }
+
+                        scheduleText.append(lines[i]);
+                        if (i != lines.length - 1) {
+                            scheduleText.append("\n");
+                        }
+                    }
+
+                    createRinkView(rinkName, scheduleText.toString());
+                }
             }
         }
         setDirDependentButtonsDisabled();
@@ -167,22 +207,52 @@ public class GUIFXController implements javafx.fxml.Initializable {
         setClawPDFRegVariable(MasterController.SIX0_STARTING_ORDERS_DIR);
     }
 
-    private void createRinkView() {
+    @FXML
+    private void openMenuAction() {
+        browse();
+    }
+
+    @FXML
+    private void saveMenuAction() {
+        if (boxDirectory != null) {
+            if (boxDirectory.exists() && tabPane.getTabs().size() > 2) {
+                Schedule.saveSchedule(boxDirectory, dayField.getText(), rinkSchedules);
+            }
+        }
+    }
+
+    @FXML
+    private void closeMenuAction() {
+        closeStage(generateButton);
+    }
+
+    @FXML
+    private void aboutMenuAction() {
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createRinkView(String rinkName, String textContent) {
         Tab tab = new Tab();
-        tab.setClosable(tabPane.getTabs().size() > 2);
-        String rinkString = "Rink "+(tabPane.getTabs().size() - 1);
-        tab.setText(rinkString);
+        tab.setClosable(true);
+        tab.setText(rinkName);
         VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(5, 5, 5, 5));
         TextField textField = new TextField();
+        textField.setText(rinkName);
         textField.setPromptText("Rink Name");
 
-        rinkSchedules.add(tab.getText()+"\n"+rinkString);
-        int index = rinkSchedules.size() - 1;
-
         TextArea textArea = new TextArea();
+        textArea.setText(textContent);
         VBox.setVgrow(textArea, Priority.ALWAYS);
+
+        rinkSchedules.add("-R " + rinkName+"\n"+ textContent);
+        int index = rinkSchedules.size() - 1;
 
         textArea.textProperty().addListener((observable, oldValue, newValue) -> {
             rinkSchedules.set(index, "-R "+tab.getText()+"\n"+newValue);
@@ -196,7 +266,20 @@ public class GUIFXController implements javafx.fxml.Initializable {
         vbox.getChildren().add(textField);
         vbox.getChildren().add(textArea);
 
-        tab.setOnClosed(event -> rinkSchedules.set(index, ""));
+        if (boxDirectory != null) {
+            if (boxDirectory.exists()) {
+                generateButton.setDisable(false);
+                saveMenu.setDisable(false);
+            }
+        }
+
+        tab.setOnClosed(event -> {
+            rinkSchedules.set(index, "");
+            if (tabPane.getTabs().size() < 3) {
+                saveMenu.setDisable(true);
+                generateButton.setDisable(true);
+            }
+        });
 
         tab.setContent(vbox);
 
@@ -208,7 +291,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         addTab.setClosable(false);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if(newTab == addTab) {
-                createRinkView(); // Adding new tab before the "button" tab
+                createRinkView("Rink "+(tabPane.getTabs().size() - 1), ""); // Adding new tab before the "button" tab
                 tabPane.getSelectionModel().select(tabPane.getTabs().size() - 2); // Selecting the tab before the button, which is the newly created one
             }
         });
@@ -222,6 +305,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
             String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\""+directory+"\"", "/f"};
             Runtime.getRuntime().exec(regCommand);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -242,6 +326,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0Button.setDisable(b);
         six0SubButton.setDisable(b);
         six0SSButton.setDisable(b);
+        saveMenu.setDisable(b);
     }
 
     public static void setGenerateSchedule(boolean b) {
@@ -290,6 +375,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Error");
                             alert.setContentText("Failed to generate the box.\n"+e.getMessage());
+                            e.printStackTrace();
                             alert.show();
                             isDone = true;
                         });
@@ -313,6 +399,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                 closeStage(generateButton);
             }
         } catch (NullPointerException npe) {} catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -346,6 +433,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                     try {
                         Thread.sleep(16);
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     }
                     Platform.runLater(() -> {

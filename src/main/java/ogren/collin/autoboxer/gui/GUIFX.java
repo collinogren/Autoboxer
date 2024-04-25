@@ -42,9 +42,13 @@ public class GUIFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
+        FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
+        Parent root = fxmlLoader.load();
 
-        mainScene = new Scene(root, 550, 350);
+        mainScene = new Scene(root, 550, 375);
+
+        GUIFXController controller = fxmlLoader.getController();
+        controller.setup(mainScene);
 
         autoboxerIcon = new Image("/Autoboxer.png");
 

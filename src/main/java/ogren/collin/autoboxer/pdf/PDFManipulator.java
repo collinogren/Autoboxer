@@ -87,6 +87,7 @@ public class PDFManipulator {
             stream.stroke();
             stream.close();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to add an officials' rectangle to a file.");
         }
 
@@ -114,6 +115,7 @@ public class PDFManipulator {
             boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET || fileType == SIX0_STARTING_ORDERS;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Failed to read a PDF at "+file.getPath());
         }
 
@@ -128,6 +130,7 @@ public class PDFManipulator {
         try {
             document.close();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -205,6 +208,7 @@ public class PDFManipulator {
             FileUtils.copyFile(file, new File(destination));
             setRenamed(true);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -367,6 +371,7 @@ public class PDFManipulator {
             try {
                 temp.importPage(page);
             } catch (IOException e) {
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
