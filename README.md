@@ -11,17 +11,17 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 6. Open the 104 in a spreadsheet editor and hide other columns as necessary so that event number, start time, and end time columns are next to each other (you may have to copy start and end times up or down to fill in empty spaces for events that warm-up together depending on how the referee has chosen to format the 104).
 7. Highlight and copy all the values from the three columns for the desired rink and paste them into the larger text area in the rink schedule editor in Autoboxer. Repeat steps 5, 6 (as needed), and 7 (this) for every rink at the competition. Use CTRL+S or 'file->save' to save your work.
 8. On the 'clawPDF print directory' panel there are buttons to set clawPDF to print to the correct location. Use as follows:
-- ### IJS Coversheets
+- #### IJS Coversheets
   + Press 'IJS Coversheets' in Autoboxer then print from IJScompanion.
-- ### IJS Judges' Sheets
+- #### IJS Judges' Sheets
   + Press 'IJS Judge' in Autoboxer then print from IJScompanion.
-- ### IJS Technical Panel Sheets
+- #### IJS Technical Panel Sheets
   + Press 'IJS Tech' in Autoboxer then batch print from ISUCalc.
-- ### 6.0 Sheets
-  + Press '6.0' and print judges' sheets and worksheets. **Not** worksheets that go underneeth a judges' sheet such as a generic free skating worksheet, that comes next.
-- ### 6.0 Generic Free Skating Worksheets
+- #### 6.0 Sheets
+  + Press '6.0' and print judges' sheets and worksheets. **Not** worksheets that go underneeth a judges' sheet such as generic free skating worksheets, that comes next.
+- #### 6.0 Generic Free Skating Worksheets
   + Press '6.0 sub' and print worksheets for any events that require a generic free skating worksheet.
-- ### 6.0 Starting Orders
+- #### 6.0 Starting Orders
   + Press '6.0 Starting Orders and print all 6.0 starting orders for the day.
 9. Ensure the correct number delimiter* is set in Autoboxer using the corresponding text field, uncheck any unwanted settings, and press 'generate.'
 10. Digitally proof the box or alternatively print then proof on paper. Using this software lends itself well to digital proofing which saves paper and frustration.
