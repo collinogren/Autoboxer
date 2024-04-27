@@ -10,7 +10,7 @@ I would like to extend a massive thank you to this wonderful community. I hope y
 5. Press the plus (+) button next to 'control panel' near the top of the screen to create a new rink schedule, use the top, single line text field to input the name of the rink you are inputting the schedule for.
 6. Open the 104 in a spreadsheet editor and hide other columns as necessary so that event number, start time, and end time columns are next to each other (you may have to copy start and end times up or down to fill in empty spaces for events that warm-up together depending on how the referee has chosen to format the 104).
 7. Highlight and copy all the values from the three columns for the desired rink and paste them into the larger text area in the rink schedule editor in Autoboxer. Repeat steps 5, 6 (as needed), and 7 (this) for every rink at the competition. Use CTRL+S or 'file->save' to save your work.
-8. On the 'clawPDF print directory' panel there are buttons to set clawPDF to print to the correct location.
+8. On the 'clawPDF print directory' panel there are buttons to set clawPDF to print to the correct location. Use as follows:
 - ### Coversheets
   + Press 'IJS Coversheets' in Autoboxer then print from IJScompanion.
 - ### IJS Judges' Sheets
