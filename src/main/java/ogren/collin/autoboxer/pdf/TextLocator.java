@@ -107,7 +107,7 @@ public class TextLocator extends PDFTextStripper {
                     || text.equals(".")) {
                 if (builder.toString().endsWith(name)) {
                     occurrences += 1;
-                    System.out.println(builder);
+                    ErrorHandling.logger.info(builder);
                     if (occurrences >= occurrenceToBox) {
                         locationBundle = new StringLocationBundle(startingX, startingY, width, height);
                         return;

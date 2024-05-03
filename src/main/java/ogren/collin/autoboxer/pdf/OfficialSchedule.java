@@ -18,11 +18,11 @@
 
 package ogren.collin.autoboxer.pdf;
 
+import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.vandeseer.easytable.RepeatedHeaderTableDrawer;
@@ -33,6 +33,7 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class OfficialSchedule {
 
@@ -132,8 +133,9 @@ public class OfficialSchedule {
                                     .horizontalAlignment(HorizontalAlignment.CENTER)
                                     .build());
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Error processing event "+scheduleElement.scheduleElement().getEventNumber() + " " + scheduleElement.scheduleElement().getEventName());
+                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + " " + scheduleElement.scheduleElement().getEventName();
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
                 }
             }
 
@@ -146,7 +148,7 @@ public class OfficialSchedule {
                     .endY(page.getMediaBox().getLowerLeftY() + MARGIN)
                     .build().draw(() -> document, () -> new PDPage(PDRectangle.LETTER), MARGIN);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
 
@@ -154,18 +156,12 @@ public class OfficialSchedule {
     }
 
     private static String truncateRole(String role) {
-        if (role.equals("JUDGE")) {
-            return "JDG";
-        }
+        return switch (role) {
+            case "JUDGE" -> "JDG";
+            case "REFEREE" -> "REF";
+            case "VIDEO" -> "VID";
+            default -> role;
+        };
 
-        if (role.equals("REFEREE")) {
-            return "REF";
-        }
-
-        if (role.equals("VIDEO")) {
-            return "VID";
-        }
-
-        return role;
     }
 }

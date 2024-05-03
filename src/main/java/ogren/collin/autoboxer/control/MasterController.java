@@ -18,7 +18,7 @@
 
 package ogren.collin.autoboxer.control;
 
-import ogren.collin.autoboxer.UI;
+import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
@@ -28,11 +28,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,11 +50,8 @@ public class MasterController {
     private static final String BOX_DIR = "box";
     private static final String TA_DIR = "box/TA";
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
-
-    private final ArrayList<Official> officials = new ArrayList<>();
-
     private static String baseDir;
-
+    private final ArrayList<Official> officials = new ArrayList<>();
     private final Schedule schedule;
 
     private ArrayList<File> coversheets = new ArrayList<>();
@@ -64,29 +61,55 @@ public class MasterController {
     private ArrayList<File> six0SecondarySheets = new ArrayList<>();
     private ArrayList<File> six0StartingOrders = new ArrayList<>();
 
-    public static String getBaseDir() {
-        return baseDir;
-    }
-
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
         try {
-            FileUtils.deleteDirectory(new File(baseDir+"/"+COVERSHEET_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+JUDGE_SHEETS_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+TECH_PANEL_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_PRIMARY_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_SUBSEQUENT_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+SIX0_STARTING_ORDERS_DIR+"/"+"renamed"));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+TA_DIR));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+STARTING_ORDER_DIR));
-            FileUtils.deleteDirectory(new File(baseDir+"/"+BOX_DIR));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + COVERSHEET_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + JUDGE_SHEETS_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + TECH_PANEL_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_PRIMARY_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_SUBSEQUENT_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_STARTING_ORDERS_DIR + "/" + "renamed"));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + TA_DIR));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + STARTING_ORDER_DIR));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + BOX_DIR));
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not delete temp directories.\nMake sure none are open in another application.");
+            String message = "Could not delete temp directories.\nMake sure none are open in another application.";
+            Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+            throw new RuntimeException(message);
         }
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
+    public static String getBaseDir() {
+        return baseDir;
+    }
+
+    // Sub function to get the right PDFManipulators for the rename function.
+    private static ArrayList<PDFManipulator> getPDFManipulatorsToRename(ArrayList<File> files, FileType fileType) {
+        ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
+
+        // For every file, make a PDFManipulator to extract the event name and ensure that the right file type is chosen.
+        for (File file : files) {
+            PDFManipulator pdfManipulator = new PDFManipulator(file, fileType);
+
+            // Handle the fact that all technical panel sheets are printed into the same directory.
+            if (pdfManipulator.getEventName().equals(PDFManipulator.WRONG_FILE_TYPE)) {
+                continue;
+            }
+            pdfManipulators.add(pdfManipulator);
+        }
+        return pdfManipulators;
+    }
+
+    /*
+         Function to begin building the box.
+         First, rename the files.
+         File name format is #event SHEET_TYPE for most but for IJS judges' sheets they are # SHEET_TYPE First_Last judge/referee #multiplcity.
+         Files are renamed to make it quicker and easier to sort.
+         Next, sort the paperwork, then print.
+         Finally, ensure the progress bar shows 100 percent when it is done.
+     */
     public void begin() {
         renameFiles();
         doTheBox();
@@ -97,100 +120,129 @@ public class MasterController {
         GUIFXController.setDone(true);
     }
 
+    /*
+         For every sheet type, get the files from the directory they reside in, rename and copy to the renamed directory,
+         then re-retrieve all files from the renamed directory.
+         This function can easily be multithreaded, so it is.
+     */
     private void renameFiles() {
+        // Initially get technical panel sheets because this will be accessed across threads.
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
-        executor.execute(() -> {
-            try {
-                coversheets = getAllFiles(COVERSHEET_DIR);
-                rename(coversheets, FileType.IJS_COVERSHEET);
-                coversheets = getAllFiles(COVERSHEET_DIR+"/renamed/");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse coversheets.");
-            }
-        });
 
-        executor.execute(() -> {
-            try {
-                judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
-                rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
-                judgeSheets = getAllFiles(JUDGE_SHEETS_DIR+"/renamed/");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse IJS judges' sheets.");
-            }
-        });
-        executor.execute(() -> {
-            try {
-                rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse IJS referee sheets.");
-            }
-        });
-        executor.execute(() -> {
-            try {
-                rename(technicalSheets, FileType.IJS_TC_SHEET);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse technical controller sheets.");
-            }
-        });
-        executor.execute(() -> {
-            try {
-                rename(technicalSheets, FileType.IJS_TS2_SHEET);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse technical specialist 2 sheets.");
-            }
-        });
-        executor.execute(() -> {
-            try {
-                six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
-                rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
-                rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
-                six0Sheets = getAllFiles(SIX0_PRIMARY_DIR+"/renamed/");
-                six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
-                rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
-                six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR+"/renamed/");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse 6.0 judges' sheets / worksheets / subsequent worksheets.");
-            }
-        });
-        executor.execute(() -> {
-            try {
-                six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR);
-                rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
-                six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR+"/renamed");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to parse 6.0 starting orders.");
-            }
-        });
-        executor.shutdown();
+        // Create executor service to handle multithreading.
+        try (ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2)) {
 
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            // Rename coversheets.
+            executor.execute(() -> {
+                try {
+                    coversheets = getAllFiles(COVERSHEET_DIR);
+                    rename(coversheets, FileType.IJS_COVERSHEET);
+                    coversheets = getAllFiles(COVERSHEET_DIR + "/renamed/");
+                } catch (IOException e) {
+                    String message = "Failed to parse coversheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename IJS judges' sheets.
+            executor.execute(() -> {
+                try {
+                    judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
+                    rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
+                    judgeSheets = getAllFiles(JUDGE_SHEETS_DIR + "/renamed/");
+                } catch (IOException e) {
+                    String message = "Failed to parse IJS judges' sheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename IJS referee sheets.
+            executor.execute(() -> {
+                try {
+                    rename(technicalSheets, FileType.IJS_REFEREE_SHEET);
+                } catch (IOException e) {
+                    String message = "Failed to parse IJS referee sheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename technical controller sheets.
+            executor.execute(() -> {
+                try {
+                    rename(technicalSheets, FileType.IJS_TC_SHEET);
+                } catch (IOException e) {
+                    String message = "Failed to parse technical controller sheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename technical specialist 2 sheets.
+            executor.execute(() -> {
+                try {
+                    rename(technicalSheets, FileType.IJS_TS2_SHEET);
+                } catch (IOException e) {
+                    String message = "Failed to parse technical specialist 2 sheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // rename 6.0 primary and secondary sheets.
+            executor.execute(() -> {
+                try {
+                    six0Sheets = getAllFiles(SIX0_PRIMARY_DIR);
+                    rename(six0Sheets, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+                    rename(six0Sheets, FileType.SIX0_PRIMARY_WORKSHEET);
+                    six0Sheets = getAllFiles(SIX0_PRIMARY_DIR + "/renamed/");
+                    six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR);
+                    rename(six0SecondarySheets, FileType.SIX0_SECONDARY);
+                    six0SecondarySheets = getAllFiles(SIX0_SUBSEQUENT_DIR + "/renamed/");
+                } catch (IOException e) {
+                    String message = "Failed to parse 6.0 judges' sheets / worksheets / subsequent worksheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename 6.0 starting orders.
+            executor.execute(() -> {
+                try {
+                    six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR);
+                    rename(six0StartingOrders, FileType.SIX0_STARTING_ORDERS);
+                    six0StartingOrders = getAllFiles(SIX0_STARTING_ORDERS_DIR + "/renamed");
+                } catch (IOException e) {
+                    String message = "Failed to parse 6.0 starting orders.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Wait for processes to finish, and destroy the executor.
+            executor.shutdown();
+
+            try {
+                boolean ignored = executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                Logging.logger.fatal((e));
+                throw new RuntimeException(e);
+            }
         }
 
-        technicalSheets = getAllFiles(TECH_PANEL_DIR+"/renamed/");
+        /*
+            Once again since technical panel sheets are processed by multiple threads but are dumped into the same
+            folder, retrieval of the renamed files must wait until execution of the multithreaded code is finished.
+         */
+        technicalSheets = getAllFiles(TECH_PANEL_DIR + "/renamed/");
     }
 
+    // The sub function to actually rename the files within each directory.
     private void rename(ArrayList<File> files, FileType fileType) throws IOException {
         int numberOfEvents = schedule.getElements().size();
-        ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
-        for (File file : files) {
-            PDFManipulator pdfManipulator = new PDFManipulator(file, fileType);
-            if (pdfManipulator.getEventName().equals(PDFManipulator.WRONG_FILE_TYPE)) { // Handle the fact that all technical panel sheets are printed into the same directory.
-                continue;
-            }
-            pdfManipulators.add(pdfManipulator);
-        }
+        ArrayList<PDFManipulator> pdfManipulators = getPDFManipulatorsToRename(files, fileType);
         for (ScheduleElement se : schedule.getElements()) {
             for (PDFManipulator pdfManipulator : pdfManipulators) {
                 String eventName = pdfManipulator.retrieveEventName();
@@ -223,56 +275,62 @@ public class MasterController {
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
-                if (matchFileNameToEventNumber(se, file)) {
+                if (se.matchFileNameToEventNumber(file)) {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-                    if (GUIFXController.getGenerateStartingOrders()) {
-                        if (!startingOrders.containsKey(se.getRink())) {
-                            startingOrders.put(se.getRink(), new PDDocument());
-                        }
+                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
 
-                        addToPDF(pdfManipulator.getDocument(), startingOrders.get(se.getRink()));
-                    }
-
-                    if (GUIFXController.getGenerateTASheets()) {
-                        if (!taSheets.containsKey(se.getRink())) {
-                            taSheets.put(se.getRink(), new PDDocument());
-                        }
-
-                        addToPDF(pdfManipulator.getDocument(), taSheets.get(se.getRink()));
-                    }
+                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateTASheets(), taSheets, se, pdfManipulator);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
                 }
             }
 
-            for (File file : six0StartingOrders) {
-                if (matchFileNameToEventNumber(se, file)) {
-                    if (GUIFXController.getGenerateStartingOrders()) {
-                        PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
-                        if (!startingOrders.containsKey(se.getRink())) {
-                            startingOrders.put(se.getRink(), new PDDocument());
-                        }
+            sort60StartingOrders(se, startingOrders);
 
-                        addToPDF(pdfManipulator.getDocument(), startingOrders.get(se.getRink()));
-                    }
-                }
-            }
-
-            for (File file : six0Sheets) {
-                if (matchFileNameToEventNumber(se, file)) {
-                    String eventNumber = se.getEventNumber();
-                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
-                    ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                    processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
-                }
-            }
+            sort60Primary(se);
 
             GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
 
         generateStartingOrders(startingOrders);
         generateTASheets(taSheets);
+    }
+
+    private void sort60Primary(ScheduleElement se) {
+        for (File file : six0Sheets) {
+            if (se.matchFileNameToEventNumber(file)) {
+                String eventNumber = se.getEventNumber();
+                PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
+                ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
+            }
+        }
+    }
+
+    private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders) {
+        for (File file : six0StartingOrders) {
+            if (se.matchFileNameToEventNumber(file)) {
+                if (GUIFXController.getGenerateStartingOrders()) {
+                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
+                    if (!startingOrders.containsKey(se.getRink())) {
+                        startingOrders.put(se.getRink(), new PDDocument());
+                    }
+
+                    pdfManipulator.addToPDF(startingOrders.get(se.getRink()));
+                }
+            }
+        }
+    }
+
+    private void sortIJSTAAndStartingOrders(boolean generate, HashMap<String, PDDocument> sheets, ScheduleElement se, PDFManipulator pdfManipulator) {
+        if (generate) {
+            if (!sheets.containsKey(se.getRink())) {
+                sheets.put(se.getRink(), new PDDocument());
+            }
+
+            pdfManipulator.addToPDF(sheets.get(se.getRink()));
+        }
     }
 
     private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
@@ -282,12 +340,15 @@ public class MasterController {
                     try {
                         File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");
                         if (!file.getParentFile().exists()) {
-                            file.getParentFile().mkdirs();
+                            if (!file.getParentFile().mkdirs()) {
+                                Logging.logger.fatal("Failed to create directories necessary for printing starting orders.");
+                                throw new RuntimeException("Failed to create directories necessary for printing starting orders.");
+                            }
                         }
                         PDDocument document = startingOrders.get(rink);
                         document.save(file);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Logging.logger.fatal((e));
                         throw new RuntimeException("Failed to save starting orders.");
                     }
                 }
@@ -302,26 +363,19 @@ public class MasterController {
                     try {
                         File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
                         if (!file.getParentFile().exists()) {
-                            file.getParentFile().mkdirs();
+                            if (!file.getParentFile().mkdirs()) {
+                                Logging.logger.fatal("Failed to create directories necessary for printing TA sheets.");
+                                throw new RuntimeException("Failed to create directories necessary for printing TA sheets.");
+                            }
                         }
                         PDDocument document = taSheets.get(rink);
                         document.save(file);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Logging.logger.fatal((e));
                         throw new RuntimeException("Failed to save TA sheets.");
                     }
                 }
             }
-        }
-    }
-
-    private void addToPDF(PDDocument src, PDDocument dest) {
-        try {
-            for (PDPage page : src.getPages()) {
-                dest.importPage(page);
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         }
     }
 
@@ -338,9 +392,11 @@ public class MasterController {
                         retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_REFEREE_SHEET);
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                     }
-                    case JUDGE -> retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                    case JUDGE ->
+                            retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                     case TC -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TC_SHEET);
-                    case TS2 -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
+                    case TS2 ->
+                            retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
                 }
             } else {
                 retrieveSix0SecondarySheets(eventNumber, eventSet);
@@ -358,7 +414,7 @@ public class MasterController {
                 try {
                     eventSet.push(Loader.loadPDF(file));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Logging.logger.fatal((e));
                     throw new RuntimeException("Failed to retrieve 6.0 subsequent worksheets.");
                 }
             }
@@ -369,7 +425,7 @@ public class MasterController {
         for (File file : sheets) {
             String[] split = file.getName().split(" ");
             boolean incorrectFile = true;
-            for (FileType ft : matchRoleToFileTypeIJS(identity)) {
+            for (FileType ft : identity.matchRoleToFileTypeIJS()) {
                 if (fileType == ft) {
                     incorrectFile = false;
                     break;
@@ -393,43 +449,14 @@ public class MasterController {
                     try {
                         eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException("Failed to load a PDF at "+file.getPath());
+                        Logging.logger.fatal((e));
+                        throw new RuntimeException("Failed to load a PDF at " + file.getPath());
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                System.out.println("Could not find match for "+file.getName()+". Maybe it is an extra file?");
+                Logging.logger.info("Could not find match for " + file.getName() + ". Maybe it is an extra file?");
             }
         }
-    }
-
-    private ArrayList<FileType> matchRoleToFileTypeIJS(IdentityBundle identityBundle) {
-        ArrayList<FileType> types = new ArrayList<>();
-        types.add(FileType.IJS_COVERSHEET);
-        switch(identityBundle.role()) {
-            case REFEREE -> {
-                types.add(FileType.IJS_REFEREE_SHEET);
-                types.add(FileType.IJS_JUDGE_SHEET);
-                return types;
-            }
-            case JUDGE -> {
-                types.add(FileType.IJS_JUDGE_SHEET);
-                return types;
-            }
-            case TC -> {
-                types.add(FileType.IJS_TC_SHEET);
-                return types;
-            }
-            case TS2 -> {
-                types.add(FileType.IJS_TS2_SHEET);
-                return types;
-            }
-            case TS1, VIDEO, DEO -> {
-                return types;
-            }
-        }
-
-        return types;
     }
 
     private int getOfficialIndex(String name) {
@@ -441,10 +468,5 @@ public class MasterController {
 
         officials.add(new Official(name));
         return officials.size() - 1;
-    }
-
-    private boolean matchFileNameToEventNumber(ScheduleElement scheduleElement, File file) {
-        String eventNumber = file.getName().split(" ")[0];
-        return eventNumber.equalsIgnoreCase(scheduleElement.getEventNumber());
     }
 }

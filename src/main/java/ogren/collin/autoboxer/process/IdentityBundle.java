@@ -18,5 +18,61 @@
 
 package ogren.collin.autoboxer.process;
 
-public record IdentityBundle(String name, Role role, int occurrenceToBox) {
+import ogren.collin.autoboxer.pdf.FileType;
+
+import java.util.ArrayList;
+
+public class IdentityBundle {
+
+    String name;
+    Role role;
+    int occurrenceToBox;
+
+    public IdentityBundle(String name, Role role, int occurrenceToBox) {
+        this.name = name;
+        this.role = role;
+        this.occurrenceToBox = occurrenceToBox;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Role role() {
+        return role;
+    }
+
+    public int occurrenceToBox() {
+        return occurrenceToBox;
+    }
+
+    public ArrayList<FileType> matchRoleToFileTypeIJS() {
+        ArrayList<FileType> types = new ArrayList<>();
+        types.add(FileType.IJS_COVERSHEET);
+        switch(role) {
+            case REFEREE -> {
+                types.add(FileType.IJS_REFEREE_SHEET);
+                types.add(FileType.IJS_JUDGE_SHEET);
+                return types;
+            }
+            case JUDGE -> {
+                types.add(FileType.IJS_JUDGE_SHEET);
+                return types;
+            }
+            case TC -> {
+                types.add(FileType.IJS_TC_SHEET);
+                return types;
+            }
+            case TS2 -> {
+                types.add(FileType.IJS_TS2_SHEET);
+                return types;
+            }
+            case TS1, VIDEO, DEO -> {
+                return types;
+            }
+        }
+
+        return types;
+    }
+
 }

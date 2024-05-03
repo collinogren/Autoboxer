@@ -18,6 +18,9 @@
 
 package ogren.collin.autoboxer.process;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class ScheduleElement {
     private final String eventNumber;
     private String eventName;
@@ -60,6 +63,11 @@ public class ScheduleElement {
 
     public String getDay() {
         return day;
+    }
+
+    public boolean matchFileNameToEventNumber(File file) {
+        String number = file.getName().split(" ")[0];
+        return number.equalsIgnoreCase(eventNumber);
     }
 
     public String getRink() {

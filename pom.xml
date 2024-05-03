@@ -6,7 +6,7 @@
 
     <groupId>ogren.collin</groupId>
     <artifactId>Autoboxer</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.0-beta-2</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -67,6 +67,16 @@
             <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
             <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.23.1</version>
         </dependency>
     </dependencies>
 </project>

@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-
 public class GUIFX extends Application {
 
     public static Scene mainScene;

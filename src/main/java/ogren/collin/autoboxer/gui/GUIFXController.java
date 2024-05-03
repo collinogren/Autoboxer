@@ -20,8 +20,6 @@ package ogren.collin.autoboxer.gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -40,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.Schedule;
@@ -51,9 +50,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GUIFXController implements javafx.fxml.Initializable {
 
@@ -232,7 +234,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         try {
             desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
         } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e);
+            Logging.logger.error(e);
         }
     }
 
@@ -254,9 +256,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         rinkSchedules.add("-R " + rinkName+"\n"+ textContent);
         int index = rinkSchedules.size() - 1;
 
-        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
-            rinkSchedules.set(index, "-R "+tab.getText()+"\n"+newValue);
-        });
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> rinkSchedules.set(index, "-R "+tab.getText()+"\n"+newValue));
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             tab.setText(newValue);
@@ -305,7 +305,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
             String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\""+directory+"\"", "/f"};
             Runtime.getRuntime().exec(regCommand);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.logger.error(e);
             throw new RuntimeException(e);
         }
     }
@@ -375,7 +375,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Error");
                             alert.setContentText("Failed to generate the box.\n"+e.getMessage());
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
+                            Logging.logger.fatal(e.getMessage());
                             alert.show();
                             isDone = true;
                         });
@@ -398,8 +399,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                 executorService.shutdown();
                 closeStage(generateButton);
             }
-        } catch (NullPointerException npe) {} catch (Exception e) {
-            e.printStackTrace();
+        } catch (NullPointerException ignored) {} catch (Exception e) {
+            Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
     }
@@ -407,7 +408,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private static class ProgressGUIFX extends Application {
 
         @Override
-        public void start(Stage primaryStage) throws Exception {
+        public void start(Stage primaryStage) {
             Stage progressStage = new Stage();
             progressStage.setTitle("Box Progress");
             progressStage.getIcons().add(GUIFX.autoboxerIcon);
@@ -427,13 +428,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
             progressStage.setScene(progressScene);
             progressStage.show();
 
+            // Try with resources breaks the progress bar for some reason. \_(-_-)_/ Too bad.
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 while (!isDone) {
                     try {
                         Thread.sleep(16);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Logging.logger.fatal(Arrays.toString(e.getStackTrace()));
                         throw new RuntimeException(e);
                     }
                     Platform.runLater(() -> {

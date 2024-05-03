@@ -18,12 +18,14 @@
 
 package ogren.collin.autoboxer.process;
 
+import ogren.collin.autoboxer.Logging;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Schedule {
@@ -37,8 +39,9 @@ public class Schedule {
         try {
             lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to read schedule.txt.\nMake sure it exists.");
+            String message = "Failed to read schedule.txt.\nMake sure it exists.";
+            Logging.logger.fatal((e));
+            throw new RuntimeException(message);
         }
 
         String day = lines.getFirst();
@@ -62,8 +65,9 @@ public class Schedule {
             try {
                 rinks.get(index).add(line);
             } catch(IndexOutOfBoundsException e) {
-                e.printStackTrace();
-                throw new RuntimeException("No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.");
+                String message = "No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.";
+                Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                throw new RuntimeException(message);
             }
         }
 
@@ -76,6 +80,7 @@ public class Schedule {
                 String[] split = line.split("\t");
 
                 if (split.length < 2) {
+                    Logging.logger.fatal("Missing a start time which must exist.");
                     throw new RuntimeException("Missing a start time which must exist.");
                 }
 
@@ -145,11 +150,13 @@ public class Schedule {
         try {
             File file = new File(directory.getPath() + "/schedule.txt");
             if (!file.exists()) {
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    throw new IOException("Failed to create schedule.txt file");
+                }
             }
             FileUtils.write(file, builder.toString(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
     }

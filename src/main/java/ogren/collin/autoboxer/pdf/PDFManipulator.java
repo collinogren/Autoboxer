@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.pdf;
 
+import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
@@ -27,13 +28,12 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
-import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,24 +60,30 @@ public class PDFManipulator {
 
     public PDFManipulator(File file, FileType fileType) {
         this.file = file;
+
+        // Load PDF
         try {
             document = Loader.loadPDF(file);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load PDF at " + file.getPath());
+            String errorMessage = "Failed to load PDF at " + file.getPath();
+            Logging.logger.fatal("{}\n{}", e, errorMessage);
+            throw new RuntimeException(errorMessage);
         }
         this.fileType = fileType;
         contents = readContents();
     }
 
+    // Place a box around a given official's name after a certain number (usually 0) of occurrences. 0 is only not used
+    // when an official works two positions at once, i.e. referee and judge.
     public static PDDocument boxOfficial(String name, PDDocument document, int occurrenceToBox) {
         try {
-            TextLocator stripper = new TextLocator(name, occurrenceToBox);
+            // Create a rectangle (LocationBundle) which represents the box that will go around the official's name.
+            TextLocator textStripper = new TextLocator(name, occurrenceToBox);
             Writer writer = new OutputStreamWriter(new ByteArrayOutputStream());
-            stripper.writeText(document, writer);
-            StringLocationBundle locationBundle = stripper.getLocationBundle();
+            textStripper.writeText(document, writer);
+            StringLocationBundle locationBundle = textStripper.getLocationBundle();
             if (locationBundle == null) {
-                System.err.println("Failed to find judge " + name);
+                Logging.logger.warn("Failed to find judge {}", name);
                 return document;
             }
             PDPage page = document.getPage(0);
@@ -87,8 +93,9 @@ public class PDFManipulator {
             stream.stroke();
             stream.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to add an officials' rectangle to a file.");
+            String message = "Failed to add an officials' rectangle to a file.";
+            Logging.logger.fatal("{} {}", e, message);
+            throw new RuntimeException(message);
         }
 
         return document;
@@ -98,6 +105,7 @@ public class PDFManipulator {
         return eventNameDelimiter;
     }
 
+    // If the right file type was selected, return the event name. Otherwise, return the WRONG_FILE_TYPE constant.
     public String retrieveEventName() {
         String eventName;
         if (!isReallyFileType()) {
@@ -109,19 +117,22 @@ public class PDFManipulator {
         return eventName;
     }
 
+    // Parse contents to a string. Certain file types need to be sorted by position while others do not.
     private String readContents() {
         String contents;
         try {
             boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET || fileType == SIX0_STARTING_ORDERS;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to read a PDF at "+file.getPath());
+            String message = "Failed to read a PDF at "+file.getPath();
+            Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+            throw new RuntimeException(message);
         }
 
         return contents;
     }
 
+    // Verify that a file really is what it is supposed to be by checking for a string that is unique to the sheet type.
     private boolean isReallyFileType() {
         return contents.contains(getUniqueTextByType());
     }
@@ -130,11 +141,12 @@ public class PDFManipulator {
         try {
             document.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
     }
 
+    // Figure out if the event number in the schedule element equals the event number(s) on the sheet.
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
         for (String e : scrutinizeName(eventName)) {
             if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
@@ -144,6 +156,8 @@ public class PDFManipulator {
         return false;
     }
 
+    // This function takes a close look at the event name and figures out what event number(s) are in the name.
+    // It returns an array of strings which represent all event numbers in a name.
     private ArrayList<String> scrutinizeName(String eventName) {
         String eventNumberSection = eventName.split(eventNameDelimiter)[0];
         ArrayList<String> eventNumbers = new ArrayList<>();
@@ -190,6 +204,7 @@ public class PDFManipulator {
         return false;
     }
 
+
     public void rename(String eventNumber) {
         String offset = "renamed/";
         int i = 1;
@@ -208,7 +223,7 @@ public class PDFManipulator {
             FileUtils.copyFile(file, new File(destination));
             setRenamed(true);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
     }
@@ -331,13 +346,10 @@ public class PDFManipulator {
     private String extractName(String line) {
         String[] split = line.split(getUniqueTextByType());
         String correctedName = "Error";
+        //noinspection UnreachableCode
         try {
             correctedName = split[0] + " " + split[1];
-        } catch (Exception e) {
-            System.err.println(line);
-            System.err.println(getUniqueTextByType());
-            System.err.println(fileType.name());
-        }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
         correctedName = correctedName.toUpperCase();
         return correctedName;
     }
@@ -371,7 +383,7 @@ public class PDFManipulator {
             try {
                 temp.importPage(page);
             } catch (IOException e) {
-                e.printStackTrace();
+                Logging.logger.fatal((e));
                 throw new RuntimeException(e);
             }
         }
@@ -492,5 +504,15 @@ public class PDFManipulator {
         }
 
         return count;
+    }
+
+    public void addToPDF(PDDocument dest) {
+        try {
+            for (PDPage page : getDocument().getPages()) {
+                dest.importPage(page);
+            }
+        } catch (IOException ioe) {
+            Logging.logger.fatal(ioe);
+        }
     }
 }

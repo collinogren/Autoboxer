@@ -18,7 +18,7 @@
 
 package ogren.collin.autoboxer.process;
 
-import ogren.collin.autoboxer.UI;
+import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.pdf.EventSet;
@@ -31,6 +31,7 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Official {
@@ -90,11 +91,12 @@ public class Official {
     }
 
     public void save() {
-        System.out.println("Printing for "+getName());
+        Logging.logger.info("Printing for "+getName());
         for (String rink : Schedule.getRinks()) {
             if (!new File(MasterController.getBaseDir() + "/box/Officials/" + rink).exists()) {
                 boolean success = new File(MasterController.getBaseDir() + "/box/Officials/" + rink).mkdirs();
                 if (!success) {
+                    Logging.logger.fatal("Failed to create directory /box/Officials/{}", rink);
                     throw new RuntimeException("Failed to create directory /box/Officials/" + rink);
                 }
             }
@@ -103,8 +105,9 @@ public class Official {
                 merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + " - " + rink + ".pdf"));
                 merged.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Failed to save papers for "+getName());
+                String message = "Failed to save papers for "+getName();
+                Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                throw new RuntimeException(message);
             }
         }
 
