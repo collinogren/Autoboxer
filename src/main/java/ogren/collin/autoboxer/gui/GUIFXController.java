@@ -375,7 +375,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Error");
                             alert.setContentText("Failed to generate the box.\n"+e.getMessage());
-                            e.printStackTrace();
+                            System.out.println(e.getMessage());
                             Logging.logger.fatal(e.getMessage());
                             alert.show();
                             isDone = true;

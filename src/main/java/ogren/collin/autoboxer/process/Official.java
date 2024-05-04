@@ -36,8 +36,8 @@ import java.util.Collections;
 
 public class Official {
     private final String name;
-    private final ArrayList<ArrayList<EventSet>> events = new ArrayList<>();
-    private final ArrayList<ArrayList<OfficialScheduleBundle>> scheduleElements = new ArrayList<>();
+    private final ArrayList<EventSet> events = new ArrayList<>();
+    private final ArrayList<OfficialScheduleBundle> scheduleElements = new ArrayList<>();
 
     private boolean hasPrinted = false;
 
@@ -49,11 +49,8 @@ public class Official {
         return name;
     }
 
-    public void addDocument(EventSet eventSet, int set) {
-        while (events.size() <= set) {
-            events.add(new ArrayList<>());
-        }
-        events.get(set).add(eventSet);
+    public void addDocument(EventSet eventSet) {
+        events.add(eventSet);
     }
 
     public PDDocument merge(String rink) {
@@ -72,22 +69,20 @@ public class Official {
         outline.addLast(root);
 
         //PDDocument mergedDocument = new PDDocument();
-        for (ArrayList<EventSet> eventSets : events) {
-            for (EventSet event : eventSets) {
-                if (!event.getRink().equals(rink)) {
-                    continue;
-                }
-                hasPrinted = true;
-                boolean firstPage = true;
-                for (PDPage page : event.mergeDocuments().getPages()) {
-                    mergedDocument.addPage(page);
-                    if (firstPage) {
-                        PDOutlineItem coversheet = new PDOutlineItem();
-                        coversheet.setTitle(event.getEventNumber() + " - " + event.getRole());
-                        coversheet.setDestination(mergedDocument.getPage(mergedDocument.getNumberOfPages() - 1));
-                        root.addLast(coversheet);
-                        firstPage = false;
-                    }
+        for (EventSet event : events) {
+            if (!event.getRink().equals(rink)) {
+                continue;
+            }
+            hasPrinted = true;
+            boolean firstPage = true;
+            for (PDPage page : event.mergeDocuments().getPages()) {
+                mergedDocument.addPage(page);
+                if (firstPage) {
+                    PDOutlineItem coversheet = new PDOutlineItem();
+                    coversheet.setTitle(event.getEventNumber() + " - " + event.getRole());
+                    coversheet.setDestination(mergedDocument.getPage(mergedDocument.getNumberOfPages() - 1));
+                    root.addLast(coversheet);
+                    firstPage = false;
                 }
             }
         }
@@ -116,32 +111,22 @@ public class Official {
             }
         }
 
-        for (ArrayList<EventSet> eventSets : events) {
-            for (EventSet eventSet : eventSets) {
-                eventSet.close();
-            }
+        for (EventSet eventSet : events) {
+            eventSet.close();
         }
     }
 
     public ArrayList<OfficialScheduleBundle> getScheduleElements() {
-        ArrayList<OfficialScheduleBundle> scheduleBundles = new ArrayList<>();
-        for (ArrayList<OfficialScheduleBundle> osb : scheduleElements) {
-            scheduleBundles.addAll(osb);
-        }
-        return scheduleBundles;
+        return scheduleElements;
     }
 
-    public void tryAddScheduleBundle(ScheduleElement scheduleElement, Role role, int set) {
-        while (scheduleElements.size() <= set) {
-            scheduleElements.add(new ArrayList<>());
-        }
-        for (OfficialScheduleBundle officialScheduleBundle : scheduleElements.get(set)) {
+    public void tryAddScheduleBundle(ScheduleElement scheduleElement, Role role) {
+        for (OfficialScheduleBundle officialScheduleBundle : scheduleElements) {
             if (officialScheduleBundle.scheduleElement().equals(scheduleElement)) {
                 officialScheduleBundle.role().add(role.toString());
                 return;
             }
         }
-        // I don't even know what this is anymore. Looks like it handles an edge case though.
-        scheduleElements.get(set).add(new OfficialScheduleBundle(scheduleElement, new ArrayList<>(Collections.singletonList(role.name()))));
+        scheduleElements.add(new OfficialScheduleBundle(scheduleElement, new ArrayList<>(Collections.singletonList(role.name()))));
     }
 }

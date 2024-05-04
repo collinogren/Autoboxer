@@ -31,11 +31,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +51,7 @@ public class MasterController {
     private static final String TA_DIR = "box/TA";
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
     private static String baseDir;
-    private final ArrayList<Official> officials = new ArrayList<>(); // This should probably be a HashMap, but honestly, I forgot they exist.
+    private final ArrayList<Official> officials = new ArrayList<>();
     private final Schedule schedule;
 
     private ArrayList<File> coversheets = new ArrayList<>();
@@ -62,8 +60,6 @@ public class MasterController {
     private ArrayList<File> six0Sheets = new ArrayList<>();
     private ArrayList<File> six0SecondarySheets = new ArrayList<>();
     private ArrayList<File> six0StartingOrders = new ArrayList<>();
-
-    private final static int THREADS_DIVISOR = 1;
 
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
@@ -134,7 +130,7 @@ public class MasterController {
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
 
         // Create executor service to handle multithreading.
-        try (ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / THREADS_DIVISOR)) {
+        try (ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2)) {
 
             // Rename coversheets.
             executor.execute(() -> {
@@ -274,87 +270,48 @@ public class MasterController {
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
-        int numberThreads = Runtime.getRuntime().availableProcessors() / THREADS_DIVISOR; // Use half available processor cores.
-
-        int partitionSize = schedule.getElements().size() / numberThreads;
-
-        ArrayList<ArrayList<ScheduleElement>> schedulePartitions = new ArrayList<>();
-        for (int i = 0; i < numberThreads; i++) {
-            schedulePartitions.add(new ArrayList<>());
-        }
-
-        int partition = 0;
-        for (int i = 0; i < schedule.getElements().size(); i++) {
-            if (i % partitionSize == 0 && partition < numberThreads - 1) {
-                partition++;
-            }
-
-            schedulePartitions.get(partition).add(schedule.getElements().get(i));
-        }
-
-        System.out.println("Number threads: " + numberThreads);
-        System.out.println("Number partitions: " + schedulePartitions.size());
-
         HashMap<String, PDDocument> taSheets = new HashMap<>();
         HashMap<String, PDDocument> startingOrders = new HashMap<>();
+        int numberOfEvents = schedule.getElements().size();
+        for (ScheduleElement se : schedule.getElements()) {
+            for (File file : coversheets) {
+                if (se.matchFileNameToEventNumber(file)) {
+                    String eventNumber = se.getEventNumber();
+                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
+                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
 
-        try (ExecutorService executor = Executors.newFixedThreadPool(numberThreads)) {
-
-            int numberOfEvents = schedule.getElements().size();
-            for (int i = 0; i < schedulePartitions.size(); i++) {
-                final int j = i;
-                executor.execute(() -> {
-                    for (ScheduleElement se : schedulePartitions.get(j)) {
-                        for (File file : coversheets) {
-                            if (se.matchFileNameToEventNumber(file)) {
-                                String eventNumber = se.getEventNumber();
-                                PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-                                sortIJSTAAndStartingOrders(GUIFXController.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
-
-                                sortIJSTAAndStartingOrders(GUIFXController.getGenerateTASheets(), taSheets, se, pdfManipulator);
-                                ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                                processEvent(eventNumber, identityBundles, pdfManipulator, se, true, j);
-                            }
-                        }
-
-                        sort60StartingOrders(se, startingOrders);
-
-                        sort60Primary(se, j);
-
-                        GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
-                    }
-                });
+                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateTASheets(), taSheets, se, pdfManipulator);
+                    ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                    processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
+                }
             }
 
-            executor.shutdown();
+            sort60StartingOrders(se, startingOrders);
 
-            try {
-                boolean ignored = executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException e) {
-                Logging.logger.fatal((e));
-                throw new RuntimeException(e);
-            }
+            sort60Primary(se);
+
+            GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
 
         generateStartingOrders(startingOrders);
         generateTASheets(taSheets);
     }
 
-    private void sort60Primary(ScheduleElement se, int set) {
+    private void sort60Primary(ScheduleElement se) {
         for (File file : six0Sheets) {
             if (se.matchFileNameToEventNumber(file)) {
                 String eventNumber = se.getEventNumber();
                 PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                 ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                processEvent(eventNumber, identityBundles, pdfManipulator, se, false, set);
+                processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
             }
         }
     }
 
     private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders) {
-        if (GUIFXController.getGenerateStartingOrders()) {
-            for (File file : six0StartingOrders) {
-                if (se.matchFileNameToEventNumber(file)) {
+        for (File file : six0StartingOrders) {
+            if (se.matchFileNameToEventNumber(file)) {
+                if (GUIFXController.getGenerateStartingOrders()) {
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
                     if (!startingOrders.containsKey(se.getRink())) {
                         startingOrders.put(se.getRink(), new PDDocument());
@@ -422,7 +379,7 @@ public class MasterController {
         }
     }
 
-    private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, ScheduleElement scheduleElement, boolean ijs, int set) {
+    private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, ScheduleElement scheduleElement, boolean ijs) {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument();
@@ -445,8 +402,8 @@ public class MasterController {
                 retrieveSix0SecondarySheets(eventNumber, eventSet);
             }
 
-            officials.get(officialIndex).addDocument(eventSet, set);
-            officials.get(officialIndex).tryAddScheduleBundle(scheduleElement, identity.role(), set);
+            officials.get(officialIndex).addDocument(eventSet);
+            officials.get(officialIndex).tryAddScheduleBundle(scheduleElement, identity.role());
         }
     }
 
