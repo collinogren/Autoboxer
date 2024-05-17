@@ -1,7 +1,7 @@
 # Autoboxer
 This program is beta software. Always proof its outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
-This software **does not** require much, if any at all, manipulation of the 104. Any manipulation that is necessary is usually just hiding a column or two and maybe copying start and end times for events that warm-up together if the referee chose to leave those cells empty.<br>
+This software **does not** require much, if any, manipulation of the 104. Any manipulation that is necessary is usually just hiding a column or two and maybe copying start and end times for events that warm-up together if the referee chose to leave those cells empty.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
 I hope you find this software useful and I appreciate any and all feedback.<br>
 ## Acknowledgements
