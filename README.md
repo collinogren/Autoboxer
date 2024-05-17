@@ -2,6 +2,8 @@
 This program is beta software. Always proof its outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
+## Acknowledgements
+I would like to extend my deepest thanks Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
 ## Usage Instructions
 1. Download and install the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download and install [clawPDF](https://github.com/clawsoftware/clawPDF/releases). No other PDF printer is supported.
