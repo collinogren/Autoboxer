@@ -1,7 +1,7 @@
 # Autoboxer
 This program is beta software. Always proof its outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
-This software does not require much, if any at all, manipulation of the 104.<br>
+This software **does not** require much, if any at all, manipulation of the 104.<br>
 I would like to extend a massive thank you to this wonderful community. I hope you find this software useful and I appreciate any and all feedback.<br>
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
