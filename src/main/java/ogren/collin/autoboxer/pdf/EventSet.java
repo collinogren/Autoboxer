@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+// Set of all papers for an event as well as event number, role, and rink.
 public class EventSet {
     private final String eventNumber;
     private final Role role;

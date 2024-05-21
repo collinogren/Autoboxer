@@ -35,6 +35,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 
+// Generates schedule sheets for each official.
 public class OfficialSchedule {
 
     private static final float ROLE_WIDTH = 10f;
@@ -155,6 +156,7 @@ public class OfficialSchedule {
         return document;
     }
 
+    // Used to shorten the role text in the schedule sheet if the official is serving multiple roles.
     private static String truncateRole(String role) {
         return switch (role) {
             case "JUDGE" -> "JDG";

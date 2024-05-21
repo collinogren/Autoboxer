@@ -270,9 +270,11 @@ public class MasterController {
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
+        // Hashmaps for handling TA sheets and starting orders while sorting by rink.
         HashMap<String, PDDocument> taSheets = new HashMap<>();
         HashMap<String, PDDocument> startingOrders = new HashMap<>();
         int numberOfEvents = schedule.getElements().size();
+        // For every schedule element, process IJS events.
         for (ScheduleElement se : schedule.getElements()) {
             for (File file : coversheets) {
                 if (se.matchFileNameToEventNumber(file)) {
@@ -333,6 +335,7 @@ public class MasterController {
         }
     }
 
+
     private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
         if (GUIFXController.getGenerateStartingOrders()) {
             for (String rink : Schedule.getRinks()) {
@@ -382,8 +385,13 @@ public class MasterController {
     private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, ScheduleElement scheduleElement, boolean ijs) {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
-            PDDocument coversheet = pdfManipulator.reloadDocument();
-            PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
+            PDDocument circledCoversheet;
+            try (PDDocument coversheet = pdfManipulator.reloadDocument()) {
+                circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
+            } catch (IOException e) {
+                Logging.logger.fatal("Failed to reload document for event number {}", eventNumber);
+                throw new RuntimeException(e);
+            }
             EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role(), scheduleElement.getRink());
             eventSet.push(circledCoversheet);
             if (ijs) {
@@ -454,7 +462,7 @@ public class MasterController {
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                Logging.logger.info("Could not find match for " + file.getName() + ". Maybe it is an extra file?");
+                Logging.logger.info("Could not find match for {}. Maybe it is an extra file?", file.getName());
             }
         }
     }

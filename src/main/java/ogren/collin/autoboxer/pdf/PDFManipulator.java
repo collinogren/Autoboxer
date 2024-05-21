@@ -182,6 +182,7 @@ public class PDFManipulator {
         return eventNumbers;
     }
 
+    // Check if a character is a number or letter.
     private boolean isNumberOrLetter(char element) {
         for (char c = 'a'; c <= 'z'; c++) {
             if (element == c) {
@@ -204,13 +205,14 @@ public class PDFManipulator {
         return false;
     }
 
-
+    // Copy PDFs to the renamed/ directory and rename them in such a manner as to store important sorting information in the name.
     public void rename(String eventNumber) {
         String offset = "renamed/";
         int i = 1;
         String destination = getDestination(eventNumber, i, offset);
         boolean exists = new File(destination).exists();
 
+        // If the file is an IJS judge's sheet, then handle it accordingly.
         while (exists && fileType == IJS_JUDGE_SHEET) {
             i++;
             String[] split;
@@ -219,6 +221,8 @@ public class PDFManipulator {
             destination = split[0] + ".pdf";
             exists = new File(destination).exists();
         }
+
+        // Try to copy.
         try {
             FileUtils.copyFile(file, new File(destination));
             setRenamed(true);
@@ -228,6 +232,7 @@ public class PDFManipulator {
         }
     }
 
+    // Get destination of copied file.
     private String getDestination(String eventNumber, int i, String offset) {
         String judgeSheetType = "";
         String multiplicity = "";

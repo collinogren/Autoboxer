@@ -97,6 +97,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     TabPane tabPane;
 
+    // Do any initialization work such as adding listeners which cannot be added within the FXML file or setting up
+    // additional GUI components.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         newTabButton();
@@ -106,11 +108,13 @@ public class GUIFXController implements javafx.fxml.Initializable {
         });
     }
 
+    // Setup key bindings.
     public void setup(Scene scene) {
         KeyCombination saveCombo = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
         scene.getAccelerators().put(saveCombo, this::saveMenuAction);
     }
 
+    // Handle browsing for a box directory.
     @FXML void browse() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Autoboxer");
@@ -153,6 +157,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         setDirDependentButtonsDisabled();
     }
 
+    // Called by the generate button.
     @FXML
     private void generate() {
         //generateButton.getScene().getWindow().hide();
@@ -160,26 +165,31 @@ public class GUIFXController implements javafx.fxml.Initializable {
         generateBox();
     }
 
+    // Called by the generate schedule sheets checkbox.
     @FXML
     private void generateSS() {
         setGenerateSchedule(generateSSButton.isSelected());
     }
 
+    // Called by the generate starting orders checkbox.
     @FXML
     private void generateSO() {
         setGenerateStartingOrders(generateSOButton.isSelected());
     }
 
+    // Called by the generate TA sheets checkbox.
     @FXML
     private void generateTA() {
         setGenerateTASheets(generateTAButton.isSelected());
     }
 
+    // Called by the remove leading zeros checkbox.
     @FXML
     private void removeLeadingZeros() {
         PDFManipulator.setRemoveLeadingZeros(removeZerosButton.isSelected());
     }
 
+    // Each of the following functions are called by their respective buttons to change print directory.
     @FXML
     private void setClawPrintDirCoversheets() {
         setClawPDFRegVariable(MasterController.COVERSHEET_DIR);
@@ -209,11 +219,13 @@ public class GUIFXController implements javafx.fxml.Initializable {
         setClawPDFRegVariable(MasterController.SIX0_STARTING_ORDERS_DIR);
     }
 
+    // Called by the browse menu item button.
     @FXML
     private void openMenuAction() {
         browse();
     }
 
+    // Called by the save menu item button.
     @FXML
     private void saveMenuAction() {
         if (boxDirectory != null) {
@@ -223,11 +235,13 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
     }
 
+    // Called by the close menu item button.
     @FXML
     private void closeMenuAction() {
         closeStage(generateButton);
     }
 
+    // Called by the about menu item button.
     @FXML
     private void aboutMenuAction() {
         Desktop desktop = Desktop.getDesktop();
@@ -238,6 +252,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
     }
 
+    // Creates a view for editing schedules per rink.
     private void createRinkView(String rinkName, String textContent) {
         Tab tab = new Tab();
         tab.setClosable(true);
@@ -286,6 +301,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
     }
 
+    // Creates a tab which functions as a button to create a new tab behind it.
     private void newTabButton() {
         Tab addTab = new Tab("+"); // You can replace the text with an icon
         addTab.setClosable(false);
@@ -299,6 +315,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tabPane.getTabs().add(addTab);
     }
 
+    // Function to set the output directory for ClawPDF by editing the Windows registry.
     private void setClawPDFRegVariable(String endDir) {
         String directory = boxDirectory.getPath().replace("/", "\\").replace("\\", "\\\\") + "\\\\" + endDir;
         try {
@@ -429,10 +446,12 @@ public class GUIFXController implements javafx.fxml.Initializable {
             progressStage.show();
 
             // Try with resources breaks the progress bar for some reason. \_(-_-)_/ Too bad.
-            ExecutorService executor = Executors.newSingleThreadExecutor();
+            ExecutorService executor = Executors.newFixedThreadPool(1);
             executor.execute(() -> {
                 while (!isDone) {
                     try {
+                        // This should be replaced with something other than busy waiting in the future but it is not
+                        // a huge concern.
                         Thread.sleep(16);
                     } catch (InterruptedException e) {
                         Logging.logger.fatal(Arrays.toString(e.getStackTrace()));

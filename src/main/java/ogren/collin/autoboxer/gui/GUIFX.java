@@ -38,6 +38,7 @@ public class GUIFX extends Application {
 
     public static Image autoboxerIcon;
 
+    // Initialize JavaFX application.
     @Override
     public void start(Stage stage) throws Exception {
         Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
