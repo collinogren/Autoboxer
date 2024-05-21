@@ -7,6 +7,9 @@ I hope you find this software useful and I appreciate any and all feedback.<br>
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
 ## Usage Instructions
+### Video Tutorial
+https://www.youtube.com/watch?v=hrlnE_wniC8
+### Text Tutorial
 1. Download and install the program from [releases](https://github.com/collinogren/Autoboxer/releases) or build from source.
 2. Download and install [clawPDF](https://github.com/clawsoftware/clawPDF/releases). No other PDF printer is supported.
 3. Create a directory to build the box.
