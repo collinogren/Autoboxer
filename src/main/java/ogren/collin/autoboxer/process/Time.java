@@ -28,6 +28,15 @@ public class Time {
         long time = 0;
         boolean pm = timeString.toLowerCase().contains("pm");
         boolean twelveHour = timeString.toLowerCase().contains("m") || timeString.toLowerCase().contains("a") || timeString.toLowerCase().contains("p");
+
+        if (twelveHour) {
+            if (pm) {
+                timeString = timeString.toLowerCase().split("pm")[0];
+            } else {
+                timeString = timeString.toLowerCase().split("am")[0];
+            }
+        }
+
         String[] timeArray = timeString.split(":");
         time += hoursToMinutes(Long.parseLong(timeArray[0]));
         time += Long.parseLong(timeArray[1].split(" ")[0]);

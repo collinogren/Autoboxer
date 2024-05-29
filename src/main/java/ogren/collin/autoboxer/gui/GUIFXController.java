@@ -327,6 +327,30 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
     }
 
+    /*
+        This would only work if Autoboxer is run as administrator. I made the decision to suggest keeping direct
+        printing turned on instead of doing this because of that.
+        The purpose for this function was to disable spooling when printing from Hal which seems to break when printing
+        using spooling, but only sometimes. I suspect that this is a Hal bug since I have had it happen printing to a
+        brother laser printer as well as to clawPDF. Regardless, disabling spooling seems to fix the problem and doesn't
+        take too much longer.
+    */
+    @SuppressWarnings("unused")
+    private void setClawPDFPrintSpoolingRegVariable(boolean b) {
+        String spooling;
+        if (b) {
+            spooling = "PrintWhileSpooling";
+        } else {
+            spooling = "PrintDirect";
+        }
+        try {
+            String[] regCommand = {"REG", "ADD", "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Print\\Printers\\clawPDF\\DsSpooler", "/v", "printSpooling", "/d", "\""+spooling+"\"", "/f"};
+            Runtime.getRuntime().exec(regCommand);
+        } catch (IOException e) {
+            Logging.logger.error(e);
+            throw new RuntimeException(e);
+        }
+    }
     private void setDirDependentButtonsDisabled() {
         try {
             setDirDependentButtonsDisabledDirectly(!boxDirectory.exists());
