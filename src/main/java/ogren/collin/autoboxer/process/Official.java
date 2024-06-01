@@ -102,7 +102,7 @@ public class Official {
             }
             try {
                 PDDocument merged = merge(rink);
-                merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + name + " - " + rink + ".pdf"));
+                merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + StringUtils.toLastFirst(name) + " - " + rink + ".pdf"));
                 merged.close();
             } catch (IOException e) {
                 String message = "Failed to save papers for "+getName();
