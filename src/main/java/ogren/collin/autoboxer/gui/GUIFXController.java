@@ -79,6 +79,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private static boolean generateSchedule = true;
     private static boolean generateStartingOrders = true;
     private static boolean generateTASheets = true;
+    private static boolean combinePaperwork = false;
 
     private File boxDirectory;
 
@@ -89,7 +90,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
-    private CheckBox generateSSButton, generateSOButton, generateTAButton, removeZerosButton;
+    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, removeZerosButton;
 
     @FXML
     private TextField delimiterField, boxDirectoryField, dayField;
@@ -163,6 +164,12 @@ public class GUIFXController implements javafx.fxml.Initializable {
         //generateButton.getScene().getWindow().hide();
         PDFManipulator.setEventNameDelimiter(delimiterField.getText());
         generateBox();
+    }
+
+    // Called by the combine paperwork checkbox
+    @FXML
+    private void combinePaperwork() {
+        setCombinePaperwork(combinePaperworkButton.isSelected());
     }
 
     // Called by the generate schedule sheets checkbox.
@@ -370,6 +377,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         saveMenu.setDisable(b);
     }
 
+    public static void setCombinePaperwork(boolean b) {
+        combinePaperwork = b;
+    }
+
     public static void setGenerateSchedule(boolean b) {
         generateSchedule = b;
     }
@@ -390,6 +401,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         generateTASheets = b;
     }
 
+    public static boolean getCombinePaperwork() {
+        return combinePaperwork;
+    }
+
     public static boolean getGenerateTASheets() {
         return generateTASheets;
     }
@@ -407,8 +422,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                 executorService.execute(() -> {
                     boolean error = false;
                     try {
-                    MasterController mc = new MasterController(boxDirectory.getPath());
-                    mc.begin();
+                        MasterController mc = new MasterController(boxDirectory.getPath());
+                        mc.begin();
                     } catch (Exception e) {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -113,11 +113,19 @@ public class MasterController {
     public void begin() {
         renameFiles();
         doTheBox();
-        for (Official official : officials) {
-            official.save();
-        }
+        save();
         GUIFXController.setProgress(100);
         GUIFXController.setDone(true);
+    }
+
+    private void save() {
+        if (GUIFXController.getCombinePaperwork()) {
+            Official.save_all(officials);
+        } else {
+            for (Official official : officials) {
+                official.save();
+            }
+        }
     }
 
     /*

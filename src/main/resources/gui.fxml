@@ -78,21 +78,23 @@
                            <children>
                               <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <GridPane alignment="CENTER_LEFT" hgap="5.0" vgap="5.0" VBox.vgrow="ALWAYS">
+                                    <GridPane alignment="CENTER_LEFT" hgap="5.0" prefHeight="106.0" prefWidth="325.0" vgap="5.0" VBox.vgrow="ALWAYS">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                       </columnConstraints>
                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <CheckBox fx:id="generateSSButton" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" />
-                                          <CheckBox fx:id="generateSOButton" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="1" />
-                                          <CheckBox fx:id="generateTAButton" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="2" />
-                                          <CheckBox fx:id="removeZerosButton" mnemonicParsing="false" onAction="#removeLeadingZeros" selected="true" text="Remove Leading Zeros" GridPane.rowIndex="3" />
+                                          <CheckBox fx:id="generateSSButton" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" GridPane.rowIndex="4" />
+                                          <CheckBox fx:id="generateSOButton" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="2" />
+                                          <CheckBox fx:id="generateTAButton" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="3" />
+                                          <CheckBox fx:id="removeZerosButton" mnemonicParsing="false" onAction="#removeLeadingZeros" selected="true" text="Remove Leading Zeros" GridPane.rowIndex="1" />
+                                          <CheckBox fx:id="combinePaperworkButton" mnemonicParsing="false" onAction="#combinePaperwork" text="Combine Paperwork" />
                                        </children>
                                        <VBox.margin>
                                           <Insets />
