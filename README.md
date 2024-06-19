@@ -61,8 +61,6 @@ Make sure you set clawPDF as your default printer so that Hal2 and IJSCompanion 
 Use the buttons in Autoboxer to direct clawPDF to print to the necessary directories.
 ## TODO
 - Make schedule sheets more obvious for accounting purposes.
-- Option to combine all officials' paperwork into one PDF per rink.
-- Support Free Skating - All Levels worksheet and similar such as for short programs in HAL.
 - Improve dance support.
 - Feature to place events on officials schedules even if there is no paperwork for them yet. This is particularly useful for dance when paperwork has to be generated after a segment the same day as the paperwork is needed.
 ## Disclaimer
