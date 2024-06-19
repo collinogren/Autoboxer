@@ -18,6 +18,9 @@
 
 package ogren.collin.autoboxer.process;
 
+import ogren.collin.autoboxer.gui.GUIFXController;
+import ogren.collin.autoboxer.pdf.PDFManipulator;
+
 import java.io.File;
 import java.util.ArrayList;
 

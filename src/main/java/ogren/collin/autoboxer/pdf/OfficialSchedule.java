@@ -19,6 +19,7 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.gui.Settings;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -38,9 +39,9 @@ import java.util.Arrays;
 // Generates schedule sheets for each official.
 public class OfficialSchedule {
 
+    private static final float EVENT_NUMBER_WIDTH = 5f;
     private static final float ROLE_WIDTH = 10f;
     private static final float RINK_WIDTH = 10f;
-    private static final float EVENT_NUMBER_WIDTH = 5f;
     private static final float EVENT_NAME_WIDTH = 51f;
     private static final float TIME_WIDTH = 12f;
 
@@ -54,13 +55,14 @@ public class OfficialSchedule {
         try {
             float pageWidth = page.getMediaBox().getWidth() - MARGIN * 2;
             Table.TableBuilder tableBuilder = Table.builder()
-                    .addColumnsOfWidth(pageWidth * TIME_WIDTH / 100f,
+                    .addColumnsOfWidth(
+                            pageWidth * EVENT_NUMBER_WIDTH / 100f,
+                            pageWidth * TIME_WIDTH / 100f,
                             pageWidth * TIME_WIDTH / 100f,
                             pageWidth * RINK_WIDTH / 100f,
-                            pageWidth * EVENT_NUMBER_WIDTH / 100f,
                             pageWidth * EVENT_NAME_WIDTH / 100f,
-                            pageWidth * ROLE_WIDTH / 100f)
-                    .fontSize(10)
+                            pageWidth * ROLE_WIDTH / 100f
+                    ).fontSize(10)
                     .font(Standard14Fonts.FontName.HELVETICA)
                     .horizontalAlignment(HorizontalAlignment.CENTER)
                     .borderColor(Color.BLACK);
@@ -92,10 +94,10 @@ public class OfficialSchedule {
             tableBuilder.wordBreak(false);
             tableBuilder.addRow(
                     Row.builder()
+                            .add(TextCell.builder().text("#").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("START TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("END TIME").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("RINK").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                            .add(TextCell.builder().text("#").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .add(TextCell.builder().text("EVENT NAME").horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                             .add(TextCell.builder().text("ROLE").horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                             .backgroundColor(Color.WHITE)
@@ -121,11 +123,11 @@ public class OfficialSchedule {
                 try {
                     tableBuilder.addRow(
                             Row.builder()
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                     .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                     .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                     .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(PDFManipulator.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(Settings.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
                                     .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
                                     .backgroundColor(Color.WHITE)
                                     .textColor(Color.BLACK)

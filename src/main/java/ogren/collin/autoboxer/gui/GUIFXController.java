@@ -76,11 +76,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         isDone = b;
     }
 
-    private static boolean generateSchedule = true;
-    private static boolean generateStartingOrders = true;
-    private static boolean generateTASheets = true;
-    private static boolean combinePaperwork = false;
-
     private File boxDirectory;
 
     @FXML
@@ -102,6 +97,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
     // additional GUI components.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        Settings.loadSettings();
+        combinePaperworkButton.setSelected(Settings.getCombinePaperwork());
+        generateSSButton.setSelected(Settings.getGenerateSchedule());
+        generateSOButton.setSelected(Settings.getGenerateStartingOrders());
+        generateTAButton.setSelected(Settings.getGenerateTASheets());
+        removeZerosButton.setSelected(Settings.getRemoveLeadingZeros());
+        delimiterField.setText(Settings.getEventNameDelimiter());
+        delimiterField.textProperty().addListener((observable, oldValue, newValue) -> Settings.setEventNameDelimiter(newValue));
         newTabButton();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
             boxDirectory = new File(newValue);
@@ -162,38 +165,38 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void generate() {
         //generateButton.getScene().getWindow().hide();
-        PDFManipulator.setEventNameDelimiter(delimiterField.getText());
+        Settings.setEventNameDelimiter(delimiterField.getText());
         generateBox();
     }
 
     // Called by the combine paperwork checkbox
     @FXML
     private void combinePaperwork() {
-        setCombinePaperwork(combinePaperworkButton.isSelected());
+        Settings.setCombinePaperwork(combinePaperworkButton.isSelected());
     }
 
     // Called by the generate schedule sheets checkbox.
     @FXML
     private void generateSS() {
-        setGenerateSchedule(generateSSButton.isSelected());
+        Settings.setGenerateSchedule(generateSSButton.isSelected());
     }
 
     // Called by the generate starting orders checkbox.
     @FXML
     private void generateSO() {
-        setGenerateStartingOrders(generateSOButton.isSelected());
+        Settings.setGenerateStartingOrders(generateSOButton.isSelected());
     }
 
     // Called by the generate TA sheets checkbox.
     @FXML
     private void generateTA() {
-        setGenerateTASheets(generateTAButton.isSelected());
+        Settings.setGenerateTASheets(generateTAButton.isSelected());
     }
 
     // Called by the remove leading zeros checkbox.
     @FXML
     private void removeLeadingZeros() {
-        PDFManipulator.setRemoveLeadingZeros(removeZerosButton.isSelected());
+        Settings.setRemoveLeadingZeros(removeZerosButton.isSelected());
     }
 
     // Each of the following functions are called by their respective buttons to change print directory.
@@ -375,38 +378,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0SubButton.setDisable(b);
         six0SSButton.setDisable(b);
         saveMenu.setDisable(b);
-    }
-
-    public static void setCombinePaperwork(boolean b) {
-        combinePaperwork = b;
-    }
-
-    public static void setGenerateSchedule(boolean b) {
-        generateSchedule = b;
-    }
-
-    public static boolean getGenerateSchedule() {
-        return generateSchedule;
-    }
-
-    public static void setGenerateStartingOrders(boolean b) {
-        generateStartingOrders = b;
-    }
-
-    public static boolean getGenerateStartingOrders() {
-        return generateStartingOrders;
-    }
-
-    public static void setGenerateTASheets(boolean b) {
-        generateTASheets = b;
-    }
-
-    public static boolean getCombinePaperwork() {
-        return combinePaperwork;
-    }
-
-    public static boolean getGenerateTASheets() {
-        return generateTASheets;
     }
 
     private void closeStage(Control control) {

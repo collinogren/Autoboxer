@@ -19,6 +19,8 @@
 package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.gui.Settings;
+import ogren.collin.autoboxer.pdf.PDFManipulator;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -73,8 +75,12 @@ public class Schedule {
 
         for (int i = 0; i < rinks.size(); i++) {
             for (String line : rinks.get(i)) {
-                if (line.isEmpty()) {
+                if (line.isEmpty() || line.replace('\t', ' ').trim().isEmpty()) {
                     continue;
+                }
+
+                if (Settings.getRemoveLeadingZeros()) {
+                    line = line.replaceFirst("^0+(?!$)", "");
                 }
 
                 String[] split = line.split("\t");

@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.control;
 
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.gui.GUIFXController;
+import ogren.collin.autoboxer.gui.Settings;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
@@ -119,7 +120,7 @@ public class MasterController {
     }
 
     private void save() {
-        if (GUIFXController.getCombinePaperwork()) {
+        if (Settings.getCombinePaperwork()) {
             Official.save_all(officials);
         } else {
             for (Official official : officials) {
@@ -286,9 +287,9 @@ public class MasterController {
                 if (se.matchFileNameToEventNumber(file)) {
                     String eventNumber = se.getEventNumber();
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
+                    sortIJSTAAndStartingOrders(Settings.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
 
-                    sortIJSTAAndStartingOrders(GUIFXController.getGenerateTASheets(), taSheets, se, pdfManipulator);
+                    sortIJSTAAndStartingOrders(Settings.getGenerateTASheets(), taSheets, se, pdfManipulator);
                     ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                     processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
                 }
@@ -319,7 +320,7 @@ public class MasterController {
     private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders) {
         for (File file : six0StartingOrders) {
             if (se.matchFileNameToEventNumber(file)) {
-                if (GUIFXController.getGenerateStartingOrders()) {
+                if (Settings.getGenerateStartingOrders()) {
                     PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_STARTING_ORDERS);
                     if (!startingOrders.containsKey(se.getRink())) {
                         startingOrders.put(se.getRink(), new PDDocument());
@@ -342,7 +343,7 @@ public class MasterController {
     }
 
     private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
-        if (GUIFXController.getGenerateStartingOrders()) {
+        if (Settings.getGenerateStartingOrders()) {
             for (String rink : Schedule.getRinks()) {
                 if (startingOrders.containsKey(rink)) {
                     try {
@@ -365,7 +366,7 @@ public class MasterController {
     }
 
     private void generateTASheets(HashMap<String, PDDocument> taSheets) {
-        if (GUIFXController.getGenerateTASheets()) {
+        if (Settings.getGenerateTASheets()) {
             for (String rink : Schedule.getRinks()) {
                 if (taSheets.containsKey(rink)) {
                     try {

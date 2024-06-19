@@ -19,6 +19,7 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.gui.Settings;
 import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
@@ -41,22 +42,12 @@ import static ogren.collin.autoboxer.pdf.FileType.*;
 
 public class PDFManipulator {
     public static final String WRONG_FILE_TYPE = "wrongfiletype";
-    private static String eventNameDelimiter = " - ";
 
-    private static boolean removeLeadingZeros = true;
     private final PDDocument document;
     private final FileType fileType;
     private final File file;
     private final String contents;
     private boolean isRenamed = false;
-
-    public static void setEventNameDelimiter(String delimiter) {
-        eventNameDelimiter = delimiter;
-    }
-
-    public static void setRemoveLeadingZeros(boolean b) {
-        removeLeadingZeros = b;
-    }
 
     public PDFManipulator(File file, FileType fileType) {
         this.file = file;
@@ -99,10 +90,6 @@ public class PDFManipulator {
         }
 
         return document;
-    }
-
-    public static String getEventNameDelimiter() {
-        return eventNameDelimiter;
     }
 
     // If the right file type was selected, return the event name. Otherwise, return the WRONG_FILE_TYPE constant.
@@ -159,11 +146,11 @@ public class PDFManipulator {
     // This function takes a close look at the event name and figures out what event number(s) are in the name.
     // It returns an array of strings which represent all event numbers in a name.
     private ArrayList<String> scrutinizeName(String eventName) {
-        String eventNumberSection = eventName.split(eventNameDelimiter)[0];
+        String eventNumberSection = eventName.split(Settings.getEventNameDelimiter())[0];
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
-            if (removeLeadingZeros && c == '0' && eventNumber.isEmpty()) {
+            if (Settings.getRemoveLeadingZeros() && c == '0' && eventNumber.isEmpty()) {
                 continue;
             }
             if (isNumberOrLetter(c)) {
@@ -312,8 +299,29 @@ public class PDFManipulator {
         };
 
         String name = lines[line].toUpperCase();
-        if (name.contains("Spins T.E. P.C. Place".toUpperCase())) {
-            name = lines[line+1].toUpperCase().split("Free Skating - All Levels".toUpperCase())[1];
+
+        /*
+        By default, the program assumes a generic free skating worksheet for secondary worksheets, but since others
+        exist and can be used, even if at a lower frequency, they should still be supported. This will likely be an
+        ongoing development pattern for other HAL worksheets.
+         */
+        if (fileType == SIX0_SECONDARY) {
+        /*
+        Sorcery to make free skating - all levels worksheets work.
+        Basically "Spins T.E. P.C. Place" on the first line can be used to infer that this is a
+        free skating - all levels worksheet and that the event number is on the next line after
+        "Free Skating - All Levels"
+         */
+            if (name.contains("Spins T.E. P.C. Place".toUpperCase())) {
+                name = lines[line + 1].toUpperCase().split("Free Skating - All Levels".toUpperCase())[1];
+            }
+
+        /*
+        Same as above but the first line is "Failures: 0.1 - 0.4" and the name is 7 lines down.
+         */
+            if (name.contains("Failures: 0.1 - 0.4".toUpperCase())) {
+                name = lines[line + 7].toUpperCase();
+            }
         }
 
         // Do this better when it's not 1:00 AM.
