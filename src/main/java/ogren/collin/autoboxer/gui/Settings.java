@@ -27,7 +27,7 @@ public class Settings {
         }
         if (!settingsFile.exists()) {
             try {
-                if (settingsFile.createNewFile()) {
+                if (!settingsFile.createNewFile()) {
                     Logging.logger.warn("Failed to create Autoboxer settings file.");
                 }
             } catch (IOException e) {
