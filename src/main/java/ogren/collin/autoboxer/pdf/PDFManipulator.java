@@ -312,6 +312,9 @@ public class PDFManipulator {
         };
 
         String name = lines[line].toUpperCase();
+        if (name.contains("Spins T.E. P.C. Place".toUpperCase())) {
+            name = lines[line+1].toUpperCase().split("Free Skating - All Levels".toUpperCase())[1];
+        }
 
         // Do this better when it's not 1:00 AM.
         if (name.contains(" REF. ")) {

@@ -20,7 +20,7 @@ public class Tester {
         try {
             File file = fc.getSelectedFile();
             PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_JUDGE_SHEET);
-            System.out.println(pdfManipulator.parseToString(true));
+            System.out.println(pdfManipulator.parseToString(false));
             //PDDocument circledDocument = PDFManipulator.boxOfficial("Hope Wheeler", pdfManipulator.getDocument(), 1);
             //circledDocument.save(new File(file.getPath().split(file.getName())[0]+"Circled.pdf"));
         } catch (Exception e) {
