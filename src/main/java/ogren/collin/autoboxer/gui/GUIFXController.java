@@ -91,7 +91,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private TextField delimiterField, boxDirectoryField, dayField;
 
     @FXML
-    TabPane tabPane;
+    private TabPane tabPane;
+
+    private Tab addTab;
 
     // Do any initialization work such as adding listeners which cannot be added within the FXML file or setting up
     // additional GUI components.
@@ -106,6 +108,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         delimiterField.setText(Settings.getEventNameDelimiter());
         delimiterField.textProperty().addListener((observable, oldValue, newValue) -> Settings.setEventNameDelimiter(newValue));
         newTabButton();
+        setDirDependentButtonsDisabled();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
             boxDirectory = new File(newValue);
             setDirDependentButtonsDisabled();
@@ -313,7 +316,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     // Creates a tab which functions as a button to create a new tab behind it.
     private void newTabButton() {
-        Tab addTab = new Tab("+"); // You can replace the text with an icon
+        addTab = new Tab("+"); // You can replace the text with an icon
         addTab.setClosable(false);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if(newTab == addTab) {
@@ -378,6 +381,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0SubButton.setDisable(b);
         six0SSButton.setDisable(b);
         saveMenu.setDisable(b);
+        addTab.setDisable(b);
+        dayField.setDisable(b);
     }
 
     private void closeStage(Control control) {
