@@ -401,11 +401,13 @@ public class MasterController {
                         retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_REFEREE_SHEET);
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                     }
-                    case JUDGE ->
+                    case JUDGE, TS1 ->
                             retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                     case TC -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TC_SHEET);
-                    case TS2 ->
-                            retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
+                    case TS2 -> {
+                        retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
+                        retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                    }
                 }
             } else {
                 retrieveSix0SecondarySheets(eventNumber, eventSet);
@@ -449,12 +451,20 @@ public class MasterController {
                 if (fileType != FileType.IJS_JUDGE_SHEET) {
                     split[2] = split[2].split(".pdf")[0];
                 } else {
-                    if ((split[3].equals("judge") && identity.role() == Role.REFEREE) || (split[3].equals("referee") && identity.role() == Role.JUDGE)) {
+                    if ((split[3].equals("judge") && identity.role() == Role.REFEREE) || (split[3].equals("referee") && identity.role() == Role.JUDGE) || (split[3].equals("dance_ts") && (identity.role() != Role.TS1 && identity.role() != Role.TS2))) {
                         continue;
                     }
                 }
 
-                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && split[2].replace('_', ' ').equals(identity.name())) {
+                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && (split[2].equals("generic")) && (identity.role() == Role.TS1 || identity.role() == Role.TS2)) {try {
+                        eventSet.push(Loader.loadPDF(file));
+                    } catch (IOException e) {
+                        Logging.logger.fatal((e));
+                        throw new RuntimeException("Failed to load a PDF at " + file.getPath());
+                    }
+                }
+
+                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && (split[2].replace('_', ' ').equals(identity.name()))) {
                     try {
                         eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
@@ -463,7 +473,7 @@ public class MasterController {
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException aioobe) {
-                Logging.logger.info("Could not find match for " + file.getName() + ". Maybe it is an extra file?");
+                Logging.logger.info("Could not find match for {}. Maybe it is an extra file?", file.getName());
             }
         }
     }

@@ -55,7 +55,7 @@ public class IdentityBundle {
                 types.add(FileType.IJS_JUDGE_SHEET);
                 return types;
             }
-            case JUDGE -> {
+            case JUDGE, TS1 -> {
                 types.add(FileType.IJS_JUDGE_SHEET);
                 return types;
             }
@@ -65,9 +65,10 @@ public class IdentityBundle {
             }
             case TS2 -> {
                 types.add(FileType.IJS_TS2_SHEET);
+                types.add(FileType.IJS_JUDGE_SHEET); // TS2 can get judge sheet because of solo dance.
                 return types;
             }
-            case TS1, VIDEO, DEO -> {
+            case VIDEO, DEO -> {
                 return types;
             }
         }

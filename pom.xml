@@ -24,6 +24,9 @@
                         <manifest>
                             <mainClass>ogren.collin.autoboxer.gui.GUIFX</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>

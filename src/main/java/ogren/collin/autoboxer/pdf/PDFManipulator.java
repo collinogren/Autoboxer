@@ -226,8 +226,18 @@ public class PDFManipulator {
         if (fileType == IJS_JUDGE_SHEET) {
             if (contents.contains("Ref. ")) {
                 judgeSheetType = " referee";
-            } else {
+            } else if (contents.contains("J1. ") ||
+                    contents.contains("J2. ") ||
+                    contents.contains("J3. ") ||
+                    contents.contains("J4. ") ||
+                    contents.contains("J5. ") ||
+                    contents.contains("J6. ") ||
+                    contents.contains("J7. ") ||
+                    contents.contains("J8. ") ||
+                    contents.contains("J9. ")) {
                 judgeSheetType = " judge";
+            } else {
+                judgeSheetType = " dance_ts";
             }
             multiplicity += " " + i;
         }
@@ -420,6 +430,8 @@ public class PDFManipulator {
                     return s.split(". {2}")[1].trim();
                 }
             }
+
+            return "generic";
         }
 
         if (fileType == IJS_REFEREE_SHEET) {

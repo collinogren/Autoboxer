@@ -20,11 +20,9 @@ package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
-import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.gui.Settings;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.OfficialSchedule;
-import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
