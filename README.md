@@ -63,6 +63,7 @@ Use the buttons in Autoboxer to direct clawPDF to print to the necessary directo
 - Make schedule sheets more obvious for accounting purposes.
 - Improve dance support.
 - Feature to place events on officials schedules even if there is no paperwork for them yet. This is particularly useful for dance when paperwork has to be generated after a segment the same day as the paperwork is needed.
+- Complete documentation both in code and for the consumer.
 ## Disclaimer
 It is your responsibility to ensure the accuracy of your paperwork. Even with this software, proof the paperwork before sending it out.
 ## Free and Open Source Software
