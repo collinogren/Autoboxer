@@ -9,7 +9,6 @@ Notable features include:
 - Support for most styles of event numbering.
 - Frequent updates, including community-requested features, and active support.
 - 100% free and open source.
-<br>
 I hope you find this software useful and I appreciate any and all feedback. You may open an issue in Github or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
