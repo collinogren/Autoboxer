@@ -1,9 +1,15 @@
 # Autoboxer
 This program is beta software. Always proof its outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
-This software **does not** require much, if any, manipulation of the 104. Any manipulation that is necessary is usually just hiding a column or two and maybe copying start and end times for events that warm-up together if the referee chose to leave those cells empty.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
-I hope you find this software useful and I appreciate any and all feedback.<br>
+Notable features include:
+- Minimal if any need to manipulate the 104.
+- Simplistic and intuitive PDF printing controls built into the program.
+- Ergonomic outputs with PDF bookmarks, the ability to customize what is generated, and how it is organized.
+- Support for most styles of event numbering.
+- Frequent updates, including community-requested features, and active support.
+- 100% free and open source.
+I hope you find this software useful and I appreciate any and all feedback. You may open an issue in Github or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
 ## Usage Instructions
