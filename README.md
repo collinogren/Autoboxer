@@ -1,9 +1,17 @@
 # Autoboxer
 This program is beta software. Always proof its outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
-This software **does not** require much, if any, manipulation of the 104. Any manipulation that is necessary is usually just hiding a column or two and maybe copying start and end times for events that warm-up together if the referee chose to leave those cells empty.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
-I hope you find this software useful and I appreciate any and all feedback.<br>
+Notable features include:
+- Minimal if any need to manipulate the 104.
+- Quick and simple digital proofing with fast iteration times to help catch errors and allow them to be easily fixed without wasting paper.
+- Simplistic and intuitive PDF printing controls built into the program.
+- Ergonomic outputs with PDF bookmarks, the ability to customize what is generated, and how it is organized.
+- Support for most styles of event numbering.
+- Frequent updates, including community-requested features, and active support.
+- 100% free and open source.
+
+I hope you find this software useful and I appreciate any and all feedback. You may open an issue in Github or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
 ## Usage Instructions
@@ -52,7 +60,7 @@ To put it simply, never let your delimiter get mixed up with how you separate ev
 Finally, **always be consistent**, you cannot use " - " as a delimiter most of the time and then expect an event with a space delimiter to be handled correctly.
 ### Competition Building Guidelines When Using Autoboxer
 - **IMPORTANT make sure that officials’ names for Hal2 match those in ISUCalc** because otherwise you will get a separated output PDF containing IJS in one and 6.0 in the other. Best practice is to copy and paste from the official's directory into Hal2 so as to avoid any discrepancies.
-- Generally, his program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
+- Generally, this program works largely by matching strings so some amount of consistency is required for optimal results. For example, while the program reads 34a and 34A as the same, it will not read 34a the same as 34 a.
 - Finally, proof the generated "box" against the 104 to ensure no unforeseen issues arose.
 ## clawPDF Setup
 After installing clawPDF, launch its utility application which you can do easily by searching clawPDF in the Windows search box. In the utility, go to 'profile settings,' then 'auto-save' check 'enable automatic saving' checkbox.
@@ -63,6 +71,7 @@ Use the buttons in Autoboxer to direct clawPDF to print to the necessary directo
 - Make schedule sheets more obvious for accounting purposes.
 - Improve dance support.
 - Feature to place events on officials schedules even if there is no paperwork for them yet. This is particularly useful for dance when paperwork has to be generated after a segment the same day as the paperwork is needed.
+- Complete documentation both in code and for the consumer.
 ## Disclaimer
 It is your responsibility to ensure the accuracy of your paperwork. Even with this software, proof the paperwork before sending it out.
 ## Free and Open Source Software
