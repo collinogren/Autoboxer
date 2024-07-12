@@ -4,7 +4,7 @@ This program is beta software. Always proof its outputs before using them.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
 Notable features include:
 - Minimal if any need to manipulate the 104.
-- Quick and simple digital proofing with fast iteration times to catch and allow for easy fixing of errors without wasting paper.
+- Quick and simple digital proofing with fast iteration times to help catch errors and allow them to be easily fixed without wasting paper.
 - Simplistic and intuitive PDF printing controls built into the program.
 - Ergonomic outputs with PDF bookmarks, the ability to customize what is generated, and how it is organized.
 - Support for most styles of event numbering.
