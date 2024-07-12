@@ -25,6 +25,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import ogren.collin.autoboxer.utilities.APIUtilities;
+import ogren.collin.autoboxer.utilities.Settings;
 
 import java.util.Objects;
 
@@ -45,7 +47,7 @@ public class GUIFX extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
         Parent root = fxmlLoader.load();
 
-        mainScene = new Scene(root, 550, 375);
+        mainScene = new Scene(root, 530, 400);
 
         GUIFXController controller = fxmlLoader.getController();
         controller.setup(mainScene);
@@ -53,9 +55,16 @@ public class GUIFX extends Application {
         autoboxerIcon = new Image("/Autoboxer.png");
 
         stage.getIcons().add(autoboxerIcon);
-        stage.setResizable(false);
+        stage.setResizable(true);
+        stage.setMinWidth(mainScene.getWidth() + 20);
+        stage.setMinHeight(mainScene.getHeight() + 40);
         stage.setTitle("Autoboxer");
         stage.setScene(mainScene);
+
         stage.show();
+
+        if (Settings.isNewInstall() || !Settings.getVersion().equals(APIUtilities.getAPIVersion())) {
+            CopyrightFX.start(true);
+        }
     }
 }

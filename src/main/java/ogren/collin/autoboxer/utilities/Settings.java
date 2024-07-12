@@ -1,4 +1,22 @@
-package ogren.collin.autoboxer.gui;
+/*
+    Autoboxer to make creating "boxes" for figure skating competitions easier.
+    Copyright (C) 2024 Collin Ogren
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package ogren.collin.autoboxer.utilities;
 
 import ogren.collin.autoboxer.Logging;
 
@@ -15,6 +33,8 @@ public class Settings {
     private static String eventNameDelimiter = " - ";
     private static final Properties properties = new Properties();
     private static File settingsFile;
+    private static String version;
+    private static boolean newInstall = false;
 
     public static void loadSettings() {
         settingsFile = new File(System.getenv("APPDATA") + "/Autoboxer/Autoboxer.properties");
@@ -30,6 +50,7 @@ public class Settings {
                 if (!settingsFile.createNewFile()) {
                     Logging.logger.warn("Failed to create Autoboxer settings file.");
                 }
+                newInstall = true;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -48,6 +69,10 @@ public class Settings {
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
         removeLeadingZeros = Boolean.parseBoolean(properties.getProperty("removeLeadingZeros", Boolean.toString(removeLeadingZeros)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
+        version = properties.getProperty("version", "Unknown Version");
+        if (version.equals("Unknown Version") || !APIUtilities.getAPIVersion().equals(version)) {
+            updateProperties();
+        }
     }
 
     private static void updateProperties() {
@@ -57,6 +82,7 @@ public class Settings {
         properties.put("generateTASheets", Boolean.toString(generateTASheets));
         properties.put("removeLeadingZeros", Boolean.toString(removeLeadingZeros));
         properties.put("eventNameDelimiter", eventNameDelimiter);
+        properties.put("version", APIUtilities.getAPIVersion());
         save();
     }
 
@@ -120,5 +146,13 @@ public class Settings {
 
     public static boolean getRemoveLeadingZeros() {
         return removeLeadingZeros;
+    }
+
+    public static String getVersion() {
+        return version;
+    }
+
+    public static boolean isNewInstall() {
+        return newInstall;
     }
 }

@@ -19,8 +19,7 @@
 package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.gui.Settings;
-import ogren.collin.autoboxer.pdf.PDFManipulator;
+import ogren.collin.autoboxer.utilities.Settings;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

@@ -19,7 +19,7 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.gui.Settings;
+import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
@@ -135,6 +135,18 @@ public class PDFManipulator {
 
     // Figure out if the event number in the schedule element equals the event number(s) on the sheet.
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
+        int required_index = -1;
+        if (eventName.contains(" P1")) {
+            required_index = 0;
+        } else if (eventName.contains(" P2")) {
+            required_index = 1;
+        }
+        ArrayList<String> scrutinizedEventNumbers = scrutinizeName(eventName);
+
+        if (required_index >= 0 && required_index < scrutinizedEventNumbers.size()) {
+            return scrutinizedEventNumbers.get(required_index).equalsIgnoreCase(scheduleElement.getEventNumber());
+        }
+
         for (String e : scrutinizeName(eventName)) {
             if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
@@ -221,11 +233,20 @@ public class PDFManipulator {
 
     // Get destination of copied file.
     private String getDestination(String eventNumber, int i, String offset) {
+        // Either " referee", " judge", " dance_ts"
         String judgeSheetType = "";
+        // Gives a unique name (1, 2, 3...n) to judges' sheets which officials often have more than one sheet of.
         String multiplicity = "";
+
+        // If the file type is an IJS judges' sheet, then determine whether it is for a referee, judge, or
+        // technical specialist for dance.
         if (fileType == IJS_JUDGE_SHEET) {
+
+            // Referee condition.
             if (contents.contains("Ref. ")) {
                 judgeSheetType = " referee";
+
+                // Judge condition
             } else if (contents.contains("J1. ") ||
                     contents.contains("J2. ") ||
                     contents.contains("J3. ") ||
@@ -236,31 +257,52 @@ public class PDFManipulator {
                     contents.contains("J8. ") ||
                     contents.contains("J9. ")) {
                 judgeSheetType = " judge";
+
+                //Technical specialist condition
             } else {
                 judgeSheetType = " dance_ts";
             }
+
+            // Assign multiplicity to a space followed by the index of multiplicity for the file.
             multiplicity += " " + i;
         }
 
+        // For any IJS file that is not a coversheet,
+        // assign officialName to the official's name with '_' instead of spaces.
         String officialName = "";
         if (fileType != IJS_COVERSHEET && fileType != SIX0_PRIMARY_JUDGE_SHEET && fileType != SIX0_PRIMARY_WORKSHEET && fileType != SIX0_SECONDARY) {
             officialName = " " + getOfficialName().trim().replace(' ', '_');
         }
 
+        // Return a fully constructed output file path containing relevant information for sorting.
+        // Such information should be stored in the file name for fast and easy retrieval. This prevents unnecessary
+        // rereading of file contents to determine the purpose of a file.
         return file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + judgeSheetType + multiplicity + ".pdf";
     }
 
+    // Wrapper function to determine whether to parse an IJS file or a 6.0 file.
     private String parseEventName() {
+        // Default case that assumes the event name is non-existent.
         String eventName = "Could not find event name!";
+
+        // Match file type to parser function.
         switch (fileType) {
+            // Check if it is IJS
             case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET ->
+                    // And if it is, run the IJS event name parser.
                     eventName = parseEventNameIJS();
-            case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY, SIX0_STARTING_ORDERS -> eventName = parseEventName60();
+            // Check if it is 6.0
+            case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY, SIX0_STARTING_ORDERS ->
+                    // And if it is, run the 6.0 event name parser.
+                    eventName = parseEventName60();
         }
 
         return eventName;
     }
 
+    // A function which returns a sequence of text that, if the file contents contains it, strongly indicates that
+    // the file really is of the file type expected. Moreover, if it does not have it, then it must not be the file type
+    // expected.
     private String getUniqueTextByType() {
         String text = null;
         switch (fileType) {
@@ -277,9 +319,13 @@ public class PDFManipulator {
         return text;
     }
 
+    // Parse an IJS event name out of the loaded file.
     private String parseEventNameIJS() {
+        // Split the work into lines by new line character.
         String[] lines = contents.split("\n");
         int line;
+
+        // Handle
 
         if (fileType == IJS_JUDGE_SHEET) {
             int notesValueOccurred = 0;
@@ -463,8 +509,22 @@ public class PDFManipulator {
 
     public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
         ArrayList<IdentityBundle> officialNames = new ArrayList<>();
+        // While I said the next line is horrible, I actually think it might be the best possible solution given the
+        // parameters I have to work with. I still do not really like it though, feels hacky. -Two months on.
         boolean refSecond = contents.contains("Judge 5 "); // This is horrible.
         String[] lines = contents.split("\n");
+
+        /*
+            TODO: Handle the issue where an official lacking an affiliation will cause a terrible mess in the paperwork.
+            This is an extremely rare occurrence and can be spotted easily by proofing the box prior to printing, but
+            it would be nice to be able to either handle it without issue or to throw an error message.
+            In either case the program would need to check if the name has one of the official roles in their name.
+            As an example, if judge 1 does not have an affiliation, the name often ends up being
+            "<judge's name> Referee <referee's name>" so the program could check if the string " Referee " is in the
+            official's name in order to determine what the name should be. Alternatively, people could just not hide
+            their hometown since it's standard practice to have an affiliation. Silly me for assuming I guess.
+         */
+
         if (fileType == IJS_COVERSHEET) {
             for (String s : lines) {
                 if (!refSecond) {

@@ -35,6 +35,8 @@ public class ScheduleElement {
 
     private final String rink;
 
+    private boolean processed = false;
+
     public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime, String day, String rink) {
         this.eventNumber = eventNumber;
         this.eventName = eventName;
@@ -75,5 +77,13 @@ public class ScheduleElement {
 
     public String getRink() {
         return rink;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 }

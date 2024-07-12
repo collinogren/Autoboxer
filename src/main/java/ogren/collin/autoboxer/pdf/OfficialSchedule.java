@@ -19,7 +19,7 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.gui.Settings;
+import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
 import org.apache.pdfbox.pdmodel.PDDocument;

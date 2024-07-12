@@ -18,7 +18,6 @@
 
 package ogren.collin.autoboxer.gui;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -31,17 +30,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
-import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.Schedule;
+import ogren.collin.autoboxer.utilities.Settings;
 
 import java.awt.*;
 import java.io.File;
@@ -50,36 +46,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class GUIFXController implements javafx.fxml.Initializable {
 
-    private static double progress = 0.0;
-    private static boolean isDone = false;
-
     private final ArrayList<String> rinkSchedules = new ArrayList<>();
-
-    public static void setProgress(double d) {
-        progress = d;
-    }
-
-    public static void addProgress(double d) {
-        progress += d;
-    }
-
-    public static void setDone(boolean b) {
-        isDone = b;
-    }
 
     private File boxDirectory;
 
     @FXML
-    private MenuItem openMenu, saveMenu, closeMenu, aboutMenu;
+    private MenuItem openMenu, saveMenu, closeMenu, documentationMenu, copyrightMenu;
 
     @FXML
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
@@ -256,7 +234,20 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     // Called by the about menu item button.
     @FXML
-    private void aboutMenuAction() {
+    private void documentationMenuAction() {
+        viewGithub();
+    }
+
+    @FXML
+    private void copyrightMenuAction() {
+        try {
+            CopyrightFX.start(false);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void viewGithub() {
         Desktop desktop = Desktop.getDesktop();
         try {
             desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
@@ -393,7 +384,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private void generateBox() {
         try {
             if (boxDirectory.exists()) {
-                new ProgressGUIFX().start((Stage) generateButton.getScene().getWindow());
+                new ProgressGUIFX().start();
                 ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
                 executorService.execute(() -> {
                     boolean error = false;
@@ -410,7 +401,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             e.printStackTrace();
                             Logging.logger.fatal(e.getMessage());
                             alert.show();
-                            isDone = true;
+                            ProgressGUIFX.setDone(true);
                         });
 
                         error = true;
@@ -434,54 +425,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         } catch (NullPointerException ignored) {} catch (Exception e) {
             Logging.logger.fatal((e));
             throw new RuntimeException(e);
-        }
-    }
-
-    private static class ProgressGUIFX extends Application {
-
-        @Override
-        public void start(Stage primaryStage) {
-            Stage progressStage = new Stage();
-            progressStage.setTitle("Box Progress");
-            progressStage.getIcons().add(GUIFX.autoboxerIcon);
-            AnchorPane anchorPane = new AnchorPane();
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.setMaxWidth(Double.MAX_VALUE);
-            progressBar.setMaxHeight(Double.MAX_VALUE);
-            Text progressText = new Text(progress+"%");
-            StackPane stackPane = new StackPane();
-            stackPane.getChildren().setAll(progressBar, progressText);
-            AnchorPane.setTopAnchor(stackPane, 0.0);
-            AnchorPane.setBottomAnchor(stackPane, 0.0);
-            AnchorPane.setLeftAnchor(stackPane, 0.0);
-            AnchorPane.setRightAnchor(stackPane, 0.0);
-            anchorPane.getChildren().add(stackPane);
-            Scene progressScene = new Scene(anchorPane, 275, 125);
-            progressStage.setScene(progressScene);
-            progressStage.show();
-
-            // Try with resources breaks the progress bar for some reason. \_(-_-)_/ Too bad.
-            ExecutorService executor = Executors.newFixedThreadPool(1);
-            executor.execute(() -> {
-                while (!isDone) {
-                    try {
-                        // This should be replaced with something other than busy waiting in the future but it is not
-                        // a huge concern.
-                        Thread.sleep(16);
-                    } catch (InterruptedException e) {
-                        Logging.logger.fatal(Arrays.toString(e.getStackTrace()));
-                        throw new RuntimeException(e);
-                    }
-                    Platform.runLater(() -> {
-                        progressBar.setProgress(progress);
-                        progressText.setText(Math.round(progress * 100.0)+"%");
-                    });
-                }
-
-                Platform.runLater(progressStage::close);
-            });
-
-            executor.shutdown();
         }
     }
 }

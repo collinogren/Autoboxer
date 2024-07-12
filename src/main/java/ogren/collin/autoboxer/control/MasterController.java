@@ -19,8 +19,8 @@
 package ogren.collin.autoboxer.control;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.gui.GUIFXController;
-import ogren.collin.autoboxer.gui.Settings;
+import ogren.collin.autoboxer.gui.ProgressGUIFX;
+import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
@@ -115,8 +115,8 @@ public class MasterController {
         renameFiles();
         doTheBox();
         save();
-        GUIFXController.setProgress(100);
-        GUIFXController.setDone(true);
+        ProgressGUIFX.setProgress(100);
+        ProgressGUIFX.setDone(true);
     }
 
     private void save() {
@@ -264,7 +264,8 @@ public class MasterController {
                 }
             }
 
-            GUIFXController.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
+            se.setProcessed(true);
+            ProgressGUIFX.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
@@ -299,7 +300,7 @@ public class MasterController {
 
             sort60Primary(se);
 
-            GUIFXController.addProgress(((1.0 / numberOfEvents)) / 2.0);
+            ProgressGUIFX.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
 
         generateStartingOrders(startingOrders);
