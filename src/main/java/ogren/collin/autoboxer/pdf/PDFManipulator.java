@@ -140,6 +140,8 @@ public class PDFManipulator {
             required_index = 0;
         } else if (eventName.contains(" P2")) {
             required_index = 1;
+        } else if (eventName.contains(" FD")) {
+            required_index = 2;
         }
         ArrayList<String> scrutinizedEventNumbers = scrutinizeName(eventName);
 
