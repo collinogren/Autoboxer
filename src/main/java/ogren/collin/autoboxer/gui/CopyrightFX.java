@@ -24,7 +24,7 @@ public class CopyrightFX {
         VBox vbox = new VBox();
         HBox copyrightHBox = new HBox();
         VBox copyrightVBox = new VBox();
-        copyrightVBox.setMinHeight(90);
+        copyrightVBox.setMinHeight(108);
         Text copyrightText = new Text("""
                 Autoboxer Copyright (C) 2024 Collin Ogren
                 This program comes with ABSOLUTELY NO WARRANTY.
@@ -33,11 +33,19 @@ public class CopyrightFX {
         copyrightVBox.getChildren().add(copyrightText);
         Hyperlink hyperlink = new Hyperlink("Access the source code here");
         hyperlink.setOnAction(event -> GUIFXController.viewGithub());
-        copyrightVBox.getChildren().add(hyperlink);
+        Hyperlink openSourceCredits = new Hyperlink("Open source library credits");
+        openSourceCredits.setOnAction(event -> {
+            try {
+                ReferencesFX.start();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        copyrightVBox.getChildren().addAll(hyperlink, openSourceCredits);
         ImageView gnuGPLV3Logo = new ImageView(new Image(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/gplv3.png"))));
         gnuGPLV3Logo.setSmooth(true);
         gnuGPLV3Logo.setPreserveRatio(true);
-        gnuGPLV3Logo.setFitHeight(90);
+        gnuGPLV3Logo.setFitHeight(108);
 
         HBox.setHgrow(copyrightVBox, Priority.ALWAYS);
         copyrightHBox.getChildren().addAll(copyrightVBox, gnuGPLV3Logo);
@@ -63,6 +71,7 @@ public class CopyrightFX {
         Button proceedButton = new Button(buttonText);
         proceedButton.setMinWidth(166.4);
         HBox proceedHBox = new HBox();
+        proceedHBox.setSpacing(10);
         Pane buttonSpacer = new Pane();
         HBox.setHgrow(buttonSpacer, Priority.ALWAYS);
         Label noticeLabel = new Label("This notice will not appear again until you update Autoboxer");
