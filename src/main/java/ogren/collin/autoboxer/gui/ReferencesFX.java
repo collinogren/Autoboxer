@@ -13,11 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class ReferencesFX {
-    public static void start() throws Exception {
-        Stage openSourceCreditsStage = new Stage();
-        openSourceCreditsStage.setResizable(false);
-        openSourceCreditsStage.setTitle("Autoboxer Open Source Credits");
-        openSourceCreditsStage.getIcons().add(GUIFX.autoboxerIcon);
+    public static Scene start(Stage stage, Scene copyrightScene) throws Exception {
+        stage.setTitle("Autoboxer Open Source Credits");
         BorderPane root = new BorderPane();
         VBox vbox = new VBox();
         Label openSourceText = new Label("Open Source Library Credits");
@@ -40,7 +37,7 @@ public class ReferencesFX {
         scrollPane.setContent(scrollBox);
         vbox.getChildren().addAll(createSeparator(), scrollPane, createSeparator());
 
-        Button proceedButton = new Button("Close");
+        Button proceedButton = new Button("Back");
         proceedButton.setMinWidth(166.4);
         HBox proceedHBox = new HBox();
         Pane buttonSpacer = new Pane();
@@ -55,13 +52,14 @@ public class ReferencesFX {
         root.setCenter(vbox);
         root.setPadding(new Insets(10, 10, 10, 10));
 
-        Scene progressScene = new Scene(root, 615, 450);
-        openSourceCreditsStage.setScene(progressScene);
-        openSourceCreditsStage.show();
+        Scene openSourceCreditsScene = new Scene(root, 615, 450);
 
         proceedButton.setOnAction(e -> {
-            openSourceCreditsStage.close();
+            stage.setTitle("Autoboxer Copyright and License Information");
+            stage.setScene(copyrightScene);
         });
+
+        return openSourceCreditsScene;
     }
 
     private static Separator createSeparator() {

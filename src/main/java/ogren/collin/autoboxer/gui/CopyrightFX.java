@@ -15,11 +15,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class CopyrightFX {
+
     public static void start(boolean startupScreen) throws Exception {
         Stage copyrightStage = new Stage();
         copyrightStage.setResizable(false);
         copyrightStage.setTitle("Autoboxer Copyright and License Information");
         copyrightStage.getIcons().add(GUIFX.autoboxerIcon);
+        copyrightStage.setAlwaysOnTop(true);
         BorderPane root = new BorderPane();
         VBox vbox = new VBox();
         HBox copyrightHBox = new HBox();
@@ -34,13 +36,6 @@ public class CopyrightFX {
         Hyperlink hyperlink = new Hyperlink("Access the source code here");
         hyperlink.setOnAction(event -> GUIFXController.viewGithub());
         Hyperlink openSourceCredits = new Hyperlink("Open source library credits");
-        openSourceCredits.setOnAction(event -> {
-            try {
-                ReferencesFX.start();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
         copyrightVBox.getChildren().addAll(hyperlink, openSourceCredits);
         ImageView gnuGPLV3Logo = new ImageView(new Image(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/gplv3.png"))));
         gnuGPLV3Logo.setSmooth(true);
@@ -89,9 +84,17 @@ public class CopyrightFX {
         root.setCenter(vbox);
         root.setPadding(new Insets(10, 10, 10, 10));
 
-        Scene progressScene = new Scene(root, 615, 450);
-        copyrightStage.setScene(progressScene);
+        Scene copyrightScene = new Scene(root, 615, 450);
+        copyrightStage.setScene(copyrightScene);
         copyrightStage.show();
+
+        openSourceCredits.setOnAction(event -> {
+            try {
+                copyrightStage.setScene(ReferencesFX.start(copyrightStage, copyrightScene));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         proceedButton.setOnAction(e -> {
             copyrightStage.close();

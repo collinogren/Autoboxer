@@ -135,20 +135,30 @@ public class PDFManipulator {
 
     // Figure out if the event number in the schedule element equals the event number(s) on the sheet.
     public boolean matchNameToSchedule(ScheduleElement scheduleElement, String eventName) {
+        /*
+            The required index if greater than zero and less than the number of event numbers in a category will force
+            the use of the first event number if the event is a pattern dance first segment, the second event number if
+            the event is a pattern dance second segment, and will force the third event number if the event is a free
+            dance segment.
+         */
         int required_index = -1;
-        if (eventName.contains(" P1")) {
+        if (eventName.contains(" P1") || eventName.contains(" PD1")) {
             required_index = 0;
-        } else if (eventName.contains(" P2")) {
+        } else if (eventName.contains(" P2") || eventName.contains(" PD2")) {
             required_index = 1;
-        } else if (eventName.contains(" Free Dance")) {
+        } else if (eventName.contains(" FD") || eventName.toUpperCase().contains(" FREE DANCE")) {
             required_index = 2;
         }
+
+        // Get event numbers from name
         ArrayList<String> scrutinizedEventNumbers = scrutinizeName(eventName);
 
+        // Check if the program should force the event number to a specific index.
         if (required_index >= 0 && required_index < scrutinizedEventNumbers.size()) {
             return scrutinizedEventNumbers.get(required_index).equalsIgnoreCase(scheduleElement.getEventNumber());
         }
 
+        // Otherwise operate as usual by finding the first match.
         for (String e : scrutinizeName(eventName)) {
             if (e.equalsIgnoreCase(scheduleElement.getEventNumber())) {
                 return true;
@@ -164,12 +174,16 @@ public class PDFManipulator {
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
+            // Handle how some accountants use a number format of 001 and similar.
             if (Settings.getRemoveLeadingZeros() && c == '0' && eventNumber.isEmpty()) {
                 continue;
             }
+
+            // If the character being looked at is either a number or letter then it is a part of an event number.
             if (isNumberOrLetter(c)) {
                 eventNumber.append(c);
             } else {
+                // If it is not a number or letter, then it must be indicating another segment in the same category.
                 String eventNumberString = eventNumber.toString();
                 if (!eventNumberString.isEmpty()) {
                     eventNumbers.add(eventNumberString);
@@ -185,6 +199,12 @@ public class PDFManipulator {
 
     // Check if a character is a number or letter.
     private boolean isNumberOrLetter(char element) {
+        return (element >= 'a' && element <= 'z') || (element >= 'A' && element <= 'Z') || (element >= '0' && element <= '9');
+    }
+
+    // Check if a character is a number or letter. Old function, probably should delete.
+    @Deprecated
+    private boolean isNumberOrLetterOld(char element) {
         for (char c = 'a'; c <= 'z'; c++) {
             if (element == c) {
                 return true;
@@ -347,8 +367,11 @@ public class PDFManipulator {
         return extractName(lines[line]);
     }
 
+    // Parse the event name from a 6.0 file.
     private String parseEventName60() {
+        // Split the contents into a string for each line.
         String[] lines = contents.split("\n");
+        // Map which line contains the name based on the file type.
         int line = switch (fileType) {
             case SIX0_PRIMARY_WORKSHEET -> 2;
             case SIX0_PRIMARY_JUDGE_SHEET -> 3;
@@ -356,6 +379,7 @@ public class PDFManipulator {
             default -> 0;
         };
 
+        // get the name from the array of lines and make it uppercase.
         String name = lines[line].toUpperCase();
 
         /*
@@ -428,6 +452,7 @@ public class PDFManipulator {
         return correctedName;
     }
 
+    // Function to parse the loaded file to a string, takes a boolean for whether it should sort text by position.
     public String parseToString(boolean sortByPosition) throws IOException {
         PDFTextStripper pdfTextStripper = new PDFTextStripper();
         pdfTextStripper.setSortByPosition(sortByPosition);
@@ -450,6 +475,9 @@ public class PDFManipulator {
         return document;
     }
 
+    // Reload the document. Useful when a PDF needs to be copied.
+    // PDFs often need to be copied because most simple ways of copying a PDDocument results in a shallow copy.
+    // This function basically performs a deep copy of the PDDocument.
     public PDDocument reloadDocument() {
         PDDocument temp = new PDDocument();
 
@@ -465,6 +493,7 @@ public class PDFManipulator {
         return temp;
     }
 
+    // Get the official's name out of the paperwork.
     private String getOfficialName() {
         String[] lines = contents.split("\n");
         if (fileType == IJS_JUDGE_SHEET) {
@@ -585,6 +614,7 @@ public class PDFManipulator {
         return officialNames;
     }
 
+    // Count how many times an official occurs in a document. Useful for when an official has more than one role.
     private int countOfficialOccurrences(ArrayList<IdentityBundle> officialNames, String name) {
         int count = 1;
         for (IdentityBundle officialName : officialNames) {
@@ -596,8 +626,10 @@ public class PDFManipulator {
         return count;
     }
 
+    // Add this instance's PDDocument to a destination document.
     public void addToPDF(PDDocument dest) {
         try {
+            // Copy pages from this document and import into dest.
             for (PDPage page : getDocument().getPages()) {
                 dest.importPage(page);
             }
