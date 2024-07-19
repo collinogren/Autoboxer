@@ -135,13 +135,16 @@ public class OfficialSchedule {
                                     .fontSize(10)
                                     .horizontalAlignment(HorizontalAlignment.CENTER)
                                     .build());
+                } catch(IndexOutOfBoundsException e) {
+                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName() + "\nCheck your delimiter.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
                 } catch (Exception e) {
-                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + " " + scheduleElement.scheduleElement().getEventName();
+                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName();
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
                     throw new RuntimeException(message);
                 }
             }
-
 
             RepeatedHeaderTableDrawer.builder()
                     .numberOfRowsToRepeat(2)

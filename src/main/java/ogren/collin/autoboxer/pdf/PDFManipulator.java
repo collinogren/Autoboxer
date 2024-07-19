@@ -286,7 +286,8 @@ public class PDFManipulator {
             }
 
             // Assign multiplicity to a space followed by the index of multiplicity for the file.
-            multiplicity += " " + i;
+            multiplicity = " " + parseMultiplicityFromFile();
+            System.out.println("Multiplicity = " + multiplicity);
         }
 
         // For any IJS file that is not a coversheet,
@@ -300,6 +301,28 @@ public class PDFManipulator {
         // Such information should be stored in the file name for fast and easy retrieval. This prevents unnecessary
         // rereading of file contents to determine the purpose of a file.
         return file.getPath().split(file.getName())[0] + offset + eventNumber + " " + fileType.name() + officialName + judgeSheetType + multiplicity + ".pdf";
+    }
+
+    private String parseMultiplicityFromFile() {
+        if (fileType == IJS_JUDGE_SHEET) {
+            String[] lines = contents.split("\n");
+            int skaterNumber = 1;
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i];
+                String[] split = line.split(" / ");
+                if (split.length < 2) {
+                    continue;
+                }
+                if ((split[0] + " " + split[1]).equalsIgnoreCase(getEventName())) {
+                    System.out.println(lines[i + 1].split(". ")[0]);
+                    skaterNumber = Integer.parseInt(lines[i + 1].split(". ")[0]);
+                    break;
+                }
+            }
+            return "" + ((skaterNumber / 3) + 1);
+        } else {
+            return "";
+        }
     }
 
     // Wrapper function to determine whether to parse an IJS file or a 6.0 file.

@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -159,7 +160,7 @@ public class MasterController {
                 try {
                     judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
                     rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
-                    judgeSheets = getAllFiles(JUDGE_SHEETS_DIR + "/renamed/");
+                    judgeSheets = getAllRenamedJudgesSheetsInOrder(JUDGE_SHEETS_DIR + "/renamed/");
                 } catch (IOException e) {
                     String message = "Failed to parse IJS judges' sheets.";
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
@@ -275,6 +276,12 @@ public class MasterController {
 
     private ArrayList<File> getAllFiles(String relativeDir) {
         return (ArrayList<File>) FileUtils.listFiles(new File(baseDir + "/" + relativeDir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+    }
+
+    private ArrayList<File> getAllRenamedJudgesSheetsInOrder(String relativeDir) {
+        ArrayList<File> judgesSheets = getAllFiles(relativeDir);
+        judgesSheets.sort(Comparator.comparing((File f) -> Integer.parseInt((f.getName()).split(" ")[4].split(".pdf")[0])));
+        return judgesSheets;
     }
 
     //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
