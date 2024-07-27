@@ -38,7 +38,6 @@ public class Settings {
 
     public static void loadSettings() {
         settingsFile = new File(System.getenv("APPDATA") + "/Autoboxer/Autoboxer.properties");
-        System.out.println(settingsFile.getPath());
         if (!settingsFile.getParentFile().exists()) {
             if (!settingsFile.getParentFile().mkdirs()) {
                 Logging.logger.warn("Failed to create Autoboxer settings directories.");

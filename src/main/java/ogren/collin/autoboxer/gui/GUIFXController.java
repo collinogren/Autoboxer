@@ -336,7 +336,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         printing turned on instead of doing this because of that.
         The purpose for this function was to disable spooling when printing from Hal which seems to break when printing
         using spooling, but only sometimes. I suspect that this is a Hal bug since I have had it happen printing to a
-        brother laser printer as well as to clawPDF. Regardless, disabling spooling seems to fix the problem and doesn't
+        Brother laser printer as well as to clawPDF. Regardless, disabling spooling seems to fix the problem and doesn't
         take too much longer.
     */
     @SuppressWarnings("unused")

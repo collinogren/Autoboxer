@@ -66,6 +66,10 @@ public class EventSet {
         }
     }
 
+    public int getSize() {
+        return documents.size();
+    }
+
     public String getEventNumber() {
         return eventNumber;
     }

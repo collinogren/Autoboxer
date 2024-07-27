@@ -18,13 +18,17 @@
 
 package ogren.collin.autoboxer.control;
 
+import javafx.application.Platform;
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.gui.ErrorsFX;
 import ogren.collin.autoboxer.gui.ProgressGUIFX;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.*;
+import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.pdfbox.Loader;
@@ -32,6 +36,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -62,6 +67,8 @@ public class MasterController {
     private ArrayList<File> six0Sheets = new ArrayList<>();
     private ArrayList<File> six0SecondarySheets = new ArrayList<>();
     private ArrayList<File> six0StartingOrders = new ArrayList<>();
+
+    public static ArrayList<BoxError> errors = new ArrayList<>();
 
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
@@ -231,7 +238,7 @@ public class MasterController {
                 }
             });
 
-            // Wait for processes to finish, and destroy the executor.
+            // Wait for processes to finish and destroy the executor.
             executor.shutdown();
 
             try {
@@ -314,6 +321,7 @@ public class MasterController {
         generateTASheets(taSheets);
     }
 
+    // Sort the top sheets for 6.0.
     private void sort60Primary(ScheduleElement se) {
         for (File file : six0Sheets) {
             if (se.matchFileNameToEventNumber(file)) {
@@ -325,6 +333,7 @@ public class MasterController {
         }
     }
 
+    // Sort the starting orders for 6.0
     private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders) {
         for (File file : six0StartingOrders) {
             if (se.matchFileNameToEventNumber(file)) {
@@ -340,6 +349,7 @@ public class MasterController {
         }
     }
 
+    // Sort IJSCompanion Judges' sheets for starting orders and TA sheets.
     private void sortIJSTAAndStartingOrders(boolean generate, HashMap<String, PDDocument> sheets, ScheduleElement se, PDFManipulator pdfManipulator) {
         if (generate) {
             if (!sheets.containsKey(se.getRink())) {
@@ -350,6 +360,7 @@ public class MasterController {
         }
     }
 
+    // Put the IJS and 6.0 starting orders together to create the start order set.
     private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
         if (Settings.getGenerateStartingOrders()) {
             for (String rink : Schedule.getRinks()) {
@@ -373,6 +384,7 @@ public class MasterController {
         }
     }
 
+    // Place all IJSCompanion judges' sheets in 104 order to create the TA sheets set.
     private void generateTASheets(HashMap<String, PDDocument> taSheets) {
         if (Settings.getGenerateTASheets()) {
             for (String rink : Schedule.getRinks()) {
@@ -408,13 +420,31 @@ public class MasterController {
                     case REFEREE -> {
                         retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_REFEREE_SHEET);
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                        if (eventSet.getSize() < 3) {
+                            errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_REFEREE_PAPERS));
+                        }
                     }
-                    case JUDGE, TS1 ->
-                            retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
-                    case TC -> retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TC_SHEET);
+                    case JUDGE, TS1 -> {
+                        retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                        // Since TS1 only needs judges' papers for dance, check only for judges and not TS1.
+                        if (identity.role() == Role.JUDGE) {
+                            if (eventSet.getSize() < 2) {
+                                errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_JUDGE_PAPERS));
+                            }
+                        }
+                    }
+                    case TC -> {
+                        retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TC_SHEET);
+                        if (eventSet.getSize() < 2) {
+                            errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
+                        }
+                    }
                     case TS2 -> {
                         retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                        if (eventSet.getSize() < 2) {
+                            errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
+                        }
                     }
                 }
             } else {

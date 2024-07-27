@@ -287,7 +287,6 @@ public class PDFManipulator {
 
             // Assign multiplicity to a space followed by the index of multiplicity for the file.
             multiplicity = " " + parseMultiplicityFromFile();
-            System.out.println("Multiplicity = " + multiplicity);
         }
 
         // For any IJS file that is not a coversheet,
@@ -314,7 +313,6 @@ public class PDFManipulator {
                     continue;
                 }
                 if ((split[0] + " " + split[1]).equalsIgnoreCase(getEventName())) {
-                    System.out.println(lines[i + 1].split(". ")[0]);
                     skaterNumber = Integer.parseInt(lines[i + 1].split(". ")[0]);
                     break;
                 }
