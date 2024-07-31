@@ -110,6 +110,44 @@ public class Schedule {
             }
         }
 
+        ArrayList<String> duplicateEvents = new ArrayList<>();
+        boolean error = false;
+
+        for (ScheduleElement scheduleElement : elements) {
+            int multiplicity = 0;
+            for (ScheduleElement scheduleElement1 : elements) {
+                if (scheduleElement.getEventNumber().isEmpty()) {
+                    continue;
+                }
+
+                if (scheduleElement.getEventNumber().equals(scheduleElement1.getEventNumber())) {
+                    multiplicity++;
+                }
+
+                if (multiplicity > 1) {
+                    boolean isErrorThrown = false;
+                    for (String event : duplicateEvents) {
+                        if (event.equals(scheduleElement.getEventNumber())) {
+                            isErrorThrown = true;
+                            break;
+                        }
+                    }
+                    if (isErrorThrown) {
+                        continue;
+                    }
+
+                    duplicateEvents.add(scheduleElement.getEventNumber());
+
+                    MasterController.errors.add(new BoxError(scheduleElement.getEventNumber(), null, ErrorType.DUPLICATE_SCHEDULE_ENTRY));
+                    error = true;
+                }
+            }
+        }
+
+        if (error) {
+            throw new RuntimeException("Duplicate schedule entry.");
+        }
+
         /*
          I only did it like this because the previous code is so unreadable that I couldn't figure out how to do this
          inline with inserting new schedule elements. Maybe fix this sometime hmm?
