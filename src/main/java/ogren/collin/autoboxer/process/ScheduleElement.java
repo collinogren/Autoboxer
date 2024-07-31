@@ -18,23 +18,15 @@
 
 package ogren.collin.autoboxer.process;
 
-import ogren.collin.autoboxer.gui.GUIFXController;
-import ogren.collin.autoboxer.pdf.PDFManipulator;
-
 import java.io.File;
-import java.util.ArrayList;
 
 public class ScheduleElement {
     private final String eventNumber;
-    private String eventName;
     private final String startTime;
-
     private final String endTime;
-
     private final String day;
-
     private final String rink;
-
+    private String eventName;
     private boolean processed = false;
 
     public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime, String day, String rink) {
@@ -54,16 +46,16 @@ public class ScheduleElement {
         return eventName;
     }
 
+    public void setEventName(String name) {
+        eventName = name;
+    }
+
     public String getStartTime() {
         return startTime;
     }
 
     public String getEndTime() {
         return endTime;
-    }
-
-    public void setEventName(String name) {
-        eventName = name;
     }
 
     public String getDay() {

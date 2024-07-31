@@ -33,12 +33,11 @@ import java.util.Objects;
 public class GUIFX extends Application {
 
     public static Scene mainScene;
+    public static Image autoboxerIcon;
 
     public static void main(String[] args) {
         GUIFX.launch(args);
     }
-
-    public static Image autoboxerIcon;
 
     // Initialize JavaFX application.
     @Override

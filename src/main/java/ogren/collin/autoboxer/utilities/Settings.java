@@ -20,18 +20,21 @@ package ogren.collin.autoboxer.utilities;
 
 import ogren.collin.autoboxer.Logging;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Settings {
 
+    private static final Properties properties = new Properties();
     private static boolean generateSchedule = true;
     private static boolean generateStartingOrders = true;
     private static boolean generateTASheets = true;
     private static boolean combinePaperwork = false;
     private static boolean removeLeadingZeros = true;
     private static String eventNameDelimiter = " - ";
-    private static final Properties properties = new Properties();
     private static File settingsFile;
     private static String version;
     private static boolean newInstall = false;
@@ -93,9 +96,8 @@ public class Settings {
         }
     }
 
-    public static void setCombinePaperwork(boolean b) {
-        combinePaperwork = b;
-        updateProperties();
+    public static boolean getGenerateSchedule() {
+        return generateSchedule;
     }
 
     public static void setGenerateSchedule(boolean b) {
@@ -103,8 +105,8 @@ public class Settings {
         updateProperties();
     }
 
-    public static boolean getGenerateSchedule() {
-        return generateSchedule;
+    public static boolean getGenerateStartingOrders() {
+        return generateStartingOrders;
     }
 
     public static void setGenerateStartingOrders(boolean b) {
@@ -112,8 +114,17 @@ public class Settings {
         updateProperties();
     }
 
-    public static boolean getGenerateStartingOrders() {
-        return generateStartingOrders;
+    public static boolean getCombinePaperwork() {
+        return combinePaperwork;
+    }
+
+    public static void setCombinePaperwork(boolean b) {
+        combinePaperwork = b;
+        updateProperties();
+    }
+
+    public static boolean getGenerateTASheets() {
+        return generateTASheets;
     }
 
     public static void setGenerateTASheets(boolean b) {
@@ -121,12 +132,8 @@ public class Settings {
         updateProperties();
     }
 
-    public static boolean getCombinePaperwork() {
-        return combinePaperwork;
-    }
-
-    public static boolean getGenerateTASheets() {
-        return generateTASheets;
+    public static String getEventNameDelimiter() {
+        return eventNameDelimiter;
     }
 
     public static void setEventNameDelimiter(String delimiter) {
@@ -134,17 +141,13 @@ public class Settings {
         updateProperties();
     }
 
-    public static String getEventNameDelimiter() {
-        return eventNameDelimiter;
+    public static boolean getRemoveLeadingZeros() {
+        return removeLeadingZeros;
     }
 
     public static void setRemoveLeadingZeros(boolean b) {
         removeLeadingZeros = b;
         updateProperties();
-    }
-
-    public static boolean getRemoveLeadingZeros() {
-        return removeLeadingZeros;
     }
 
     public static String getVersion() {

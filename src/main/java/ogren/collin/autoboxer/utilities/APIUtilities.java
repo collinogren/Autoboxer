@@ -1,7 +1,5 @@
 package ogren.collin.autoboxer.utilities;
 
-import ogren.collin.autoboxer.Logging;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;

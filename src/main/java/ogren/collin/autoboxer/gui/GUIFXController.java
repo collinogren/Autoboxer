@@ -22,11 +22,11 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -46,6 +46,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,6 +73,15 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private TabPane tabPane;
 
     private Tab addTab;
+
+    public static void viewGithub() {
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
+        } catch (IOException | URISyntaxException e) {
+            Logging.logger.error(e);
+        }
+    }
 
     // Do any initialization work such as adding listeners which cannot be added within the FXML file or setting up
     // additional GUI components.
@@ -100,7 +110,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
     }
 
     // Handle browsing for a box directory.
-    @FXML void browse() {
+    @FXML
+    void browse() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Autoboxer");
         File tempBoxDirectory = directoryChooser.showDialog(generateButton.getScene().getWindow());
@@ -201,7 +212,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
         setClawPDFRegVariable(MasterController.SIX0_PRIMARY_DIR);
     }
 
-    @FXML private void setClawPrintDirSix0Sub() {
+    @FXML
+    private void setClawPrintDirSix0Sub() {
         setClawPDFRegVariable(MasterController.SIX0_SUBSEQUENT_DIR);
     }
 
@@ -247,15 +259,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
     }
 
-    public static void viewGithub() {
-        Desktop desktop = Desktop.getDesktop();
-        try {
-            desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
-        } catch (IOException | URISyntaxException e) {
-            Logging.logger.error(e);
-        }
-    }
-
     // Creates a view for editing schedules per rink.
     private void createRinkView(String rinkName, String textContent) {
         Tab tab = new Tab();
@@ -272,14 +275,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
         textArea.setText(textContent);
         VBox.setVgrow(textArea, Priority.ALWAYS);
 
-        rinkSchedules.add("-R " + rinkName+"\n"+ textContent);
+        rinkSchedules.add("-R " + rinkName + "\n" + textContent);
         int index = rinkSchedules.size() - 1;
 
-        textArea.textProperty().addListener((observable, oldValue, newValue) -> rinkSchedules.set(index, "-R "+tab.getText()+"\n"+newValue));
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> rinkSchedules.set(index, "-R " + tab.getText() + "\n" + newValue));
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             tab.setText(newValue);
-            rinkSchedules.set(index, "-R "+tab.getText()+"\n"+textArea.getText());
+            rinkSchedules.set(index, "-R " + tab.getText() + "\n" + textArea.getText());
         });
 
         vbox.getChildren().add(textField);
@@ -310,8 +313,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
         addTab = new Tab("+"); // You can replace the text with an icon
         addTab.setClosable(false);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if(newTab == addTab) {
-                createRinkView("Rink "+(tabPane.getTabs().size() - 1), ""); // Adding new tab before the "button" tab
+            if (newTab == addTab) {
+                createRinkView("Rink " + (tabPane.getTabs().size() - 1), ""); // Adding new tab before the "button" tab
                 tabPane.getSelectionModel().select(tabPane.getTabs().size() - 2); // Selecting the tab before the button, which is the newly created one
             }
         });
@@ -323,7 +326,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private void setClawPDFRegVariable(String endDir) {
         String directory = boxDirectory.getPath().replace("/", "\\").replace("\\", "\\\\") + "\\\\" + endDir;
         try {
-            String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\""+directory+"\"", "/f"};
+            String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\"" + directory + "\"", "/f"};
             Runtime.getRuntime().exec(regCommand);
         } catch (IOException e) {
             Logging.logger.error(e);
@@ -348,13 +351,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
             spooling = "PrintDirect";
         }
         try {
-            String[] regCommand = {"REG", "ADD", "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Print\\Printers\\clawPDF\\DsSpooler", "/v", "printSpooling", "/d", "\""+spooling+"\"", "/f"};
+            String[] regCommand = {"REG", "ADD", "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Print\\Printers\\clawPDF\\DsSpooler", "/v", "printSpooling", "/d", "\"" + spooling + "\"", "/f"};
             Runtime.getRuntime().exec(regCommand);
         } catch (IOException e) {
             Logging.logger.error(e);
             throw new RuntimeException(e);
         }
     }
+
     private void setDirDependentButtonsDisabled() {
         try {
             setDirDependentButtonsDisabledDirectly(!boxDirectory.exists());
@@ -395,12 +399,19 @@ public class GUIFXController implements javafx.fxml.Initializable {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                            stage.setAlwaysOnTop(true);
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Error");
-                            alert.setContentText("Failed to generate the box.\n"+e.getMessage());
+                            alert.setContentText("Failed to generate the box.\n" + e.getMessage());
+                            if (!MasterController.errors.isEmpty()) {
+                                ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
+                            }
                             e.printStackTrace();
                             Logging.logger.fatal(e.getMessage());
-                            alert.show();
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.isPresent() && result.get() == ButtonType.OK && !MasterController.errors.isEmpty()) {
+                                new ErrorsFX().start(MasterController.errors);
+                            }
                             ProgressGUIFX.setDone(true);
                         });
 
@@ -411,18 +422,29 @@ public class GUIFXController implements javafx.fxml.Initializable {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                            stage.setAlwaysOnTop(true);
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Success");
                             alert.setHeaderText("Success");
-                            alert.setContentText("Successfully generated the box.");
-                            alert.show();
+                            if (MasterController.errors.isEmpty()) {
+                                alert.setContentText("Successfully generated the box.");
+                            } else {
+                                alert.setContentText("Successfully generated the box,\nbut errors or warnings are present.");
+                                ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
+                            }
+
+                            Optional<ButtonType> result = alert.showAndWait();
+                            if (result.isPresent() && result.get() == ButtonType.OK && !MasterController.errors.isEmpty()) {
+                                new ErrorsFX().start(MasterController.errors);
+                            }
                         });
                     }
                 });
                 executorService.shutdown();
                 closeStage(generateButton);
             }
-        } catch (NullPointerException ignored) {} catch (Exception e) {
+        } catch (NullPointerException ignored) {
+        } catch (Exception e) {
             Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }

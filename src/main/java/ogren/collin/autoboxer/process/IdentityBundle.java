@@ -49,7 +49,7 @@ public class IdentityBundle {
     public ArrayList<FileType> matchRoleToFileTypeIJS() {
         ArrayList<FileType> types = new ArrayList<>();
         types.add(FileType.IJS_COVERSHEET);
-        switch(role) {
+        switch (role) {
             case REFEREE -> {
                 types.add(FileType.IJS_REFEREE_SHEET);
                 types.add(FileType.IJS_JUDGE_SHEET);

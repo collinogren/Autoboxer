@@ -19,7 +19,10 @@
 package ogren.collin.autoboxer.process;
 
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -65,7 +68,7 @@ public class Schedule {
 
             try {
                 rinks.get(index).add(line);
-            } catch(IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 String message = "No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.";
                 Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
                 throw new RuntimeException(message);
@@ -86,9 +89,11 @@ public class Schedule {
 
                 if (split.length < 2) {
                     Logging.logger.fatal("Missing a start time which must exist.");
+                    MasterController.errors.add(new BoxError(line, null, ErrorType.MISSING_START_TIME));
                     throw new RuntimeException("Missing a start time which must exist.");
                 }
 
+                // Okay moron (past me), comment your code because this is literal dark magic over here.
                 if (i == 0) {
                     if (split.length < 3) {
                         elements.add(new ScheduleElement(line, "", split[1], "", day, rinks.get(i).getRink()));
@@ -104,29 +109,16 @@ public class Schedule {
                 }
             }
         }
+
+        /*
+         I only did it like this because the previous code is so unreadable that I couldn't figure out how to do this
+         inline with inserting new schedule elements. Maybe fix this sometime hmm?
+         */
+        elements.removeIf(element -> element.getEventNumber().trim().isEmpty());
     }
 
     public static ArrayList<String> getRinks() {
         return rinks;
-    }
-
-    private int getIndexToInsert(ArrayList<ScheduleElement> scheduleElements, String time) {
-        long startTime = Time.parseTimeMinutes(time);
-        for (int i = 0; i < scheduleElements.size(); i++) {
-            if (startTime < Time.parseTimeMinutes(scheduleElements.get(i).getStartTime())) {
-                if (i > 0) {
-                    return i;
-                } else {
-                    return i;
-                }
-            }
-        }
-
-        return scheduleElements.size();
-    }
-
-    public ArrayList<ScheduleElement> getElements() {
-        return elements;
     }
 
     public static String[] readScheduleFileToString(File directory) {
@@ -134,7 +126,8 @@ public class Schedule {
         String contents = "";
         try {
             contents = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         return contents.split("-[rR] ");
     }
@@ -164,5 +157,24 @@ public class Schedule {
             Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
+    }
+
+    private int getIndexToInsert(ArrayList<ScheduleElement> scheduleElements, String time) {
+        long startTime = Time.parseTimeMinutes(time);
+        for (int i = 0; i < scheduleElements.size(); i++) {
+            if (startTime < Time.parseTimeMinutes(scheduleElements.get(i).getStartTime())) {
+                if (i > 0) {
+                    return i;
+                } else {
+                    return i;
+                }
+            }
+        }
+
+        return scheduleElements.size();
+    }
+
+    public ArrayList<ScheduleElement> getElements() {
+        return elements;
     }
 }

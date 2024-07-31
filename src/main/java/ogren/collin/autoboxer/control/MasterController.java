@@ -18,15 +18,13 @@
 
 package ogren.collin.autoboxer.control;
 
-import javafx.application.Platform;
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.gui.ErrorsFX;
 import ogren.collin.autoboxer.gui.ProgressGUIFX;
-import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
 import ogren.collin.autoboxer.process.*;
+import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.errordetection.BoxError;
 import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.commons.io.FileUtils;
@@ -36,7 +34,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -57,18 +54,16 @@ public class MasterController {
     private static final String BOX_DIR = "box";
     private static final String TA_DIR = "box/TA";
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
+    public static ArrayList<BoxError> errors = new ArrayList<>();
     private static String baseDir;
     private final ArrayList<Official> officials = new ArrayList<>();
     private final Schedule schedule;
-
     private ArrayList<File> coversheets = new ArrayList<>();
     private ArrayList<File> judgeSheets = new ArrayList<>();
     private ArrayList<File> technicalSheets = new ArrayList<>();
     private ArrayList<File> six0Sheets = new ArrayList<>();
     private ArrayList<File> six0SecondarySheets = new ArrayList<>();
     private ArrayList<File> six0StartingOrders = new ArrayList<>();
-
-    public static ArrayList<BoxError> errors = new ArrayList<>();
 
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
@@ -298,21 +293,17 @@ public class MasterController {
         HashMap<String, PDDocument> startingOrders = new HashMap<>();
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
-            for (File file : coversheets) {
-                if (se.matchFileNameToEventNumber(file)) {
-                    String eventNumber = se.getEventNumber();
-                    PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
-                    sortIJSTAAndStartingOrders(Settings.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
+            boolean[] sheetsExistPtr = {false}; // Yes. a pointer. In Java. I know. Shocking. This is a dramatic comment. Wow. Okay. I am done now.
 
-                    sortIJSTAAndStartingOrders(Settings.getGenerateTASheets(), taSheets, se, pdfManipulator);
-                    ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
-                    processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
-                }
+            sortIJS(se, startingOrders, taSheets, sheetsExistPtr);
+
+            sort60StartingOrders(se, startingOrders, sheetsExistPtr);
+
+            sort60Primary(se, sheetsExistPtr);
+
+            if (!sheetsExistPtr[0]) {
+                errors.add(new BoxError(se.getEventNumber(), null, ErrorType.MISSING_PAPERS_FOR_SCHEDULED_EVENT));
             }
-
-            sort60StartingOrders(se, startingOrders);
-
-            sort60Primary(se);
 
             ProgressGUIFX.addProgress(((1.0 / numberOfEvents)) / 2.0);
         }
@@ -321,20 +312,36 @@ public class MasterController {
         generateTASheets(taSheets);
     }
 
+    private void sortIJS(ScheduleElement se, HashMap<String, PDDocument> startingOrders, HashMap<String, PDDocument> taSheets, boolean[] sheetsExistPtr) {
+        for (File file : coversheets) {
+            if (se.matchFileNameToEventNumber(file)) {
+                String eventNumber = se.getEventNumber();
+                PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
+                sortIJSTAAndStartingOrders(Settings.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
+
+                sortIJSTAAndStartingOrders(Settings.getGenerateTASheets(), taSheets, se, pdfManipulator);
+                ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
+                processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
+                sheetsExistPtr[0] = true;
+            }
+        }
+    }
+
     // Sort the top sheets for 6.0.
-    private void sort60Primary(ScheduleElement se) {
+    private void sort60Primary(ScheduleElement se, boolean[] sheetsExistPtr) {
         for (File file : six0Sheets) {
             if (se.matchFileNameToEventNumber(file)) {
                 String eventNumber = se.getEventNumber();
                 PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_PRIMARY_JUDGE_SHEET);
                 ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                 processEvent(eventNumber, identityBundles, pdfManipulator, se, false);
+                sheetsExistPtr[0] = true;
             }
         }
     }
 
     // Sort the starting orders for 6.0
-    private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders) {
+    private void sort60StartingOrders(ScheduleElement se, HashMap<String, PDDocument> startingOrders, boolean[] sheetsExistPtr) {
         for (File file : six0StartingOrders) {
             if (se.matchFileNameToEventNumber(file)) {
                 if (Settings.getGenerateStartingOrders()) {
@@ -345,6 +352,8 @@ public class MasterController {
 
                     pdfManipulator.addToPDF(startingOrders.get(se.getRink()));
                 }
+
+                sheetsExistPtr[0] = true;
             }
         }
     }
@@ -494,7 +503,8 @@ public class MasterController {
                     }
                 }
 
-                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && (split[2].equals("generic")) && (identity.role() == Role.TS1 || identity.role() == Role.TS2)) {try {
+                if (split[0].equals(eventNumber) && split[1].equals(fileType.name()) && (split[2].equals("generic")) && (identity.role() == Role.TS1 || identity.role() == Role.TS2)) {
+                    try {
                         eventSet.push(Loader.loadPDF(file));
                     } catch (IOException e) {
                         Logging.logger.fatal((e));

@@ -19,10 +19,13 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.IdentityBundle;
 import ogren.collin.autoboxer.process.Role;
 import ogren.collin.autoboxer.process.ScheduleElement;
+import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -111,7 +114,7 @@ public class PDFManipulator {
             boolean sortByPosition = fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET || fileType == SIX0_STARTING_ORDERS;
             contents = parseToString(sortByPosition);
         } catch (IOException e) {
-            String message = "Failed to read a PDF at "+file.getPath();
+            String message = "Failed to read a PDF at " + file.getPath();
             Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
             throw new RuntimeException(message);
         }
@@ -332,11 +335,11 @@ public class PDFManipulator {
         switch (fileType) {
             // Check if it is IJS
             case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET ->
-                    // And if it is, run the IJS event name parser.
+                // And if it is, run the IJS event name parser.
                     eventName = parseEventNameIJS();
             // Check if it is 6.0
             case SIX0_PRIMARY_JUDGE_SHEET, SIX0_PRIMARY_WORKSHEET, SIX0_SECONDARY, SIX0_STARTING_ORDERS ->
-                    // And if it is, run the 6.0 event name parser.
+                // And if it is, run the 6.0 event name parser.
                     eventName = parseEventName60();
         }
 
@@ -385,7 +388,15 @@ public class PDFManipulator {
             line = 1;
         }
 
-        return extractName(lines[line]);
+        String name;
+        try {
+            name = extractName(lines[line]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            MasterController.errors.add(new BoxError(file.getPath(), null, ErrorType.WRONG_FILE_POSITION));
+            name = "";
+        }
+
+        return name;
     }
 
     // Parse the event name from a 6.0 file.
@@ -468,7 +479,8 @@ public class PDFManipulator {
         //noinspection UnreachableCode
         try {
             correctedName = split[0] + " " + split[1];
-        } catch (ArrayIndexOutOfBoundsException ignored) {}
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
         correctedName = correctedName.toUpperCase();
         return correctedName;
     }

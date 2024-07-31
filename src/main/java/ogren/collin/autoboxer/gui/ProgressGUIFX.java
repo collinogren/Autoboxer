@@ -3,7 +3,6 @@ package ogren.collin.autoboxer.gui;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -11,11 +10,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
 
-import javax.swing.*;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,7 +41,7 @@ public class ProgressGUIFX {
         ProgressBar progressBar = new ProgressBar();
         progressBar.setMaxWidth(Double.MAX_VALUE);
         progressBar.setMaxHeight(Double.MAX_VALUE);
-        Text progressText = new Text(progress+"%");
+        Text progressText = new Text(progress + "%");
         StackPane stackPane = new StackPane();
         stackPane.getChildren().setAll(progressBar, progressText);
         AnchorPane.setTopAnchor(stackPane, 0.0);
@@ -93,7 +90,7 @@ public class ProgressGUIFX {
             }
             Platform.runLater(() -> {
                 progressBar.setProgress(progress);
-                progressText.setText(Math.round(progress * 100.0)+"%");
+                progressText.setText(Math.round(progress * 100.0) + "%");
             });
 
             if (isDone) {

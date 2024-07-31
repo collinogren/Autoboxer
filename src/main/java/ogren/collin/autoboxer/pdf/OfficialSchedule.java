@@ -19,9 +19,12 @@
 package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
-import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
+import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -135,12 +138,13 @@ public class OfficialSchedule {
                                     .fontSize(10)
                                     .horizontalAlignment(HorizontalAlignment.CENTER)
                                     .build());
-                } catch(IndexOutOfBoundsException e) {
-                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName() + "\nCheck your delimiter.";
+                } catch (IndexOutOfBoundsException e) {
+                    String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName() + "\nCheck your delimiter.";
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    MasterController.errors.add(new BoxError(scheduleElement.scheduleElement().getEventNumber(), null, ErrorType.LIKELY_WRONG_DELIMITER));
                     throw new RuntimeException(message);
                 } catch (Exception e) {
-                    String message = "Error processing event "+scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName();
+                    String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName();
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
                     throw new RuntimeException(message);
                 }
