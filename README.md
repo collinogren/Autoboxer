@@ -1,5 +1,5 @@
 # Autoboxer
-This program is beta software. Always proof its outputs before using them.<br>
+Always proof outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
 Notable features include:
