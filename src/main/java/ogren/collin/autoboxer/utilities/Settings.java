@@ -28,6 +28,9 @@ import java.util.Properties;
 
 public class Settings {
 
+    public static final String DARK_THEME = "dark";
+    public static final String LIGHT_THEME = "light";
+
     private static final Properties properties = new Properties();
     private static boolean generateSchedule = true;
     private static boolean generateStartingOrders = true;
@@ -38,6 +41,7 @@ public class Settings {
     private static File settingsFile;
     private static String version;
     private static boolean newInstall = false;
+    private static String theme = "light";
 
     public static void loadSettings() {
         settingsFile = new File(System.getenv("APPDATA") + "/Autoboxer/Autoboxer.properties");
@@ -71,6 +75,7 @@ public class Settings {
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
         removeLeadingZeros = Boolean.parseBoolean(properties.getProperty("removeLeadingZeros", Boolean.toString(removeLeadingZeros)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
+        theme = properties.getProperty("theme", theme);
         version = properties.getProperty("version", "Unknown Version");
         if (version.equals("Unknown Version") || !APIUtilities.getAPIVersion().equals(version)) {
             updateProperties();
@@ -85,6 +90,7 @@ public class Settings {
         properties.put("removeLeadingZeros", Boolean.toString(removeLeadingZeros));
         properties.put("eventNameDelimiter", eventNameDelimiter);
         properties.put("version", APIUtilities.getAPIVersion());
+        properties.put("theme", theme);
         save();
     }
 
@@ -139,6 +145,20 @@ public class Settings {
     public static void setEventNameDelimiter(String delimiter) {
         eventNameDelimiter = delimiter;
         updateProperties();
+    }
+
+    public static void setThemeDark() {
+        theme = DARK_THEME;
+        updateProperties();
+    }
+
+    public static void setThemeLight() {
+        theme = LIGHT_THEME;
+        updateProperties();
+    }
+
+    public static String getTheme() {
+        return theme;
     }
 
     public static boolean getRemoveLeadingZeros() {

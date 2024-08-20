@@ -162,7 +162,7 @@ public class MasterController {
                 try {
                     judgeSheets = getAllFiles(JUDGE_SHEETS_DIR);
                     rename(judgeSheets, FileType.IJS_JUDGE_SHEET);
-                    judgeSheets = getAllRenamedJudgesSheetsInOrder(JUDGE_SHEETS_DIR + "/renamed/");
+                    judgeSheets = getAllRenamedJudgesSheetsInOrder();
                 } catch (IOException e) {
                     String message = "Failed to parse IJS judges' sheets.";
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
@@ -280,8 +280,8 @@ public class MasterController {
         return (ArrayList<File>) FileUtils.listFiles(new File(baseDir + "/" + relativeDir), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
     }
 
-    private ArrayList<File> getAllRenamedJudgesSheetsInOrder(String relativeDir) {
-        ArrayList<File> judgesSheets = getAllFiles(relativeDir);
+    private ArrayList<File> getAllRenamedJudgesSheetsInOrder() {
+        ArrayList<File> judgesSheets = getAllFiles("judges/renamed/");
         judgesSheets.sort(Comparator.comparing((File f) -> Integer.parseInt((f.getName()).split(" ")[4].split(".pdf")[0])));
         return judgesSheets;
     }
@@ -293,7 +293,7 @@ public class MasterController {
         HashMap<String, PDDocument> startingOrders = new HashMap<>();
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
-            boolean[] sheetsExistPtr = {false}; // Yes. a pointer. In Java. I know. Shocking. This is a dramatic comment. Wow. Okay. I am done now.
+            boolean[] sheetsExistPtr = {false}; // Yes. A pointer. In Java. I know. Shocking. This is a dramatic comment. Wow. Okay. I am done now.
 
             sortIJS(se, startingOrders, taSheets, sheetsExistPtr);
 
@@ -420,7 +420,7 @@ public class MasterController {
     private void processEvent(String eventNumber, ArrayList<IdentityBundle> identityBundles, PDFManipulator pdfManipulator, ScheduleElement scheduleElement, boolean ijs) {
         for (IdentityBundle identity : identityBundles) {
             int officialIndex = getOfficialIndex(identity.name());
-            PDDocument coversheet = pdfManipulator.reloadDocument();
+            PDDocument coversheet = pdfManipulator.reloadDocument(); // Try with resources breaks this for some reason.
             PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
             EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role(), scheduleElement.getRink());
             eventSet.push(circledCoversheet);

@@ -61,6 +61,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private MenuItem openMenu, saveMenu, closeMenu, documentationMenu, copyrightMenu;
 
     @FXML
+    private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
+
+    @FXML
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
@@ -101,6 +104,16 @@ public class GUIFXController implements javafx.fxml.Initializable {
             boxDirectory = new File(newValue);
             setDirDependentButtonsDisabled();
         });
+
+        ToggleGroup themeGroup = new ToggleGroup();
+        darkThemeRadioButtonMenu.setToggleGroup(themeGroup);
+        lightThemeRadioButtonMenu.setToggleGroup(themeGroup);
+
+        if (Settings.getTheme().equals(Settings.DARK_THEME)) {
+            darkThemeRadioButtonMenu.setSelected(true);
+        } else if (Settings.getTheme().equals(Settings.LIGHT_THEME)) {
+           lightThemeRadioButtonMenu.setSelected(true);
+        }
     }
 
     // Setup key bindings.
@@ -257,6 +270,18 @@ public class GUIFXController implements javafx.fxml.Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void setDarkTheme() {
+        Settings.setThemeDark();
+        GUIFX.setTheme();
+    }
+
+    @FXML
+    private void setLightTheme() {
+        Settings.setThemeLight();
+        GUIFX.setTheme();
     }
 
     // Creates a view for editing schedules per rink.

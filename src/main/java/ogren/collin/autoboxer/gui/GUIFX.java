@@ -18,6 +18,7 @@
 
 package ogren.collin.autoboxer.gui;
 
+import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -42,7 +43,6 @@ public class GUIFX extends Application {
     // Initialize JavaFX application.
     @Override
     public void start(Stage stage) throws Exception {
-        Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
         Parent root = fxmlLoader.load();
 
@@ -50,6 +50,8 @@ public class GUIFX extends Application {
 
         GUIFXController controller = fxmlLoader.getController();
         controller.setup(mainScene);
+
+        setTheme();
 
         autoboxerIcon = new Image("/Autoboxer.png");
 
@@ -64,6 +66,14 @@ public class GUIFX extends Application {
 
         if (Settings.isNewInstall() || !Settings.getVersion().equals(APIUtilities.getAPIVersion())) {
             CopyrightFX.start(true);
+        }
+    }
+
+    public static void setTheme() {
+        if (Settings.getTheme().equals(Settings.DARK_THEME)) {
+            Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
+        } else if (Settings.getTheme().equals(Settings.LIGHT_THEME)) {
+            Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         }
     }
 }
