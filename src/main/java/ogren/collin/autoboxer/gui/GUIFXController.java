@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -427,7 +428,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.setAlwaysOnTop(true);
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Error");
-                            alert.setContentText("Failed to generate the box.\n" + e.getMessage());
+                            Label text = new Label("Failed to generate the box.\n" + e.getMessage());
+                            text.setMinWidth(400);
+                            alert.getDialogPane().setContent(text);
                             if (!MasterController.errors.isEmpty()) {
                                 ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
                             }
@@ -452,9 +455,15 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             alert.setTitle("Success");
                             alert.setHeaderText("Success");
                             if (MasterController.errors.isEmpty()) {
-                                alert.setContentText("Successfully generated the box.");
+                                Label text = new Label("Successfully generated the box.\nRemember to select a physical printer when attempting to print.");
+                                text.setMinWidth(400);
+                                text.setWrapText(true);
+                                alert.getDialogPane().setContent(text);
                             } else {
-                                alert.setContentText("Successfully generated the box,\nbut errors or warnings are present.");
+                                Label text = new Label("Successfully generated the box, but errors or warnings are present.\nRemember to select a physical printer when attempting to print.");
+                                text.setMinWidth(400);
+                                text.setWrapText(true);
+                                alert.getDialogPane().setContent(text);
                                 ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
                             }
 

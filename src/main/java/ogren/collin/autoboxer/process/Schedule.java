@@ -48,25 +48,37 @@ public class Schedule {
             throw new RuntimeException(message);
         }
 
+        // The day is the first line in the file
         String day = lines.getFirst();
+
+        // Discard the day
         lines.removeFirst();
 
-        ArrayList<Rink> rinks = new ArrayList<>();
+        ArrayList<RinkSchedule> rinks = new ArrayList<>();
 
         int index = -1;
 
+        // Find all rinks in the schedule file and associate the raw text lines with each rink.
         for (String line : lines) {
+            // Check for the rink flag (-r)
             if (line.toLowerCase().startsWith("-r")) {
                 String rink = line.split(" ", 2)[1];
-                rinks.add(new Rink(rink));
+                rinks.add(new RinkSchedule(rink));
+                // index determines which rink is being worked on.
                 index += 1;
+                // Make sure there is no duplicate rink.
                 if (!Schedule.rinks.contains(rink)) {
+                    // Add the rink to the list
                     Schedule.rinks.add(rink);
                 }
+
+                // Clearly there is no schedule element here so go to the next line.
                 continue;
             }
 
+            // If no rink flag (-r) was found then the line must be a schedule element.
             try {
+                // index is used here to determine which rink to access and then a line is added to that rink.
                 rinks.get(index).add(line);
             } catch (IndexOutOfBoundsException e) {
                 String message = "No rink name provided in schedule.txt.\nUse the format \"-R rink name\" after stating the day.";
@@ -75,34 +87,50 @@ public class Schedule {
             }
         }
 
+        // For every rink:
         for (int i = 0; i < rinks.size(); i++) {
+            // For every line (a probable ScheduleElement) in that rink:
             for (String line : rinks.get(i)) {
+                // if the line is empty or only contains tabs or spaces then go to the next iteration.
                 if (line.isEmpty() || line.replace('\t', ' ').trim().isEmpty()) {
                     continue;
                 }
 
+                // Part of the remove leading zeros functionality.
                 if (Settings.getRemoveLeadingZeros()) {
                     line = line.replaceFirst("^0+(?!$)", "");
                 }
 
+                // Split the line into an array by tabs.
                 String[] split = line.split("\t");
 
+                // if there are less than two strings separated by tabs then there must not be enough information and an
+                // error should be thrown.
                 if (split.length < 2) {
                     Logging.logger.fatal("Missing a start time which must exist.");
                     MasterController.errors.add(new BoxError(line, null, ErrorType.MISSING_START_TIME));
                     throw new RuntimeException("Missing a start time which must exist.");
                 }
 
-                // Okay moron (past me), comment your code because this is literal dark magic over here.
+                // If this is the first rink then there is no need to consider the time.
                 if (i == 0) {
+                    // if there are less than three strings then the end time must be blank. Add a schedule element with
+                    // the event number and starting time, but a blank end time.
                     if (split.length < 3) {
-                        elements.add(new ScheduleElement(line, "", split[1], "", day, rinks.get(i).getRink()));
+                        elements.add(new ScheduleElement(split[0], "", split[1], "", day, rinks.get(i).getRink()));
                     } else {
+                        // Otherwise there must be all three entries so add with an event number, starting time, and end
+                        // time.
                         elements.add(new ScheduleElement(split[0], "", split[1], split[2], day, rinks.get(i).getRink()));
                     }
+                    // If this is a subsequent rink then time does need to be taken into account.
+                    // This algorithm will sort first by time, then by schedule order as listed on the 104.
                 } else {
+                    // Handle the same way as the first rink except instead of adding the schedule element to the end of
+                    // the array, use the getIndexToInsert() function to place the new schedule element in the right
+                    // place based on chronology.
                     if (split.length < 3) {
-                        elements.add(getIndexToInsert(elements, split[1]), new ScheduleElement(line, "", split[1], "", day, rinks.get(i).getRink()));
+                        elements.add(getIndexToInsert(elements, split[1]), new ScheduleElement(split[0], "", split[1], "", day, rinks.get(i).getRink()));
                     } else {
                         elements.add(getIndexToInsert(elements, split[1]), new ScheduleElement(split[0], "", split[1], split[2], day, rinks.get(i).getRink()));
                     }
@@ -110,6 +138,7 @@ public class Schedule {
             }
         }
 
+        // Handle duplicate events
         ArrayList<String> duplicateEvents = new ArrayList<>();
         boolean error = false;
 
@@ -148,10 +177,7 @@ public class Schedule {
             throw new RuntimeException("Duplicate schedule entry.");
         }
 
-        /*
-         I only did it like this because the previous code is so unreadable that I couldn't figure out how to do this
-         inline with inserting new schedule elements. Maybe fix this sometime hmm?
-         */
+        // This could probably be inlined with a previous part of this function.
         elements.removeIf(element -> element.getEventNumber().trim().isEmpty());
     }
 

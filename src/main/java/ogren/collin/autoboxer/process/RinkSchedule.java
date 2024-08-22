@@ -21,11 +21,12 @@ package ogren.collin.autoboxer.process;
 
 import java.util.ArrayList;
 
-public class Rink extends ArrayList<String> {
+// File to contain all raw text schedule entries for a given rink.
+public class RinkSchedule extends ArrayList<String> {
 
     private final String rink;
 
-    public Rink(String rink) {
+    public RinkSchedule(String rink) {
         this.rink = rink;
     }
 

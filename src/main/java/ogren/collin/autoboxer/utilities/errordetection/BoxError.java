@@ -27,6 +27,13 @@ public class BoxError {
             forOfficial = "";
         }
 
-        return errorMessage + "event " + eventIdentifier + " " + errorType.description() + forOfficial;
+        String eventSpecifier;
+        if (eventIdentifier == null) {
+            eventSpecifier = "";
+        } else {
+            eventSpecifier = "event " + eventIdentifier;
+        }
+
+        return errorMessage + eventSpecifier + " " + errorType.description() + forOfficial;
     }
 }

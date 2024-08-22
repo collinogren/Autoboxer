@@ -23,6 +23,8 @@ import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.pdf.EventSet;
 import ogren.collin.autoboxer.pdf.OfficialSchedule;
 import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -137,6 +139,11 @@ public class Official {
                 merged.close();
             } catch (IOException e) {
                 String message = "Failed to save papers for " + getName();
+                // Primarily this is here to explain why you cannot use * in your file name. I guess I could strip the
+                // * out of the file name, but fact is the program won't work correctly if you have "* Bob Johnson" in
+                // Hal but then have "Bob Johnson" in ISUCalc, so I think this is a better way as it will teach the user
+                // the intended lesson and reduce headache for the user in the end.
+                MasterController.errors.add(new BoxError(null, name, ErrorType.FILE_SAVE_ERROR));
                 Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
                 throw new RuntimeException(message);
             }
