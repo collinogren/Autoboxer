@@ -124,7 +124,7 @@ public class MasterController {
 
     private void save() {
         if (Settings.getCombinePaperwork()) {
-            Official.save_all(officials);
+            Official.saveAll(officials);
         } else {
             for (Official official : officials) {
                 official.save();

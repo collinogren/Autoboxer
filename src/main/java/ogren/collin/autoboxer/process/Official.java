@@ -59,7 +59,7 @@ public class Official {
         }
     }
 
-    public static void save_all(ArrayList<Official> officials) {
+    public static void saveAll(ArrayList<Official> officials) {
         officials.sort(Comparator.comparing(Official::getNameLastFirst));
         for (String rink : Schedule.getRinks()) {
             try (PDDocument outputDocument = new PDDocument()) {
