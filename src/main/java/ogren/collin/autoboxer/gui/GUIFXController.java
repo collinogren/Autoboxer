@@ -21,6 +21,7 @@ package ogren.collin.autoboxer.gui;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,6 +32,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -314,6 +317,20 @@ public class GUIFXController implements javafx.fxml.Initializable {
         vbox.getChildren().add(textField);
         vbox.getChildren().add(textArea);
 
+        // Add quick tools for filling the start and end times when some cells are left blank in the 104.
+        HBox autofillTimesHBox = new HBox();
+        Pane spacerPane = new Pane();
+        HBox.setHgrow(spacerPane, Priority.ALWAYS);
+        Button autofillTimes = new Button("Autofill Blank Times...");
+        autofillTimes.setOnAction(e -> AutofillTimesFX.start(textArea));
+        Label rememberToSave = new Label("Remember to save changes with 'File→Save' or 'CTRL+S.'");
+        autofillTimesHBox.setAlignment(Pos.CENTER);
+        autofillTimesHBox.getChildren().add(rememberToSave);
+        autofillTimesHBox.getChildren().add(spacerPane);
+        autofillTimesHBox.getChildren().add(autofillTimes);
+
+        vbox.getChildren().add(autofillTimesHBox);
+
         if (boxDirectory != null) {
             if (boxDirectory.exists()) {
                 generateButton.setDisable(false);
@@ -332,6 +349,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tab.setContent(vbox);
 
         tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
+    }
+
+    private void fillStartTimes() {
+
     }
 
     // Creates a tab which functions as a button to create a new tab behind it.

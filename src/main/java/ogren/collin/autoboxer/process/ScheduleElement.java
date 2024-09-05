@@ -22,8 +22,8 @@ import java.io.File;
 
 public class ScheduleElement {
     private final String eventNumber;
-    private final String startTime;
-    private final String endTime;
+    private String startTime;
+    private String endTime;
     private final String day;
     private final String rink;
     private String eventName;
@@ -77,5 +77,13 @@ public class ScheduleElement {
 
     public void setProcessed(boolean processed) {
         this.processed = processed;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }
