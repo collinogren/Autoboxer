@@ -27,9 +27,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.process.ScheduleElement;
-import ogren.collin.autoboxer.utilities.errordetection.BoxError;
 
-import javax.print.attribute.standard.PrinterName;
 import java.util.ArrayList;
 
 // Dialog box for letting the user copy start and end times up or down. Useful especially for 104s that use merged cells
@@ -40,31 +38,16 @@ public class AutofillTimesFX {
         UP,
     }
 
-    private static class Autofill {
-        private boolean enabled;
-        private Direction direction;
-
-        public Autofill(boolean enabled, Direction direction) {
-            this.enabled = enabled;
-            this.direction = direction;
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public Direction getDirection() {
-            return direction;
-        }
+    private record Autofill(boolean enabled, Direction direction) {
 
         public static Direction directionFromUI(ToggleButton down) {
-            if (down.isSelected()) {
-                return Direction.DOWN;
-            } else {
-                return Direction.UP;
+                if (down.isSelected()) {
+                    return Direction.DOWN;
+                } else {
+                    return Direction.UP;
+                }
             }
         }
-    }
 
     public static void start(TextArea textArea) {
         Stage stage = new Stage();
@@ -209,6 +192,7 @@ public class AutofillTimesFX {
         }
 
         if (startTimeAutofill.enabled) {
+            // Autofill start times down
             if (startTimeAutofill.direction == Direction.DOWN) {
                 String lastKnownTime = "";
                 for (int i = 0; i < elements.size(); i++) {
@@ -222,6 +206,7 @@ public class AutofillTimesFX {
                 }
             }
 
+            // Autofill start times up (probably not gonna be useful)
             if (startTimeAutofill.direction == Direction.UP) {
                 String lastKnownTime = "";
                 for (int i = elements.size() - 1; i >= 0; i--) {
@@ -238,6 +223,7 @@ public class AutofillTimesFX {
         }
 
         if (endTimeAutofill.enabled) {
+            // Autofill end times down
             if (endTimeAutofill.direction == Direction.DOWN) {
                 String lastKnownTime = "";
                 for (int i = 0; i < elements.size(); i++) {
@@ -251,6 +237,7 @@ public class AutofillTimesFX {
                 }
             }
 
+            // Autofill end times up
             if (endTimeAutofill.direction == Direction.UP) {
                 String lastKnownTime = "";
                 for (int i = elements.size() - 1; i >= 0; i--) {
@@ -267,7 +254,7 @@ public class AutofillTimesFX {
 
         String newText = createScheduleText(elements);
 
-        textArea.setText(newText);
+        textArea.replaceText(0, textArea.getText().length(), newText);
     }
 
     private static String createScheduleText(ArrayList<ScheduleElement> elements) {
@@ -288,6 +275,6 @@ public class AutofillTimesFX {
             }
             newText.append("\n");
         }
-        return newText.toString();
+        return newText.toString().trim(); // Trim shouldn't cause a problem here, but I suppose it could somehow.
     }
 }

@@ -43,7 +43,7 @@ import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.utilities.Settings;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -294,8 +294,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tab.setClosable(true);
         tab.setText(rinkName);
         VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(5, 5, 5, 5));
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(10, 10, 10, 10));
         TextField textField = new TextField();
         textField.setText(rinkName);
         textField.setPromptText("Rink Name");
@@ -351,13 +351,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
     }
 
-    private void fillStartTimes() {
-
-    }
-
     // Creates a tab which functions as a button to create a new tab behind it.
     private void newTabButton() {
-        addTab = new Tab("+"); // You can replace the text with an icon
+        addTab = new Tab("+");
         addTab.setClosable(false);
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == addTab) {
