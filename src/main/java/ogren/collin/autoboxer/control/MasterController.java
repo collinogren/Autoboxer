@@ -292,7 +292,7 @@ public class MasterController {
             }
 
             se.setProcessed(true);
-            ProgressGUIFX.addProgress(((1.0 / numberOfEvents) / 9.0) / 2.0);
+            ProgressGUIFX.addProgress(((1.0 / numberOfEvents) / 10.0) / 2.0);
         }
 
         for (PDFManipulator pdfManipulator : pdfManipulators) {
