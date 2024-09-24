@@ -101,7 +101,20 @@ public class MasterController {
             if (pdfManipulator.getEventName().equals(PDFManipulator.WRONG_FILE_TYPE)) {
                 continue;
             }
-            pdfManipulators.add(pdfManipulator);
+
+            try {
+                if (fileType == FileType.IJS_TS1_SHEET && !pdfManipulator.parseToString(false).contains("Technical Specialist 1:   ")) {
+                    continue;
+                }
+
+                if (fileType == FileType.IJS_TS2_SHEET && !pdfManipulator.parseToString(false).contains("Technical Specialist 2:   ")) {
+                    continue;
+                }
+
+                pdfManipulators.add(pdfManipulator);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return pdfManipulators;
     }
@@ -187,6 +200,17 @@ public class MasterController {
                     rename(technicalSheets, FileType.IJS_TC_SHEET);
                 } catch (IOException e) {
                     String message = "Failed to parse technical controller sheets.";
+                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+                    throw new RuntimeException(message);
+                }
+            });
+
+            // Rename technical specialist 1 sheets.
+            executor.execute(() -> {
+                try {
+                    rename(technicalSheets, FileType.IJS_TS1_SHEET);
+                } catch (IOException e) {
+                    String message = "Failed to parse technical specialist 1 sheets.";
                     Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
                     throw new RuntimeException(message);
                 }
@@ -433,7 +457,7 @@ public class MasterController {
                             errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_REFEREE_PAPERS));
                         }
                     }
-                    case JUDGE, TS1 -> {
+                    case JUDGE -> {
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                         // Since TS1 only needs judges' papers for dance, check only for judges and not TS1.
                         if (identity.role() == Role.JUDGE) {
@@ -452,6 +476,13 @@ public class MasterController {
                         retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS2_SHEET);
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
                         if (eventSet.getSize() < 2) {
+                            errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
+                        }
+                    }
+                    case TS1 -> {
+                        retrieveSheets(eventNumber, identity, eventSet, technicalSheets, FileType.IJS_TS1_SHEET);
+                        retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                        if (eventSet.getSize() < 1) {
                             errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
                         }
                     }

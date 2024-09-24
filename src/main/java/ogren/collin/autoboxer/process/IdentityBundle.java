@@ -56,6 +56,7 @@ public class IdentityBundle {
                 return types;
             }
             case JUDGE, TS1 -> {
+                types.add(FileType.IJS_TS1_SHEET);
                 types.add(FileType.IJS_JUDGE_SHEET);
                 return types;
             }

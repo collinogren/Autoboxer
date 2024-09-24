@@ -334,7 +334,7 @@ public class PDFManipulator {
         // Match file type to parser function.
         switch (fileType) {
             // Check if it is IJS
-            case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS2_SHEET ->
+            case IJS_COVERSHEET, IJS_JUDGE_SHEET, IJS_REFEREE_SHEET, IJS_TC_SHEET, IJS_TS1_SHEET, IJS_TS2_SHEET ->
                 // And if it is, run the IJS event name parser.
                     eventName = parseEventNameIJS();
             // Check if it is 6.0
@@ -355,7 +355,7 @@ public class PDFManipulator {
             case IJS_COVERSHEET, IJS_JUDGE_SHEET -> text = " / ";
             case IJS_REFEREE_SHEET -> text = " - REFEREE SHEET";
             case IJS_TC_SHEET -> text = " - TECHNICAL CONTROLLER SHEET";
-            case IJS_TS2_SHEET -> text = " - TECHNICAL SPECIALIST SHEET";
+            case IJS_TS1_SHEET, IJS_TS2_SHEET -> text = " - TECHNICAL SPECIALIST SHEET";
             case SIX0_PRIMARY_JUDGE_SHEET -> text = "REFEREE AND JUDGES PERSONAL RECORD SHEET";
             case SIX0_PRIMARY_WORKSHEET -> text = "Signature US Figure Skating # End";
             case SIX0_SECONDARY -> text = ""; // This file is so plain, it's basically a saltine cracker.
@@ -560,6 +560,14 @@ public class PDFManipulator {
             }
         }
 
+        if (fileType == IJS_TS1_SHEET) {
+            for (String s : lines) {
+                if (s.startsWith("Technical Specialist 1:   ")) {
+                    return s.split("Technical Specialist 1: {3}")[1].trim();
+                }
+            }
+        }
+
         if (fileType == IJS_TS2_SHEET) {
             for (String s : lines) {
                 if (s.startsWith("Technical Specialist 2:   ")) {
@@ -625,6 +633,10 @@ public class PDFManipulator {
                 if (s.contains("DEO ")) {
                     String name = s.split("DEO ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.DEO, countOfficialOccurrences(officialNames, name)));
+                }
+                if (s.contains("Video ")) {
+                    String name = s.split("Video ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.VIDEO, countOfficialOccurrences(officialNames, name)));
                 }
             }
         } else if (fileType == SIX0_PRIMARY_JUDGE_SHEET || fileType == SIX0_PRIMARY_WORKSHEET) {
