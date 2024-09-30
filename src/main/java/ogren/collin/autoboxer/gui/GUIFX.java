@@ -46,7 +46,7 @@ public class GUIFX extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
         Parent root = fxmlLoader.load();
 
-        mainScene = new Scene(root, 530, 400);
+        mainScene = new Scene(root, 545, 400);
 
         GUIFXController controller = fxmlLoader.getController();
         controller.setup(mainScene);

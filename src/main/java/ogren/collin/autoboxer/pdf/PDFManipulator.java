@@ -233,7 +233,7 @@ public class PDFManipulator {
     public void rename(String eventNumber) {
         String offset = "renamed/";
         int i = 1;
-        String destination = getDestination(eventNumber, i, offset);
+        String destination = getDestination(eventNumber, offset);
         boolean exists = new File(destination).exists();
 
         // If the file is an IJS judge's sheet, then handle it accordingly.
@@ -257,7 +257,7 @@ public class PDFManipulator {
     }
 
     // Get destination of copied file.
-    private String getDestination(String eventNumber, int i, String offset) {
+    private String getDestination(String eventNumber, String offset) {
         // Either " referee", " judge", " dance_ts"
         String judgeSheetType = "";
         // Gives a unique name (1, 2, 3...n) to judges' sheets which officials often have more than one sheet of.
@@ -584,7 +584,7 @@ public class PDFManipulator {
         // While I said the next line is horrible, I actually think it might be the best possible solution given the
         // parameters I have to work with. I still do not really like it though, feels hacky. -Two months on.
         boolean refSecond = contents.contains("Judge 5 "); // This is horrible.
-        String[] lines = contents.split("\n");
+        ArrayList<String> lines = new ArrayList<>(Arrays.asList(contents.split("\n")));
 
         /*
             TODO: Handle the issue where an official lacking an affiliation will cause a terrible mess in the paperwork.
@@ -598,6 +598,7 @@ public class PDFManipulator {
          */
 
         if (fileType == IJS_COVERSHEET) {
+            lines.removeLast();
             for (String s : lines) {
                 if (!refSecond) {
                     if (s.contains("Referee ")) {
@@ -609,8 +610,14 @@ public class PDFManipulator {
                 Matcher judgeMatcher = judgePattern.matcher(s);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
+                    int judgeNumber = 0;
+                    try {
+                        judgeNumber = Integer.parseInt(delimiter.split("Judge ")[1].trim());
+                    } catch (NumberFormatException ignored) {
+                        Logging.logger.warn("Failed to read judge number on line {}", s);
+                    }
                     String name = s.split(delimiter)[1].split(",")[0].trim();
-                    officialNames.add(new IdentityBundle(name, Role.JUDGE, countOfficialOccurrences(officialNames, name)));
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE, judgeNumber, countOfficialOccurrences(officialNames, name)));
                 }
                 if (refSecond) {
                     if (s.contains("Referee ")) {
@@ -645,8 +652,14 @@ public class PDFManipulator {
                 Matcher judgeMatcher = judgePattern.matcher(s);
                 if (judgeMatcher.find()) {
                     String delimiter = judgeMatcher.group();
+                    int judgeNumber = 0;
+                    try {
+                        judgeNumber = Integer.parseInt(delimiter.split("J")[1].trim());
+                    } catch (NumberFormatException ignored) {
+                        Logging.logger.warn("Failed to read judge number on line {}", s);
+                    }
                     String name = s.split(delimiter)[1].trim();
-                    officialNames.add(new IdentityBundle(name, Role.JUDGE, countOfficialOccurrences(officialNames, name)));
+                    officialNames.add(new IdentityBundle(name, Role.JUDGE, judgeNumber, countOfficialOccurrences(officialNames, name)));
                 }
 
                 if (s.contains("Ref. ")) {

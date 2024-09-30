@@ -27,6 +27,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ogren.collin.autoboxer.utilities.APIUtilities;
+import ogren.collin.autoboxer.utilities.Settings;
 import org.apache.commons.io.IOUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -37,7 +39,7 @@ public class CopyrightFX {
     public static void start(boolean startupScreen) throws Exception {
         Stage copyrightStage = new Stage();
         copyrightStage.setResizable(false);
-        copyrightStage.setTitle("Autoboxer Copyright and License Information");
+        copyrightStage.setTitle("Autoboxer v" + APIUtilities.getAPIVersion() + " Copyright and License Information");
         copyrightStage.getIcons().add(GUIFX.autoboxerIcon);
         copyrightStage.setAlwaysOnTop(true);
         BorderPane root = new BorderPane();

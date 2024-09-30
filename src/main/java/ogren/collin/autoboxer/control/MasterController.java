@@ -113,7 +113,8 @@ public class MasterController {
 
                 pdfManipulators.add(pdfManipulator);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Logging.logger.error("Failed to read a TS1 or TS2 sheet.\n{}", Arrays.toString(e.getStackTrace()));
+                errors.add(new BoxError(null, null, ErrorType.TS_FILE_READ_ERROR));
             }
         }
         return pdfManipulators;
@@ -136,12 +137,16 @@ public class MasterController {
     }
 
     private void save() {
-        if (Settings.getCombinePaperwork()) {
-            Official.saveAll(officials);
-        } else {
-            for (Official official : officials) {
-                official.save();
+        if (!Settings.getBuildByBoard()) {
+            if (Settings.getCombinePaperwork()) {
+                Official.saveAll(officials);
+            } else {
+                for (Official official : officials) {
+                    official.save();
+                }
             }
+        } else {
+            BuildByBoard.save();
         }
     }
 
@@ -310,14 +315,14 @@ public class MasterController {
         return judgesSheets;
     }
 
-    //Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
+    // Read schedule, one by one, look for event number from file names. Look in coversheets first, then look in 60. These are the two locations to get coversheets.
     // Second, once a coversheet has been selected, go through each official and make a copy, circle the judge, and collect all relevant pdfs and place them into the official's set of papers.
     private void doTheBox() {
         HashMap<String, PDDocument> taSheets = new HashMap<>();
         HashMap<String, PDDocument> startingOrders = new HashMap<>();
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
-            boolean[] sheetsExistPtr = {false}; // Yes. A pointer. In Java. I know. Shocking. This is a dramatic comment. Wow. Okay. I am done now.
+            boolean[] sheetsExistPtr = {false};
 
             sortIJS(se, startingOrders, taSheets, sheetsExistPtr);
 
@@ -349,6 +354,10 @@ public class MasterController {
                 sheetsExistPtr[0] = true;
             }
         }
+    }
+
+    private void sortIJSByBoard(ScheduleElement se, HashMap<String, PDDocument> startingOrders, HashMap<String, PDDocument> taSheets, boolean[] sheetsExistPtr) {
+
     }
 
     // Sort the top sheets for 6.0.
@@ -446,7 +455,7 @@ public class MasterController {
             int officialIndex = getOfficialIndex(identity.name());
             PDDocument coversheet = pdfManipulator.reloadDocument(); // Try with resources breaks this for some reason.
             PDDocument circledCoversheet = PDFManipulator.boxOfficial(officials.get(officialIndex).getName(), coversheet, identity.occurrenceToBox());
-            EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role(), scheduleElement.getRink());
+            EventSet eventSet = new EventSet(scheduleElement.getEventNumber(), identity.role(), scheduleElement.getRink(), identity.name());
             eventSet.push(circledCoversheet);
             if (ijs) {
                 switch (identity.role()) {
@@ -459,7 +468,6 @@ public class MasterController {
                     }
                     case JUDGE -> {
                         retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
-                        // Since TS1 only needs judges' papers for dance, check only for judges and not TS1.
                         if (identity.role() == Role.JUDGE) {
                             if (eventSet.getSize() < 2) {
                                 errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_JUDGE_PAPERS));
@@ -491,8 +499,43 @@ public class MasterController {
                 retrieveSix0SecondarySheets(eventNumber, eventSet);
             }
 
-            officials.get(officialIndex).addDocument(eventSet);
-            officials.get(officialIndex).tryAddScheduleBundle(scheduleElement, identity.role());
+            if (!Settings.getBuildByBoard()) {
+                officials.get(officialIndex).addDocument(eventSet);
+                officials.get(officialIndex).tryAddScheduleBundle(scheduleElement, identity.role());
+            } else {
+                buildByBoardAddToList(identity, eventSet);
+            }
+        }
+    }
+
+    private void buildByBoardAddToList(IdentityBundle identity, EventSet eventSet) {
+        switch(identity.role()) {
+            case REFEREE -> {
+                BuildByBoard.referee.add(eventSet);
+            }
+            case JUDGE -> {
+                int i = identity.getJudgeNumber() - 1;
+                if (i < 0 || i > 8) {
+                    Logging.logger.fatal("Bad judge number. {}, {}, {}", identity.getJudgeNumber(), identity.name(), identity.role());
+                    throw new RuntimeException("Bad judge number");
+                }
+                BuildByBoard.judges.get(i).add(eventSet);
+            }
+            case TC -> {
+                BuildByBoard.tc.add(eventSet);
+            }
+            case TS1 -> {
+                BuildByBoard.ts1.add(eventSet);
+            }
+            case TS2 -> {
+                BuildByBoard.ts2.add(eventSet);
+            }
+            case DEO -> {
+                BuildByBoard.deo.add(eventSet);
+            }
+            case VIDEO -> {
+                BuildByBoard.video.add(eventSet);
+            }
         }
     }
 

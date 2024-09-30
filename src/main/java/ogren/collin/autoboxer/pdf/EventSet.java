@@ -26,6 +26,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 // Set of all papers for an event as well as event number, role, and rink.
 public class EventSet {
@@ -33,11 +34,13 @@ public class EventSet {
     private final Role role;
     private final ArrayList<PDDocument> documents = new ArrayList<>();
     private final String rink;
+    private final String officialName;
 
-    public EventSet(String eventNumber, Role role, String rink) {
+    public EventSet(String eventNumber, Role role, String rink, String officialName) {
         this.eventNumber = eventNumber;
         this.role = role;
         this.rink = rink;
+        this.officialName = officialName;
     }
 
     public void push(PDDocument document) {
@@ -80,5 +83,9 @@ public class EventSet {
 
     public Role getRole() {
         return role;
+    }
+
+    public String getOfficialName() {
+        return officialName;
     }
 }

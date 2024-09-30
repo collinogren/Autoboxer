@@ -37,6 +37,7 @@ public class Settings {
     private static boolean generateTASheets = true;
     private static boolean combinePaperwork = false;
     private static boolean removeLeadingZeros = true;
+    private static boolean buildByBoard = false;
     private static String eventNameDelimiter = " - ";
     private static File settingsFile;
     private static String version;
@@ -74,6 +75,7 @@ public class Settings {
         generateTASheets = Boolean.parseBoolean(properties.getProperty("generateTASheets", Boolean.toString(generateTASheets)));
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
         removeLeadingZeros = Boolean.parseBoolean(properties.getProperty("removeLeadingZeros", Boolean.toString(removeLeadingZeros)));
+        buildByBoard = Boolean.parseBoolean(properties.getProperty("buildByBoard", Boolean.toString(buildByBoard)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
         theme = properties.getProperty("theme", theme);
         version = properties.getProperty("version", "Unknown Version");
@@ -88,6 +90,7 @@ public class Settings {
         properties.put("generateStartingOrders", Boolean.toString(generateStartingOrders));
         properties.put("generateTASheets", Boolean.toString(generateTASheets));
         properties.put("removeLeadingZeros", Boolean.toString(removeLeadingZeros));
+        properties.put("buildByBoard", Boolean.toString(buildByBoard));
         properties.put("eventNameDelimiter", eventNameDelimiter);
         properties.put("version", APIUtilities.getAPIVersion());
         properties.put("theme", theme);
@@ -176,5 +179,14 @@ public class Settings {
 
     public static boolean isNewInstall() {
         return newInstall;
+    }
+
+    public static boolean getBuildByBoard() {
+        return buildByBoard;
+    }
+
+    public static void setBuildByBoard(boolean b) {
+        buildByBoard = b;
+        updateProperties();
     }
 }

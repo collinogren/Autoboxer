@@ -41,6 +41,7 @@ import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.Schedule;
+import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 
 import java.awt.Desktop;
@@ -62,7 +63,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private File boxDirectory;
 
     @FXML
-    private MenuItem openMenu, saveMenu, closeMenu, documentationMenu, copyrightMenu;
+    private MenuItem openMenu, saveMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -71,7 +72,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
-    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, removeZerosButton;
+    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, removeZerosButton, buildByBoardButton;
 
     @FXML
     private TextField delimiterField, boxDirectoryField, dayField;
@@ -95,11 +96,13 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Settings.loadSettings();
+        versionMenu.setText("Version " + APIUtilities.getAPIVersion());
         combinePaperworkButton.setSelected(Settings.getCombinePaperwork());
         generateSSButton.setSelected(Settings.getGenerateSchedule());
         generateSOButton.setSelected(Settings.getGenerateStartingOrders());
         generateTAButton.setSelected(Settings.getGenerateTASheets());
         removeZerosButton.setSelected(Settings.getRemoveLeadingZeros());
+        buildByBoardButton.setSelected(Settings.getBuildByBoard());
         delimiterField.setText(Settings.getEventNameDelimiter());
         delimiterField.textProperty().addListener((observable, oldValue, newValue) -> Settings.setEventNameDelimiter(newValue));
         newTabButton();
@@ -206,6 +209,11 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void removeLeadingZeros() {
         Settings.setRemoveLeadingZeros(removeZerosButton.isSelected());
+    }
+
+    @FXML
+    private void buildByBoard() {
+        Settings.setBuildByBoard(buildByBoardButton.isSelected());
     }
 
     // Each of the following functions are called by their respective buttons to change print directory.

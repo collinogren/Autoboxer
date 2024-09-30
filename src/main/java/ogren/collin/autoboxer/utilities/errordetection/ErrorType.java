@@ -28,6 +28,7 @@ public record ErrorType(String description, ErrorLevel errorLevel) {
     public static final ErrorType MISSING_START_TIME = new ErrorType("missing start time in the schedule", ErrorLevel.ERROR);
     public static final ErrorType DUPLICATE_SCHEDULE_ENTRY = new ErrorType("duplicate schedule entry", ErrorLevel.ERROR);
     public static final ErrorType FILE_SAVE_ERROR = new ErrorType("could not save be saved to PDF. This may be due to use of a character disallowed in Windows file names such as '*' and similar.", ErrorLevel.ERROR);
+    public static final ErrorType TS_FILE_READ_ERROR = new ErrorType("Failed to read TS1 or TS2 technical panel sheets during a sorting check.", ErrorLevel.ERROR);
 
     // Warnings
     public static final ErrorType MISSING_PAPERS_FOR_SCHEDULED_EVENT = new ErrorType("missing papers for scheduled event", ErrorLevel.WARNING);

@@ -27,11 +27,17 @@ public class IdentityBundle {
     String name;
     Role role;
     int occurrenceToBox;
+    int judgeNumber = 0;
 
     public IdentityBundle(String name, Role role, int occurrenceToBox) {
         this.name = name;
         this.role = role;
         this.occurrenceToBox = occurrenceToBox;
+    }
+
+    public IdentityBundle(String name, Role role, int judgeNumber, int occurrenceToBox) {
+        this(name, role, occurrenceToBox);
+        this.judgeNumber = judgeNumber;
     }
 
     public String name() {
@@ -44,6 +50,10 @@ public class IdentityBundle {
 
     public int occurrenceToBox() {
         return occurrenceToBox;
+    }
+
+    public int getJudgeNumber() {
+        return judgeNumber;
     }
 
     public ArrayList<FileType> matchRoleToFileTypeIJS() {
@@ -76,5 +86,4 @@ public class IdentityBundle {
 
         return types;
     }
-
 }
