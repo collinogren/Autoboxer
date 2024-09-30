@@ -3,10 +3,12 @@ package ogren.collin.autoboxer.control;
 import jdk.jfr.Event;
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.pdf.EventSet;
+import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.process.StringUtils;
 import ogren.collin.autoboxer.utilities.errordetection.BoxError;
 import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDDocumentOutline;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class BuildByBoard {
     public static ArrayList<EventSet> referee = new ArrayList<>();
@@ -35,6 +38,14 @@ public class BuildByBoard {
     public static ArrayList<EventSet> ts2 = new ArrayList<>();
     public static ArrayList<EventSet> deo = new ArrayList<>();
     public static ArrayList<EventSet> video = new ArrayList<>();
+
+    private static final String REFEREE = "Referee";
+    private static final String JUDGE = "Judge ";
+    private static final String TC = "Technical Controller";
+    private static final String TS1 = "Technical Specialist 1";
+    private static final String TS2 = "Technical Specialist 2";
+    private static final String DEO = "Data Entry Operator";
+    private static final String VIDEO = "Video Replay Operator";
 
     private static void saveIndividual(ArrayList<EventSet> events, String position) {
         if (events.isEmpty()) {
@@ -68,15 +79,40 @@ public class BuildByBoard {
     }
 
     public static void save() {
-        saveIndividual(referee, "Referee");
+        saveIndividual(referee, REFEREE);
         for (int i = 0; i < 9; i++) {
-            saveIndividual(judges.get(i), "Judge " + (i + 1));
+            saveIndividual(judges.get(i), JUDGE + (i + 1));
         }
-        saveIndividual(tc, "Technical Controller");
-        saveIndividual(ts1, "Technical Specialist 1");
-        saveIndividual(ts2, "Technical Specialist 2");
-        saveIndividual(deo, "Data Entry Operator");
-        saveIndividual(video, "Video Replay Operator");
+        saveIndividual(tc, TC);
+        saveIndividual(ts1, TS1);
+        saveIndividual(ts2, TS2);
+        saveIndividual(deo, DEO);
+        saveIndividual(video, VIDEO);
+    }
+
+    public static void saveAll() {
+        for (String rink : Schedule.getRinks()) {
+            try (PDDocument outputDocument = new PDDocument()) {
+                PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+                pdfMergerUtility.appendDocument(outputDocument, merge(referee, REFEREE, rink));
+                for (int i = 0; i < 9; i++) {
+                    if (judges.get(i).isEmpty()) {
+                        continue;
+                    }
+                    pdfMergerUtility.appendDocument(outputDocument, merge(judges.get(i), JUDGE + (i + 1), rink));
+                }
+                pdfMergerUtility.appendDocument(outputDocument, merge(tc, TC, rink));
+                pdfMergerUtility.appendDocument(outputDocument, merge(ts1, TS1, rink));
+                pdfMergerUtility.appendDocument(outputDocument, merge(ts2, TS2, rink));
+                pdfMergerUtility.appendDocument(outputDocument, merge(deo, DEO, rink));
+                pdfMergerUtility.appendDocument(outputDocument, merge(video, VIDEO, rink));
+
+                checkOutputDirectory(rink);
+                outputDocument.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/All Officials" + " - " + rink + ".pdf"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static PDDocument merge(ArrayList<EventSet> events, String position, String rink) {

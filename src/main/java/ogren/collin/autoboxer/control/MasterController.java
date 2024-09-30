@@ -146,7 +146,11 @@ public class MasterController {
                 }
             }
         } else {
-            BuildByBoard.save();
+            if (Settings.getCombinePaperwork()) {
+                BuildByBoard.saveAll();
+            } else {
+                BuildByBoard.save();
+            }
         }
     }
 
