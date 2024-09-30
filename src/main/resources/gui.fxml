@@ -58,7 +58,6 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                         <MenuItem fx:id="openMenu" mnemonicParsing="false" onAction="#openMenuAction" text="Open" />
-                        <MenuItem fx:id="saveMenu" disable="true" mnemonicParsing="false" onAction="#saveMenuAction" text="Save" />
                     <MenuItem fx:id="closeMenu" mnemonicParsing="false" onAction="#closeMenuAction" text="Close" />
                   </items>
                 </Menu>

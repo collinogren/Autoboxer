@@ -63,7 +63,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private File boxDirectory;
 
     @FXML
-    private MenuItem openMenu, saveMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
+    private MenuItem openMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -112,6 +112,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
             setDirDependentButtonsDisabled();
         });
 
+        dayField.textProperty().addListener((observable, oldValue, newValue) -> {
+            save();
+        });
+
         ToggleGroup themeGroup = new ToggleGroup();
         darkThemeRadioButtonMenu.setToggleGroup(themeGroup);
         lightThemeRadioButtonMenu.setToggleGroup(themeGroup);
@@ -126,7 +130,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     // Setup key bindings.
     public void setup(Scene scene) {
         KeyCombination saveCombo = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-        scene.getAccelerators().put(saveCombo, this::saveMenuAction);
+        scene.getAccelerators().put(saveCombo, this::save);
     }
 
     // Handle browsing for a box directory.
@@ -253,11 +257,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         browse();
     }
 
-    // Called by the save menu item button.
-    @FXML
-    private void saveMenuAction() {
+    // Called by text property change listeners.
+    private void save() {
         if (boxDirectory != null) {
-            if (boxDirectory.exists() && tabPane.getTabs().size() > 2) {
+            if (boxDirectory.exists()) {
                 Schedule.saveSchedule(boxDirectory, dayField.getText(), rinkSchedules);
             }
         }
@@ -315,11 +318,15 @@ public class GUIFXController implements javafx.fxml.Initializable {
         rinkSchedules.add("-R " + rinkName + "\n" + textContent);
         int index = rinkSchedules.size() - 1;
 
-        textArea.textProperty().addListener((observable, oldValue, newValue) -> rinkSchedules.set(index, "-R " + tab.getText() + "\n" + newValue));
+        textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            rinkSchedules.set(index, "-R " + tab.getText() + "\n" + newValue);
+            save();
+        });
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             tab.setText(newValue);
             rinkSchedules.set(index, "-R " + tab.getText() + "\n" + textArea.getText());
+            save();
         });
 
         vbox.getChildren().add(textField);
@@ -331,9 +338,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         HBox.setHgrow(spacerPane, Priority.ALWAYS);
         Button autofillTimes = new Button("Autofill Blank Times...");
         autofillTimes.setOnAction(e -> AutofillTimesFX.start(textArea));
-        Label rememberToSave = new Label("Remember to save changes with 'File→Save' or 'CTRL+S.'");
         autofillTimesHBox.setAlignment(Pos.CENTER);
-        autofillTimesHBox.getChildren().add(rememberToSave);
         autofillTimesHBox.getChildren().add(spacerPane);
         autofillTimesHBox.getChildren().add(autofillTimes);
 
@@ -342,21 +347,23 @@ public class GUIFXController implements javafx.fxml.Initializable {
         if (boxDirectory != null) {
             if (boxDirectory.exists()) {
                 generateButton.setDisable(false);
-                saveMenu.setDisable(false);
             }
         }
 
         tab.setOnClosed(event -> {
             rinkSchedules.set(index, "");
             if (tabPane.getTabs().size() < 3) {
-                saveMenu.setDisable(true);
                 generateButton.setDisable(true);
             }
+            System.out.println(index);
+            save();
         });
 
         tab.setContent(vbox);
 
         tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
+
+        save();
     }
 
     // Creates a tab which functions as a button to create a new tab behind it.
@@ -426,7 +433,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0Button.setDisable(b);
         six0SubButton.setDisable(b);
         six0SSButton.setDisable(b);
-        saveMenu.setDisable(b);
         addTab.setDisable(b);
         dayField.setDisable(b);
     }
