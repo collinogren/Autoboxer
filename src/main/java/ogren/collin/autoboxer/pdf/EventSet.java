@@ -26,7 +26,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 // Set of all papers for an event as well as event number, role, and rink.
 public class EventSet {

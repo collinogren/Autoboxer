@@ -22,10 +22,10 @@ public class StringUtils {
 
     public static String toLastFirst(String name) {
         String[] split = name.split(" ");
-        String first = "";
+        StringBuilder first = new StringBuilder();
         int numSplits = split.length;
         for (int i = 0; i < numSplits - 1; i++) {
-            first += split[i];
+            first.append(split[i]);
         }
 
         String last = split[numSplits - 1];

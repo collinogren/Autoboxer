@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.process;
 
 public enum Role {
     REFEREE,
+    AR,
     JUDGE,
     TC,
     TS1,

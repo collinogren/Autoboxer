@@ -28,7 +28,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.utilities.APIUtilities;
-import ogren.collin.autoboxer.utilities.Settings;
 import org.apache.commons.io.IOUtils;
 
 import java.nio.charset.StandardCharsets;

@@ -21,6 +21,7 @@ package ogren.collin.autoboxer.gui;
 import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,8 +29,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
+import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteAutoUpdateTextBundle;
+import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteTextParser;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GUIFX extends Application {
 
@@ -40,13 +46,22 @@ public class GUIFX extends Application {
         GUIFX.launch(args);
     }
 
+    public static void setTheme() {
+        if (Settings.getTheme().equals(Settings.DARK_THEME)) {
+            Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
+        } else if (Settings.getTheme().equals(Settings.LIGHT_THEME)) {
+            Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
+        }
+    }
+
     // Initialize JavaFX application.
     @Override
     public void start(Stage stage) throws Exception {
+        RemoteUtilities.checkForUpdate();
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
         Parent root = fxmlLoader.load();
 
-        mainScene = new Scene(root, 545, 400);
+        mainScene = new Scene(root, 600, 400);
 
         GUIFXController controller = fxmlLoader.getController();
         controller.setup(mainScene);
@@ -66,14 +81,6 @@ public class GUIFX extends Application {
 
         if (Settings.isNewInstall() || !Settings.getVersion().equals(APIUtilities.getAPIVersion())) {
             CopyrightFX.start(true);
-        }
-    }
-
-    public static void setTheme() {
-        if (Settings.getTheme().equals(Settings.DARK_THEME)) {
-            Application.setUserAgentStylesheet(new CupertinoDark().getUserAgentStylesheet());
-        } else if (Settings.getTheme().equals(Settings.LIGHT_THEME)) {
-            Application.setUserAgentStylesheet(new CupertinoLight().getUserAgentStylesheet());
         }
     }
 }

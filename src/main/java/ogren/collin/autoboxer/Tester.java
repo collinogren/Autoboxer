@@ -20,6 +20,8 @@ package ogren.collin.autoboxer;
 
 import ogren.collin.autoboxer.pdf.FileType;
 import ogren.collin.autoboxer.pdf.PDFManipulator;
+import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteAutoUpdateTextBundle;
+import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteTextParser;
 
 import javax.swing.*;
 import java.io.File;
@@ -31,6 +33,10 @@ public class Tester {
     }
 
     private static void test() {
+        RemoteAutoUpdateTextBundle e = RemoteTextParser.getRemoteText();
+        System.out.println(e.version());
+        System.out.println(e.numericVersion());
+        System.out.println(e.url());
         JFileChooser fc = new JFileChooser();
         JFrame jframe = new JFrame();
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,8 +48,8 @@ public class Tester {
 
             //PDDocument circledDocument = PDFManipulator.boxOfficial("Hope Wheeler", pdfManipulator.getDocument(), 1);
             //circledDocument.save(new File(file.getPath().split(file.getName())[0]+"Circled.pdf"));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         jframe.dispose();
         System.exit(0);

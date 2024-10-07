@@ -43,8 +43,9 @@ import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
+import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -83,12 +84,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Tab addTab;
 
     public static void viewGithub() {
-        Desktop desktop = Desktop.getDesktop();
-        try {
-            desktop.browse(new URI("https://github.com/collinogren/Autoboxer"));
-        } catch (IOException | URISyntaxException e) {
-            Logging.logger.error(e);
-        }
+        RemoteUtilities.browseToURL("https://github.com/collinogren/Autoboxer");
     }
 
     // Do any initialization work such as adding listeners which cannot be added within the FXML file or setting up
@@ -217,6 +213,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     @FXML
     private void buildByBoard() {
+        generateSSButton.setDisable(buildByBoardButton.isSelected());
         Settings.setBuildByBoard(buildByBoardButton.isSelected());
     }
 

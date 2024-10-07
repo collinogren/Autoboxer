@@ -145,9 +145,9 @@ public class PDFManipulator {
             dance segment.
          */
         int required_index = -1;
-        if (eventName.contains(" P1") || eventName.contains(" PD1")) {
+        if (eventName.contains(" P1") || eventName.contains(" PD1") || eventName.toUpperCase().contains(" SHORT PROGRAM")) {
             required_index = 0;
-        } else if (eventName.contains(" P2") || eventName.contains(" PD2")) {
+        } else if (eventName.contains(" P2") || eventName.contains(" PD2") || eventName.toUpperCase().contains(" FREE SKATE")) {
             required_index = 1;
         } else if (eventName.contains(" FD") || eventName.toUpperCase().contains(" FREE DANCE")) {
             required_index = 2;
@@ -625,6 +625,10 @@ public class PDFManipulator {
                         officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
                     }
                 }
+                if (s.contains("Ice Ref ")) {
+                    String name = s.split("Ice Ref ")[1].split(",")[0].trim();
+                    officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
+                }
                 if (s.contains("TC ")) {
                     String name = s.split("TC ")[1].split(",")[0].trim();
                     officialNames.add(new IdentityBundle(name, Role.TC, countOfficialOccurrences(officialNames, name)));
@@ -665,6 +669,11 @@ public class PDFManipulator {
                 if (s.contains("Ref. ")) {
                     String name = s.split("Ref. ")[1].trim();
                     officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
+                }
+
+                if (s.contains("Ice AR ")) {
+                    String name = s.split("Ice AR ")[1].trim();
+                    officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
                 }
             }
         }
