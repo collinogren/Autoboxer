@@ -6,9 +6,9 @@ Notable features include:
 - Minimal if any need to manipulate the 104.
 - Error detection along with quick and simple digital proofing with fast iteration times to help catch errors and allow them to be easily corrected without wasting paper.
 - Simplistic and intuitive PDF printing controls built into the program.
-- Ergonomic outputs with PDF bookmarks, the ability to customize what is generated, and how it is organized.
+- Ergonomic outputs with PDF bookmarks and the ability to customize what is generated and how it is organized.
 - Support for most styles of event numbering.
-- Frequent updates, including community-requested features, and active support.
+- Frequent updates including community-requested features and active support.
 - 100% free and open source.
 
 I hope you find this software useful and I appreciate any and all feedback. You may open an issue in Github or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
