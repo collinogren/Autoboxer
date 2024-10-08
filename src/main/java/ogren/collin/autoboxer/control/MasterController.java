@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MasterController {
 
+    // Constants for directories used to store the sheets from ISUCalcFS and Hal.
     public static final String COVERSHEET_DIR = "coversheets";
     public static final String JUDGE_SHEETS_DIR = "judges";
     public static final String TECH_PANEL_DIR = "tech";
@@ -51,13 +52,21 @@ public class MasterController {
     public static final String SIX0_SUBSEQUENT_DIR = "60_sub";
     public static final String SIX0_STARTING_ORDERS_DIR = "60_starting_orders";
 
+    // Constants for output directories for Autoboxer
     private static final String BOX_DIR = "box";
     private static final String TA_DIR = "box/TA";
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
+
+    // Array to hold all BoxErrors that are emitted during box generation.
     public static ArrayList<BoxError> errors = new ArrayList<>();
+
+    // Base directory that was selected by the user.
     private static String baseDir;
+
     private final ArrayList<Official> officials = new ArrayList<>();
     private final Schedule schedule;
+
+    // Arrays to hold all the different sheet types.
     private ArrayList<File> coversheets = new ArrayList<>();
     private ArrayList<File> judgeSheets = new ArrayList<>();
     private ArrayList<File> technicalSheets = new ArrayList<>();
@@ -67,6 +76,8 @@ public class MasterController {
 
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
+
+        // Delete temporary directories.
         try {
             FileUtils.deleteDirectory(new File(baseDir + "/" + COVERSHEET_DIR + "/" + "renamed"));
             FileUtils.deleteDirectory(new File(baseDir + "/" + JUDGE_SHEETS_DIR + "/" + "renamed"));
@@ -82,6 +93,8 @@ public class MasterController {
             Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
             throw new RuntimeException(message);
         }
+
+        // Read the schedule data from the generated schedule.txt file.
         schedule = new Schedule(new File(baseDir + "/schedule.txt"));
     }
 
@@ -360,10 +373,6 @@ public class MasterController {
         }
     }
 
-    private void sortIJSByBoard(ScheduleElement se, HashMap<String, PDDocument> startingOrders, HashMap<String, PDDocument> taSheets, boolean[] sheetsExistPtr) {
-
-    }
-
     // Sort the top sheets for 6.0.
     private void sort60Primary(ScheduleElement se, boolean[] sheetsExistPtr) {
         for (File file : six0Sheets) {
@@ -514,9 +523,7 @@ public class MasterController {
 
     private void buildByBoardAddToList(IdentityBundle identity, EventSet eventSet) {
         switch(identity.role()) {
-            case REFEREE -> {
-                BuildByBoard.referee.add(eventSet);
-            }
+            case REFEREE -> BuildByBoard.referee.add(eventSet);
             case JUDGE -> {
                 int i = identity.getJudgeNumber() - 1;
                 if (i < 0 || i > 8) {
@@ -525,21 +532,11 @@ public class MasterController {
                 }
                 BuildByBoard.judges.get(i).add(eventSet);
             }
-            case TC -> {
-                BuildByBoard.tc.add(eventSet);
-            }
-            case TS1 -> {
-                BuildByBoard.ts1.add(eventSet);
-            }
-            case TS2 -> {
-                BuildByBoard.ts2.add(eventSet);
-            }
-            case DEO -> {
-                BuildByBoard.deo.add(eventSet);
-            }
-            case VIDEO -> {
-                BuildByBoard.video.add(eventSet);
-            }
+            case TC -> BuildByBoard.tc.add(eventSet);
+            case TS1 -> BuildByBoard.ts1.add(eventSet);
+            case TS2 -> BuildByBoard.ts2.add(eventSet);
+            case DEO -> BuildByBoard.deo.add(eventSet);
+            case VIDEO -> BuildByBoard.video.add(eventSet);
         }
     }
 

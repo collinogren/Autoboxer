@@ -64,7 +64,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private File boxDirectory;
 
     @FXML
-    private MenuItem openMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
+    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -92,6 +92,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Settings.loadSettings();
+        if (Settings.getLastBox().isEmpty() || !new File(Settings.getLastBox()).exists()) {
+            reopenMenu.setDisable(true);
+        }
         versionMenu.setText("Version " + APIUtilities.getAPIVersion());
         combinePaperworkButton.setSelected(Settings.getCombinePaperwork());
         generateSSButton.setSelected(Settings.getGenerateSchedule());
@@ -105,6 +108,11 @@ public class GUIFXController implements javafx.fxml.Initializable {
         setDirDependentButtonsDisabled();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
             boxDirectory = new File(newValue);
+            if (boxDirectory.exists()) {
+                Settings.setLastBox(newValue);
+                reopenMenu.setDisable(false);
+            }
+
             setDirDependentButtonsDisabled();
         });
 
@@ -131,12 +139,16 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     // Handle browsing for a box directory.
     @FXML
-    void browse() {
+    private void browse() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Autoboxer");
         File tempBoxDirectory = directoryChooser.showDialog(generateButton.getScene().getWindow());
-        if (tempBoxDirectory != null) {
-            boxDirectory = tempBoxDirectory;
+        openDirectory(tempBoxDirectory);
+    }
+
+    private void openDirectory(File directory) {
+        if (directory != null) {
+            boxDirectory = directory;
         }
         if (boxDirectory != null) {
             if (boxDirectory.exists()) {
@@ -252,6 +264,11 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void openMenuAction() {
         browse();
+    }
+
+    @FXML private void reopenMenuAction() {
+        boxDirectoryField.setText(Settings.getLastBox());
+        openDirectory(boxDirectory);
     }
 
     // Called by text property change listeners.

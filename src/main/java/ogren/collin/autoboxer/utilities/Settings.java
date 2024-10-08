@@ -45,6 +45,7 @@ public class Settings {
     private static String version;
     private static boolean newInstall = false;
     private static String theme = "light";
+    private static String lastBox = "";
 
     public static void loadSettings() {
         settingsFile = new File(System.getenv("APPDATA") + "/Autoboxer/Autoboxer.properties");
@@ -81,6 +82,7 @@ public class Settings {
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
         theme = properties.getProperty("theme", theme);
         version = properties.getProperty("version", "Unknown Version");
+        lastBox = properties.getProperty("lastBox", "");
         if (version.equals("Unknown Version") || !APIUtilities.getAPIVersion().equals(version)) {
             updateProperties();
         }
@@ -96,6 +98,7 @@ public class Settings {
         properties.put("eventNameDelimiter", eventNameDelimiter);
         properties.put("version", APIUtilities.getAPIVersion());
         properties.put("theme", theme);
+        properties.put("lastBox", lastBox);
         save();
     }
 
@@ -190,5 +193,14 @@ public class Settings {
     public static void setBuildByBoard(boolean b) {
         buildByBoard = b;
         updateProperties();
+    }
+
+    public static void setLastBox(String s) {
+        lastBox = s;
+        updateProperties();
+    }
+
+    public static String getLastBox() {
+        return lastBox;
     }
 }
