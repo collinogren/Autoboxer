@@ -68,7 +68,6 @@ Next, go to 'save' then uncheck 'open with standard viewer after conversion.'<br
 Make sure you set clawPDF as your default printer so that Hal2 and IJSCompanion will use it and make sure that you select it, if it is not already, in ISUCalcFS when performing a batch print.<br>
 Use the buttons in Autoboxer to direct clawPDF to print to the necessary directories.
 ## TODO
-- Implement build by board support.
 - Feature to place events on officials schedules even if there is no paperwork for them yet. This is particularly useful for dance when paperwork has to be generated after a segment the same day as the paperwork is needed.
 - Complete documentation both in code and for the consumer.
 ## Disclaimer
