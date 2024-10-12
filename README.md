@@ -1,4 +1,4 @@
-# ![Autoboxer_Large](https://github.com/user-attachments/assets/899ca17e-f678-4fed-a58e-f2cc4ecdeb32 | width=96) Autoboxer
+# <img src="https://github.com/user-attachments/assets/899ca17e-f678-4fed-a58e-f2cc4ecdeb32" width="96"/> Autoboxer
 Always proof outputs before using them.<br>
 *Autoboxer* aims to make lengthy stretches of copying, highlighting, and sorting papers for the box a thing of the past.<br>
 The goal of this software is to be able to generate the paperwork for a day in <15 minutes + time to print.<br>
