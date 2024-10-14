@@ -73,7 +73,10 @@ Use the buttons in Autoboxer to direct clawPDF to print to the necessary directo
 ## Disclaimer
 It is your responsibility to ensure the accuracy of your paperwork. Even with this software proof the paperwork before sending it out.
 ## Free and Open Source Software
-This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3.0 license, any derivative works must also use the GNU GPL v3.0 license and therefore must also be free and open source software. Any redistribution of this software must also provide access to the source code. 
+This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3.0 license, any derivative works must also use the GNU GPL v3.0 license and therefore must also be free and open source software. Any redistribution of this software must also provide access to the source code.
+## Try my other accounting software
+- [Skater Name Formatter For ISUCalcFS]https://github.com/collinogren/Skater-Formatter
+- [Team Totals Calculator]https://github.com/collinogren/ijs_live_team_totals
 ## License
 This program is licensed under the GNU General Public License v3.0.<br>
 Copyright (C) 2024 Collin Ogren<br>
