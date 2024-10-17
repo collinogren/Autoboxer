@@ -579,6 +579,54 @@ public class PDFManipulator {
         return "";
     }
 
+    private String findBackupDelimiter(String substring) {
+        if (substring.contains("Referee ")) {
+            return "Referee ";
+        } else if (substring.contains("Judge 1 ")) {
+            return "Judge 1 ";
+        } else if (substring.contains("Judge 2 ")) {
+            return "Judge 2 ";
+        } else if (substring.contains("Judge 3")) {
+            return "Judge 3 ";
+        } else if (substring.contains("Judge 4")) {
+            return "Judge 4 ";
+        } else if (substring.contains("Judge 5 ")) {
+            return "Judge 5 ";
+        } else if (substring.contains("Judge 6 ")) {
+            return "Judge 6 ";
+        } else if (substring.contains("Judge 7 ")) {
+            return "Judge 7 ";
+        } else if (substring.contains("Judge 8 ")) {
+            return "Judge 8 ";
+        } else if (substring.contains("Judge 9 ")) {
+            return "Judge 9 ";
+        } else if (substring.contains("TC ")) {
+            return "TC ";
+        } else if (substring.contains("TS1 ")) {
+            return "TS1 ";
+        } else if (substring.contains("TS2 ")) {
+            return "TS2 ";
+        } else if (substring.contains("DEO ")) {
+            return "DEO ";
+        } else if (substring.contains("Video ")) {
+            return "Video";
+        } else if (substring.contains("Ice Ref ")) {
+            return "Ice Ref ";
+        }
+
+        return "";
+    }
+
+    private String processCoverSheetNameLine(String s, String roleText) {
+        String name = s.split(roleText)[1].split(",")[0].trim();
+        String backupDelimiter = findBackupDelimiter(name);
+        if (!backupDelimiter.isEmpty()) {
+            name = name.split(backupDelimiter)[0];
+        }
+
+        return name.trim();
+    }
+
     public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
         ArrayList<IdentityBundle> officialNames = new ArrayList<>();
         // While I said the next line is horrible, I actually think it might be the best possible solution given the
@@ -588,7 +636,7 @@ public class PDFManipulator {
 
         /*
             TODO: Handle the issue where an official lacking an affiliation will cause a terrible mess in the paperwork.
-            This is an extremely rare occurrence and can be spotted easily by proofing the box prior to printing, but
+            This is a moderately rare occurrence and can be spotted easily by proofing the box prior to printing, but
             it would be nice to be able to either handle it without issue or to throw an error message.
             In either case the program would need to check if the name has one of the official roles in their name.
             As an example, if judge 1 does not have an affiliation, the name often ends up being
@@ -602,7 +650,7 @@ public class PDFManipulator {
             for (String s : lines) {
                 if (!refSecond) {
                     if (s.contains("Referee ")) {
-                        String name = s.split("Referee ")[1].split(",")[0].trim();
+                        String name = processCoverSheetNameLine(s, "Referee ");
                         officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
                     }
                 }
@@ -616,37 +664,37 @@ public class PDFManipulator {
                     } catch (NumberFormatException ignored) {
                         Logging.logger.warn("Failed to read judge number on line {}", s);
                     }
-                    String name = s.split(delimiter)[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, delimiter);
                     officialNames.add(new IdentityBundle(name, Role.JUDGE, judgeNumber, countOfficialOccurrences(officialNames, name)));
                 }
                 if (refSecond) {
                     if (s.contains("Referee ")) {
-                        String name = s.split("Referee ")[1].split(",")[0].trim();
+                        String name = processCoverSheetNameLine(s, "Referee ");
                         officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
                     }
                 }
                 if (s.contains("Ice Ref ")) {
-                    String name = s.split("Ice Ref ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "Ice Ref ");
                     officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("TC ")) {
-                    String name = s.split("TC ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "TC ");
                     officialNames.add(new IdentityBundle(name, Role.TC, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("TS1 ")) {
-                    String name = s.split("TS1 ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "TS1 ");
                     officialNames.add(new IdentityBundle(name, Role.TS1, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("TS2 ")) {
-                    String name = s.split("TS2 ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "TS2 ");
                     officialNames.add(new IdentityBundle(name, Role.TS2, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("DEO ")) {
-                    String name = s.split("DEO ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "DEO ");
                     officialNames.add(new IdentityBundle(name, Role.DEO, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("Video ")) {
-                    String name = s.split("Video ")[1].split(",")[0].trim();
+                    String name = processCoverSheetNameLine(s, "Video ");
                     officialNames.add(new IdentityBundle(name, Role.VIDEO, countOfficialOccurrences(officialNames, name)));
                 }
             }

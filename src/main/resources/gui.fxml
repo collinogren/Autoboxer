@@ -49,6 +49,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -86,9 +87,9 @@
                      <content>
                         <HBox prefWidth="475.0" spacing="5.0">
                            <children>
-                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                              <VBox HBox.hgrow="ALWAYS">
                                  <children>
-                                    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0" VBox.vgrow="ALWAYS">
+                                    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.79998779296875" minWidth="10.0" prefWidth="175.39996337890625" />
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="164.20001220703125" minWidth="10.0" prefWidth="162.60003662109375" />
@@ -136,43 +137,48 @@
                                           <Insets top="5.0" />
                                        </VBox.margin>
                                     </GridPane>
-                                    <HBox alignment="CENTER" spacing="5.0">
+                                    <Pane prefHeight="0.0" VBox.vgrow="ALWAYS" />
+                                    <VBox spacing="5.0">
                                        <children>
-                                          <Separator HBox.hgrow="ALWAYS" />
-                                          <Label alignment="CENTER" text="Box Setup" textAlignment="CENTER" />
-                                          <Separator HBox.hgrow="ALWAYS" />
+                                          <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Separator HBox.hgrow="ALWAYS" />
+                                                <Label alignment="CENTER" text="Box Setup" textAlignment="CENTER" />
+                                                <Separator HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="5.0">
+                                             <children>
+                                                <Label maxWidth="1.7976931348623157E308" prefHeight="26.0" text="Event Number Delimiter">
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <TextField fx:id="delimiterField" prefHeight="26.0" prefWidth="62.0" text=" - ">
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                   <tooltip>
+                                                      <Tooltip text="The delimiter is the set of characters that separates the event number from the rest of the event name.&#10;For example, the &quot; - &quot; in 35 &amp; 104 - Senior Women." />
+                                                   </tooltip>
+                                                </TextField>
+                                                <TextField fx:id="dayField" prefHeight="26.0" prefWidth="93.0" promptText="Day" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="5.0">
+                                             <children>
+                                                <Label prefHeight="26.0" text="Box Directory" />
+                                                <TextField fx:id="boxDirectoryField" prefHeight="26.0" promptText="Use the &quot;browse&quot; button below" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="5.0">
+                                             <children>
+                                                <Button fx:id="browseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browse" text="Browse" HBox.hgrow="ALWAYS" />
+                                                <Button fx:id="generateButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#generate" text="Generate" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
                                        </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label maxWidth="1.7976931348623157E308" prefHeight="26.0" text="Event Number Delimiter">
-                                             <HBox.margin>
-                                                <Insets />
-                                             </HBox.margin>
-                                          </Label>
-                                          <TextField fx:id="delimiterField" prefHeight="26.0" prefWidth="62.0" text=" - ">
-                                             <HBox.margin>
-                                                <Insets />
-                                             </HBox.margin>
-                                             <tooltip>
-                                                <Tooltip text="The delimiter is the set of characters that separates the event number from the rest of the event name.&#10;For example, the &quot; - &quot; in 35 &amp; 104 - Senior Women." />
-                                             </tooltip>
-                                          </TextField>
-                                          <TextField fx:id="dayField" prefHeight="26.0" prefWidth="93.0" promptText="Day" HBox.hgrow="ALWAYS" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Label prefHeight="26.0" text="Box Directory" />
-                                          <TextField fx:id="boxDirectoryField" prefHeight="26.0" promptText="Use the &quot;browse&quot; button below" HBox.hgrow="ALWAYS" />
-                                       </children>
-                                    </HBox>
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Button fx:id="browseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browse" text="Browse" HBox.hgrow="ALWAYS" />
-                                          <Button fx:id="generateButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#generate" text="Generate" HBox.hgrow="ALWAYS" />
-                                       </children>
-                                    </HBox>
+                                    </VBox>
                                  </children>
                               </VBox>
                               <Separator orientation="VERTICAL" prefHeight="200.0" />

@@ -30,7 +30,11 @@ public class ScheduleElement {
     private boolean processed = false;
 
     public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime, String day, String rink) {
-        this.eventNumber = eventNumber;
+        if (eventNumber != null) {
+            this.eventNumber = eventNumber.replaceAll(" ", "");
+        } else {
+            this.eventNumber = null;
+        }
         this.eventName = eventName;
         this.startTime = startTime;
         this.endTime = endTime;

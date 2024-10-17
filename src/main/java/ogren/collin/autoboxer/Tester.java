@@ -43,7 +43,7 @@ public class Tester {
         fc.showOpenDialog(jframe);
         try {
             File file = fc.getSelectedFile();
-            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_JUDGE_SHEET);
+            PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.SIX0_SECONDARY);
             System.out.println(pdfManipulator.parseToString(false));
 
             //PDDocument circledDocument = PDFManipulator.boxOfficial("Hope Wheeler", pdfManipulator.getDocument(), 1);
