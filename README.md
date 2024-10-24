@@ -18,10 +18,7 @@ A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as b
 ## Usage Instructions
 ### [Video Tutorial](https://www.youtube.com/watch?v=c20hAJcfw6k)
 ### [Text Tutorial](https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing)
-## TODO
-- Feature to place events on officials schedules even if there is no paperwork for them yet. This is particularly useful for dance when paperwork has to be generated after a segment the same day as the paperwork is needed.
-- Complete documentation both in code and for the consumer.
-## Try my other accounting software
+## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
 - [Team Totals Calculator](https://github.com/collinogren/ijs_live_team_totals)
 ## Disclaimer
