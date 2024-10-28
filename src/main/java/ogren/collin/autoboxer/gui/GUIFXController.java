@@ -64,7 +64,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private File boxDirectory;
 
     @FXML
-    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu;
+    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -73,7 +73,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
 
     @FXML
-    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, removeZerosButton, buildByBoardButton;
+    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton;
 
     @FXML
     private TextField delimiterField, boxDirectoryField, dayField;
@@ -100,7 +100,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         generateSSButton.setSelected(Settings.getGenerateSchedule());
         generateSOButton.setSelected(Settings.getGenerateStartingOrders());
         generateTAButton.setSelected(Settings.getGenerateTASheets());
-        removeZerosButton.setSelected(Settings.getRemoveLeadingZeros());
         buildByBoardButton.setSelected(Settings.getBuildByBoard());
         delimiterField.setText(Settings.getEventNameDelimiter());
         delimiterField.textProperty().addListener((observable, oldValue, newValue) -> Settings.setEventNameDelimiter(newValue));
@@ -217,12 +216,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         Settings.setGenerateTASheets(generateTAButton.isSelected());
     }
 
-    // Called by the remove leading zeros checkbox.
-    @FXML
-    private void removeLeadingZeros() {
-        Settings.setRemoveLeadingZeros(removeZerosButton.isSelected());
-    }
-
     @FXML
     private void buildByBoard() {
         generateSSButton.setDisable(buildByBoardButton.isSelected());
@@ -290,6 +283,11 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void documentationMenuAction() {
         viewGithub();
+    }
+
+    @FXML
+    private void viewManualMenuAction() {
+        RemoteUtilities.browseToURL("https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing");
     }
 
     @FXML
@@ -384,6 +382,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private void newTabButton() {
         addTab = new Tab("+");
         addTab.setClosable(false);
+        addTab.setTooltip(new Tooltip("Click to add a new rink schedule."));
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == addTab) {
                 createRinkView("Rink " + (tabPane.getTabs().size() - 1), ""); // Adding new tab before the "button" tab

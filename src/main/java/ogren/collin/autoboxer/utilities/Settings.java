@@ -28,7 +28,7 @@ import java.util.Properties;
 
 public class Settings {
 
-    public static final int AUTOBOXER_NUMERIC_VERSION = 1;
+    public static final int AUTOBOXER_NUMERIC_VERSION = 2;
 
     public static final String DARK_THEME = "dark";
     public static final String LIGHT_THEME = "light";
@@ -38,7 +38,7 @@ public class Settings {
     private static boolean generateStartingOrders = true;
     private static boolean generateTASheets = true;
     private static boolean combinePaperwork = false;
-    private static boolean removeLeadingZeros = true;
+    private static final boolean removeLeadingZeros = true; // Fully remove option in later release.
     private static boolean buildByBoard = false;
     private static String eventNameDelimiter = " - ";
     private static File settingsFile;
@@ -77,7 +77,6 @@ public class Settings {
         generateStartingOrders = Boolean.parseBoolean(properties.getProperty("generateStartingOrders", Boolean.toString(generateStartingOrders)));
         generateTASheets = Boolean.parseBoolean(properties.getProperty("generateTASheets", Boolean.toString(generateTASheets)));
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
-        removeLeadingZeros = Boolean.parseBoolean(properties.getProperty("removeLeadingZeros", Boolean.toString(removeLeadingZeros)));
         buildByBoard = Boolean.parseBoolean(properties.getProperty("buildByBoard", Boolean.toString(buildByBoard)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
         theme = properties.getProperty("theme", theme);
@@ -93,7 +92,6 @@ public class Settings {
         properties.put("generateSchedule", Boolean.toString(generateSchedule));
         properties.put("generateStartingOrders", Boolean.toString(generateStartingOrders));
         properties.put("generateTASheets", Boolean.toString(generateTASheets));
-        properties.put("removeLeadingZeros", Boolean.toString(removeLeadingZeros));
         properties.put("buildByBoard", Boolean.toString(buildByBoard));
         properties.put("eventNameDelimiter", eventNameDelimiter);
         properties.put("version", APIUtilities.getAPIVersion());
@@ -171,11 +169,6 @@ public class Settings {
 
     public static boolean getRemoveLeadingZeros() {
         return removeLeadingZeros;
-    }
-
-    public static void setRemoveLeadingZeros(boolean b) {
-        removeLeadingZeros = b;
-        updateProperties();
     }
 
     public static String getVersion() {

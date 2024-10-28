@@ -79,6 +79,11 @@
                         <MenuItem fx:id="versionMenu" disable="true" mnemonicParsing="false" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem fx:id="viewManualMenu" mnemonicParsing="false" onAction="#viewManualMenuAction" text="View Manual" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
             <TabPane fx:id="tabPane" prefHeight="288.0" prefWidth="613.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS">
@@ -102,32 +107,27 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <CheckBox fx:id="combinePaperworkButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#combinePaperwork" text="Combine Paperwork">
+                                          <CheckBox fx:id="combinePaperworkButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#combinePaperwork" text="Combine Paperwork" GridPane.rowIndex="1">
                                              <tooltip>
                                                 <Tooltip text="Combines all paperwork into one PDF." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateSSButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" GridPane.rowIndex="1">
+                                          <CheckBox fx:id="generateSSButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" GridPane.rowIndex="2">
                                              <tooltip>
                                                 <Tooltip text="Generate a sheet for each official with their personal schedule." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateSOButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="2">
+                                          <CheckBox fx:id="generateSOButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="3">
                                              <tooltip>
                                                 <Tooltip text="Generate a complete set of starting orders for each rink." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateTAButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="3">
+                                          <CheckBox fx:id="generateTAButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="4">
                                              <tooltip>
                                                 <Tooltip text="Generate a complete set of TA sheets for each rink." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="removeZerosButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#removeLeadingZeros" selected="true" text="Ignore Leading Zeros" GridPane.rowIndex="4">
-                                             <tooltip>
-                                                <Tooltip text="Ignore leading zeros on both the schedule and paperwork." />
-                                             </tooltip>
-                                          </CheckBox>
-                                          <CheckBox fx:id="buildByBoardButton" mnemonicParsing="false" onAction="#buildByBoard" text="Build By Board (Beta)" GridPane.columnIndex="1">
+                                          <CheckBox fx:id="buildByBoardButton" mnemonicParsing="false" onAction="#buildByBoard" text="Build By Board">
                                              <tooltip>
                                                 <Tooltip text="Generate paperwork by panel position, not by official." />
                                              </tooltip>
