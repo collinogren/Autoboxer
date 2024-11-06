@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+// California mode. Sort by panel position, not official's name.
 public class BuildByBoard {
     public static ArrayList<EventSet> referee = new ArrayList<>();
     public static ArrayList<EventSet> assistant_referee = new ArrayList<>();
@@ -130,6 +131,10 @@ public class BuildByBoard {
         }
     }
 
+    // It bothers me that this is very similar to the merge function in Official.java, but here's the thing,
+    // There are almost certainly not going to be any more classes like this that deal with outputting papers
+    // in a different way so it might be a better use of time to not abstract this away. However, cleaner code is nice
+    // too. Trade-offs, I suppose.
     public static PDDocument merge(ArrayList<EventSet> events, String position, String rink) {
         if (events.isEmpty()) {
             return new PDDocument();

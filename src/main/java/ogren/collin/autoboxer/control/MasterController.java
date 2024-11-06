@@ -524,6 +524,7 @@ public class MasterController {
     private void buildByBoardAddToList(IdentityBundle identity, EventSet eventSet) {
         switch(identity.role()) {
             case REFEREE -> BuildByBoard.referee.add(eventSet);
+            case AR -> BuildByBoard.assistant_referee.add(eventSet);
             case JUDGE -> {
                 int i = identity.getJudgeNumber() - 1;
                 if (i < 0 || i > 8) {

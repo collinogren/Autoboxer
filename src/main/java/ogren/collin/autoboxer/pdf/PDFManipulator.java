@@ -439,6 +439,9 @@ public class PDFManipulator {
         }
 
         // Do this better when it's not 1:00 AM.
+        if (name.contains(" AREF. ")) {
+            name = name.split(" AREF. ")[0];
+        }
         if (name.contains(" REF. ")) {
             name = name.split(" REF. ")[0];
         }
@@ -714,14 +717,19 @@ public class PDFManipulator {
                     officialNames.add(new IdentityBundle(name, Role.JUDGE, judgeNumber, countOfficialOccurrences(officialNames, name)));
                 }
 
-                if (s.contains("Ref. ")) {
-                    String name = s.split("Ref. ")[1].trim();
-                    officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
-                }
-
                 if (s.contains("Ice AR ")) {
                     String name = s.split("Ice AR ")[1].trim();
                     officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
+                }
+
+                if (s.contains("ARef. ")) {
+                    String name = s.split("ARef. ")[1].trim();
+                    officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
+                }
+
+                if (s.contains("Ref. ") && !s.contains("ARef. ")) {
+                    String name = s.split("Ref. ")[1].trim();
+                    officialNames.add(new IdentityBundle(name, Role.REFEREE, countOfficialOccurrences(officialNames, name)));
                 }
             }
         }

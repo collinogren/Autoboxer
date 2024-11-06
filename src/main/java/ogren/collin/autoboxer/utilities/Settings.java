@@ -28,7 +28,7 @@ import java.util.Properties;
 
 public class Settings {
 
-    public static final int AUTOBOXER_NUMERIC_VERSION = 2;
+    public static final int AUTOBOXER_NUMERIC_VERSION = 3;
 
     public static final String DARK_THEME = "dark";
     public static final String LIGHT_THEME = "light";
