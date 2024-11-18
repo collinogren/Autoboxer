@@ -16,7 +16,7 @@ I hope you find this software useful and I appreciate any and all feedback. You 
 ## Acknowledgements
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as beta testers without which Autoboxer would not have been possible.
 ## Usage Instructions
-### [Video Tutorial](https://www.youtube.com/watch?v=c20hAJcfw6k)
+### [Video Tutorial](https://www.youtube.com/watch?v=lAsLgOj-KzY)
 ### [Text Tutorial](https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing)
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
