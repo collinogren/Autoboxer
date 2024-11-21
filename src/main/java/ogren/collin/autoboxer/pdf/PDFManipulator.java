@@ -615,6 +615,8 @@ public class PDFManipulator {
             return "Video";
         } else if (substring.contains("Ice Ref ")) {
             return "Ice Ref ";
+        } else if (substring.contains("Assist Ref ")) {
+            return "Assist Ref ";
         }
 
         return "";
@@ -678,6 +680,10 @@ public class PDFManipulator {
                 }
                 if (s.contains("Ice Ref ")) {
                     String name = processCoverSheetNameLine(s, "Ice Ref ");
+                    officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
+                }
+                if (s.contains("Assist Ref ")) {
+                    String name = processCoverSheetNameLine(s, "Assist Ref ");
                     officialNames.add(new IdentityBundle(name, Role.AR, countOfficialOccurrences(officialNames, name)));
                 }
                 if (s.contains("TC ")) {
