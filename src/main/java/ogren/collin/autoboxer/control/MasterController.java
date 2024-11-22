@@ -67,17 +67,30 @@ public class MasterController {
     private final Schedule schedule;
 
     // Arrays to hold all the different sheet types.
-    private ArrayList<File> coversheets = new ArrayList<>();
-    private ArrayList<File> judgeSheets = new ArrayList<>();
-    private ArrayList<File> technicalSheets = new ArrayList<>();
-    private ArrayList<File> six0Sheets = new ArrayList<>();
-    private ArrayList<File> six0SecondarySheets = new ArrayList<>();
-    private ArrayList<File> six0StartingOrders = new ArrayList<>();
+    private ArrayList<File> coversheets;
+    private ArrayList<File> judgeSheets;
+    private ArrayList<File> technicalSheets;
+    private ArrayList<File> six0Sheets;
+    private ArrayList<File> six0SecondarySheets;
+    private ArrayList<File> six0StartingOrders;
+
+    private void clearAll() {
+        errors.clear();
+        officials.clear();
+        coversheets = new ArrayList<>();
+        judgeSheets = new ArrayList<>();
+        technicalSheets = new ArrayList<>();
+        six0Sheets = new ArrayList<>();
+        six0SecondarySheets = new ArrayList<>();
+        six0StartingOrders = new ArrayList<>();
+    }
 
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
+        BuildByBoard.clearAll();
+        clearAll();
 
-        // Delete temporary directories.
+       // Delete temporary directories.
         try {
             FileUtils.deleteDirectory(new File(baseDir + "/" + COVERSHEET_DIR + "/" + "renamed"));
             FileUtils.deleteDirectory(new File(baseDir + "/" + JUDGE_SHEETS_DIR + "/" + "renamed"));

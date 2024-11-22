@@ -32,10 +32,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
@@ -62,6 +59,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private final ArrayList<String> rinkSchedules = new ArrayList<>();
 
     private File boxDirectory;
+
+    @FXML
+    public static AnchorPane basePane;
 
     @FXML
     private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu;
@@ -519,7 +519,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                     }
                 });
                 executorService.shutdown();
-                closeStage(generateButton);
+                GUIFX.primaryStage.hide();
             }
         } catch (NullPointerException ignored) {
         } catch (Exception e) {

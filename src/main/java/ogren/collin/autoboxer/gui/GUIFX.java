@@ -21,7 +21,6 @@ package ogren.collin.autoboxer.gui;
 import atlantafx.base.theme.CupertinoDark;
 import atlantafx.base.theme.CupertinoLight;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -30,12 +29,7 @@ import javafx.stage.Stage;
 import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
-import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteAutoUpdateTextBundle;
-import ogren.collin.autoboxer.utilities.remote_utilities.auto_update.RemoteTextParser;
-
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class GUIFX extends Application {
 
@@ -54,9 +48,12 @@ public class GUIFX extends Application {
         }
     }
 
+    public static Stage primaryStage;
+
     // Initialize JavaFX application.
     @Override
     public void start(Stage stage) throws Exception {
+        primaryStage = stage;
         RemoteUtilities.checkForUpdate();
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
         Parent root = fxmlLoader.load();
@@ -70,14 +67,14 @@ public class GUIFX extends Application {
 
         autoboxerIcon = new Image("/Autoboxer.png");
 
-        stage.getIcons().add(autoboxerIcon);
-        stage.setResizable(true);
-        stage.setMinWidth(mainScene.getWidth() + 20);
-        stage.setMinHeight(mainScene.getHeight() + 40);
-        stage.setTitle("Autoboxer");
-        stage.setScene(mainScene);
+        primaryStage.getIcons().add(autoboxerIcon);
+        primaryStage.setResizable(true);
+        primaryStage.setMinWidth(mainScene.getWidth() + 20);
+        primaryStage.setMinHeight(mainScene.getHeight() + 40);
+        primaryStage.setTitle("Autoboxer");
+        primaryStage.setScene(mainScene);
 
-        stage.show();
+        primaryStage.show();
 
         if (Settings.isNewInstall() || !Settings.getVersion().equals(APIUtilities.getAPIVersion())) {
             CopyrightFX.start(true);

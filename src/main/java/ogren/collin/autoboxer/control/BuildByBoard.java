@@ -64,6 +64,19 @@ public class BuildByBoard {
     private static final String DEO = "Data Entry Operator";
     private static final String VIDEO = "Video Replay Operator";
 
+    public static void clearAll() {
+        referee.clear();
+        assistant_referee.clear();
+        for (ArrayList judge: judges) {
+            judge.clear();
+        }
+        tc.clear();
+        ts1.clear();
+        ts2.clear();
+        deo.clear();
+        video.clear();
+    }
+
     private static void saveIndividual(ArrayList<EventSet> events, String position) {
         if (events.isEmpty()) {
             return;

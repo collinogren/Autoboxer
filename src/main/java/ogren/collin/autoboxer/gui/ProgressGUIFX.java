@@ -35,8 +35,8 @@ import java.util.concurrent.Executors;
 
 public class ProgressGUIFX {
 
-    private static double progress = 0.0;
-    private static boolean isDone = false;
+    private static double progress;
+    private static boolean isDone;
 
     public static void setProgress(double d) {
         progress = d;
@@ -51,6 +51,8 @@ public class ProgressGUIFX {
     }
 
     public void start() {
+        progress = 0.0;
+        isDone = false;
         Stage progressStage = new Stage();
         progressStage.setTitle("Box Progress");
         progressStage.getIcons().add(GUIFX.autoboxerIcon);
@@ -113,7 +115,10 @@ public class ProgressGUIFX {
             if (isDone) {
                 timer.cancel();
                 executorService.shutdown();
-                Platform.runLater(progressStage::close);
+                Platform.runLater(() -> {
+                    progressStage.close();
+                    GUIFX.primaryStage.show();
+                });
             }
         }
     }
