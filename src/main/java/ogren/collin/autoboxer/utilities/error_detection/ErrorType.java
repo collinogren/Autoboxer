@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ogren.collin.autoboxer.utilities.errordetection;
+package ogren.collin.autoboxer.utilities.error_detection;
 
 public record ErrorType(String description, ErrorLevel errorLevel) {
     // Errors

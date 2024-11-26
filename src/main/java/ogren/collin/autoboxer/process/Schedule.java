@@ -21,8 +21,8 @@ package ogren.collin.autoboxer.process;
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.utilities.Settings;
-import ogren.collin.autoboxer.utilities.errordetection.BoxError;
-import ogren.collin.autoboxer.utilities.errordetection.ErrorType;
+import ogren.collin.autoboxer.utilities.error_detection.BoxError;
+import ogren.collin.autoboxer.utilities.error_detection.ErrorType;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

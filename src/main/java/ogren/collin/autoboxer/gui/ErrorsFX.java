@@ -27,7 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ogren.collin.autoboxer.utilities.errordetection.BoxError;
+import ogren.collin.autoboxer.utilities.error_detection.BoxError;
 
 import java.util.ArrayList;
 
