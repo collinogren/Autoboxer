@@ -43,15 +43,15 @@ public class ReferencesFX {
 
         ScrollPane scrollPane = new ScrollPane();
         VBox scrollBox = new VBox();
-        Text creditsText = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/OpenSourceCredits.txt")), StandardCharsets.UTF_8));
+        Text creditsText = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/ogren/collin/resources/OpenSourceCredits.txt")), StandardCharsets.UTF_8));
         scrollBox.getChildren().addAll(creditsText, createSeparator());
-        Text apacheLicenseText = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/apache/LICENSE.txt")), StandardCharsets.UTF_8));
+        Text apacheLicenseText = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/ogren/collin/resources/apache/LICENSE.txt")), StandardCharsets.UTF_8));
         scrollBox.getChildren().addAll(apacheLicenseText, createSeparator());
-        Text commonsIONotice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/apache/commons-io/NOTICE.txt")), StandardCharsets.UTF_8));
+        Text commonsIONotice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/ogren/collin/resources/apache/commons-io/NOTICE.txt")), StandardCharsets.UTF_8));
         scrollBox.getChildren().addAll(commonsIONotice, createSeparator());
-        Text log4j2Notice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/apache/log4j2/NOTICE.txt")), StandardCharsets.UTF_8));
+        Text log4j2Notice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/ogren/collin/resources/apache/log4j2/NOTICE.txt")), StandardCharsets.UTF_8));
         scrollBox.getChildren().addAll(log4j2Notice, createSeparator());
-        Text pdfboxNotice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/apache/pdfbox/NOTICE.txt")), StandardCharsets.UTF_8));
+        Text pdfboxNotice = new Text(IOUtils.toString(Objects.requireNonNull(ReferencesFX.class.getResourceAsStream("/ogren/collin/resources/apache/pdfbox/NOTICE.txt")), StandardCharsets.UTF_8));
         scrollBox.getChildren().add(pdfboxNotice);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);

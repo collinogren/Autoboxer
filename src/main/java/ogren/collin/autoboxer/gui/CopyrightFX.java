@@ -56,7 +56,7 @@ public class CopyrightFX {
         hyperlink.setOnAction(event -> GUIFXController.viewGithub());
         Hyperlink openSourceCredits = new Hyperlink("Open source library credits");
         copyrightVBox.getChildren().addAll(hyperlink, openSourceCredits);
-        ImageView gnuGPLV3Logo = new ImageView(new Image(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/gplv3.png"))));
+        ImageView gnuGPLV3Logo = new ImageView(new Image(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/ogren/collin/resources/gplv3.png"))));
         gnuGPLV3Logo.setSmooth(true);
         gnuGPLV3Logo.setPreserveRatio(true);
         gnuGPLV3Logo.setFitHeight(108);
@@ -66,7 +66,7 @@ public class CopyrightFX {
         vbox.getChildren().add(copyrightHBox);
 
         ScrollPane scrollPane = new ScrollPane();
-        Text licenseText = new Text(IOUtils.toString(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/COPYING.txt")), StandardCharsets.UTF_8));
+        Text licenseText = new Text(IOUtils.toString(Objects.requireNonNull(CopyrightFX.class.getResourceAsStream("/ogren/collin/resources/COPYING.txt")), StandardCharsets.UTF_8));
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         scrollPane.setContent(licenseText);

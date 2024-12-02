@@ -271,6 +271,9 @@ public class PDFManipulator {
             if (contents.contains("Ref. ")) {
                 judgeSheetType = " referee";
 
+                // Video condition
+            } else if (contents.contains("Vid. ")) {
+                judgeSheetType = " video";
                 // Judge condition
             } else if (contents.contains("J1. ") ||
                     contents.contains("J2. ") ||
@@ -424,10 +427,14 @@ public class PDFManipulator {
         Sorcery to make free skating - all levels worksheets work.
         Basically "Spins T.E. P.C. Place" on the first line can be used to infer that this is a
         free skating - all levels worksheet and that the event number is on the next line after
-        "Free Skating - All Levels"
+        "Free Skating - All Levels" - Update, this doesn't work.
          */
             if (name.contains("Spins T.E. P.C. Place".toUpperCase())) {
-                name = lines[line + 1].toUpperCase().split("Free Skating - All Levels".toUpperCase())[1];
+                try {
+                    name = lines[line + 1].toUpperCase().split("Free Skating - All Levels".toUpperCase())[1];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
 
         /*
@@ -436,6 +443,12 @@ public class PDFManipulator {
             if (name.contains("Failures: 0.1 - 0.4".toUpperCase())) {
                 name = lines[line + 7].toUpperCase();
             }
+
+            /* might fix solo dance worksheets.
+            if (name.contains("Edge Elements".toUpperCase())) {
+                name = lines[line + 1].toUpperCase();
+            }
+             */
         }
 
         // Do this better when it's not 1:00 AM.
@@ -536,6 +549,9 @@ public class PDFManipulator {
             Pattern pattern = Pattern.compile("J\\d. {2}");
             for (String s : lines) {
                 if (s.contains("Ref.  ")) {
+                    return s.split(". {2}")[1].trim();
+                }
+                if (s.contains("Vid.  ")) {
                     return s.split(". {2}")[1].trim();
                 }
                 Matcher matcher = pattern.matcher(s);

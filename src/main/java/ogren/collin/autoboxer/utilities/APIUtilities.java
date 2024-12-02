@@ -32,7 +32,7 @@ public class APIUtilities {
             return version;
         }
 
-        String path = "/version.properties";
+        String path = "/ogren/collin/resources/version.properties";
         InputStream stream = Objects.requireNonNull(APIUtilities.class.getResourceAsStream(path));
 
         Properties properties = new Properties();

@@ -79,7 +79,11 @@ public class IdentityBundle {
                 types.add(FileType.IJS_JUDGE_SHEET); // TS2 can get judge sheet because of solo dance.
                 return types;
             }
-            case VIDEO, DEO, AR -> {
+            case VIDEO -> {
+                types.add(FileType.IJS_JUDGE_SHEET);
+                return types;
+            }
+            case DEO, AR -> {
                 return types;
             }
         }

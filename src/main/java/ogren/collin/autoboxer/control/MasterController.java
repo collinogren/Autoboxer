@@ -520,6 +520,12 @@ public class MasterController {
                             errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
                         }
                     }
+                    case VIDEO -> {
+                        retrieveSheets(eventNumber, identity, eventSet, judgeSheets, FileType.IJS_JUDGE_SHEET);
+                        if (eventSet.getSize() < 1) {
+                            errors.add(new BoxError(eventNumber, identity.name(), ErrorType.MISSING_TECHNICAL_PANEL_PAPERS));
+                        }
+                    }
                 }
             } else {
                 retrieveSix0SecondarySheets(eventNumber, eventSet);
@@ -557,7 +563,7 @@ public class MasterController {
     private void retrieveSix0SecondarySheets(String eventNumber, EventSet eventSet) {
         for (File file : six0SecondarySheets) {
             String[] split = file.getName().split(" ");
-            if (split[0].equals(eventNumber)) {
+            if (split[0].trim().equals(eventNumber.trim())) {
                 try {
                     eventSet.push(Loader.loadPDF(file));
                 } catch (IOException e) {
@@ -587,7 +593,12 @@ public class MasterController {
                 if (fileType != FileType.IJS_JUDGE_SHEET) {
                     split[2] = split[2].split(".pdf")[0];
                 } else {
-                    if ((split[3].equals("judge") && identity.role() == Role.REFEREE) || (split[3].equals("referee") && identity.role() == Role.JUDGE) || (split[3].equals("dance_ts") && (identity.role() != Role.TS1 && identity.role() != Role.TS2))) {
+                    if (
+                        (split[3].equals("judge") && identity.role() == Role.REFEREE) ||
+                        (split[3].equals("referee") && identity.role() == Role.JUDGE) ||
+                        (split[3].equals("video") && identity.role() != Role.VIDEO) ||
+                        (split[3].equals("dance_ts") && (identity.role() != Role.TS1 && identity.role() != Role.TS2))
+                    ) {
                         continue;
                     }
                 }

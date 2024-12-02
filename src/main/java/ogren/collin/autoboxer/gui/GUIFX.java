@@ -55,7 +55,7 @@ public class GUIFX extends Application {
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
         RemoteUtilities.checkForUpdate();
-        FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui.fxml")));
+        FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/ogren/collin/resources/gui.fxml")));
         Parent root = fxmlLoader.load();
 
         mainScene = new Scene(root, 600, 400);
@@ -65,7 +65,7 @@ public class GUIFX extends Application {
 
         setTheme();
 
-        autoboxerIcon = new Image("/Autoboxer.png");
+        autoboxerIcon = new Image("/ogren/collin/resources/Autoboxer.png");
 
         primaryStage.getIcons().add(autoboxerIcon);
         primaryStage.setResizable(true);
