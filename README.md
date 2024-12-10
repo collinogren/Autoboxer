@@ -18,6 +18,8 @@ A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as a
 ## Usage Instructions
 ### [Video Tutorial](https://www.youtube.com/watch?v=lAsLgOj-KzY)
 ### [User Manual](https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing)
+## Setting Up Development Environment
+Work in progress.
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
 - [Team Totals Calculator](https://github.com/collinogren/ijs_live_team_totals)
