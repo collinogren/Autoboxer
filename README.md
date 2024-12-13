@@ -24,7 +24,7 @@ If you are interested in contributing to Autoboxer, or just want to see how it w
 You may open a pull request if you would like your changes merged with the master branch. No guarentees it will happen, of course.<br>
 Setting up the development environment is very easy with IntelliJ which is what this program was made using.<br>
 Simply go to File->New->Project From Version Control and enter the URL to this page.<br>
-Make sure you use Bellsoft Liberca Full 21 as the JDK so as to have JavaFX support.<br>
+Make sure you use Bellsoft Liberica Full 21 as the JDK so as to have JavaFX support.<br>
 Happy Autoboxing.
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
