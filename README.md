@@ -15,7 +15,9 @@ Notable features include:
 I hope you find this software useful and I appreciate any and all feedback. You may open an issue in GitHub or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
 Special thanks to my mentor John Marasco without whom Autoboxer would not have been possible. Thank you for your years of invaluable guidance and many highly enjoyable weekends.<br>
-A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as alpha and beta testers from the very beginning, without which Autoboxer would not have been possible.
+Thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as alpha and beta testers from the very beginning. Their work accelerated the development of Autoboxer dramatically.<br>
+Thank you to Val Berger for her great work on the user manual and testing work.<br>
+And one big thank you to everyone else who has used and tested Autoboxer. This program is for all of us.
 ## Usage Instructions
 ### [Video Tutorial](https://www.youtube.com/watch?v=lAsLgOj-KzY)
 ### [User Manual](https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing)
