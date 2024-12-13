@@ -14,7 +14,7 @@ Notable features include:
 
 I hope you find this software useful and I appreciate any and all feedback. You may open an issue in GitHub or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
-Special thanks to my mentor John Marasco without whom Autoboxer would not have been possible. Thank you for your years of invaluable guidance.<br>
+Special thanks to my mentor John Marasco without whom Autoboxer would not have been possible. Thank you for your years of invaluable guidance and many highly enjoyable weekends.<br>
 A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as alpha and beta testers from the very beginning, without which Autoboxer would not have been possible.
 ## Usage Instructions
 ### [Video Tutorial](https://www.youtube.com/watch?v=lAsLgOj-KzY)
