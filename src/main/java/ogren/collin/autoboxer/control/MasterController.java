@@ -58,13 +58,13 @@ public class MasterController {
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
 
     // Array to hold all BoxErrors that are emitted during box generation.
-    public static ArrayList<BoxError> errors = new ArrayList<>();
+    public static ArrayList<BoxError> errors;
 
     // Base directory that was selected by the user.
     private static String baseDir;
 
-    private final ArrayList<Official> officials = new ArrayList<>();
-    private final Schedule schedule;
+    private ArrayList<Official> officials;
+    private static Schedule schedule;
 
     // Arrays to hold all the different sheet types.
     private ArrayList<File> coversheets;
@@ -74,9 +74,9 @@ public class MasterController {
     private ArrayList<File> six0SecondarySheets;
     private ArrayList<File> six0StartingOrders;
 
-    private void clearAll() {
-        errors.clear();
-        officials.clear();
+    private void initArrays() {
+        errors = new ArrayList<>();
+        officials = new ArrayList<>();
         coversheets = new ArrayList<>();
         judgeSheets = new ArrayList<>();
         technicalSheets = new ArrayList<>();
@@ -88,7 +88,7 @@ public class MasterController {
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
         BuildByBoard.clearAll();
-        clearAll();
+        initArrays();
 
        // Delete temporary directories.
         try {
@@ -115,8 +115,12 @@ public class MasterController {
         return baseDir;
     }
 
+    public static Schedule getSchedule() {
+        return schedule;
+    }
+
     // Sub function to get the right PDFManipulators for the rename function.
-    private static ArrayList<PDFManipulator> getPDFManipulatorsToRename(ArrayList<File> files, FileType fileType) {
+    private ArrayList<PDFManipulator> getPDFManipulatorsToRename(ArrayList<File> files, FileType fileType) {
         ArrayList<PDFManipulator> pdfManipulators = new ArrayList<>();
 
         // For every file, make a PDFManipulator to extract the event name and ensure that the right file type is chosen.
@@ -165,7 +169,7 @@ public class MasterController {
     private void save() {
         if (!Settings.getBuildByBoard()) {
             if (Settings.getCombinePaperwork()) {
-                Official.saveAll(officials);
+                Official.saveAll(officials, schedule, baseDir);
             } else {
                 for (Official official : officials) {
                     official.save();
@@ -431,7 +435,7 @@ public class MasterController {
     // Put the IJS and 6.0 starting orders together to create the start order set.
     private void generateStartingOrders(HashMap<String, PDDocument> startingOrders) {
         if (Settings.getGenerateStartingOrders()) {
-            for (String rink : Schedule.getRinks()) {
+            for (String rink : schedule.getRinks()) {
                 if (startingOrders.containsKey(rink)) {
                     try {
                         File file = new File(baseDir + "/" + STARTING_ORDER_DIR + "/Starting Orders - " + rink + ".pdf");
@@ -455,7 +459,7 @@ public class MasterController {
     // Place all IJSCompanion judges' sheets in 104 order to create the TA sheets set.
     private void generateTASheets(HashMap<String, PDDocument> taSheets) {
         if (Settings.getGenerateTASheets()) {
-            for (String rink : Schedule.getRinks()) {
+            for (String rink : schedule.getRinks()) {
                 if (taSheets.containsKey(rink)) {
                     try {
                         File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
@@ -635,5 +639,9 @@ public class MasterController {
 
         officials.add(new Official(name));
         return officials.size() - 1;
+    }
+
+    public ArrayList<BoxError> getErrors() {
+        return errors;
     }
 }

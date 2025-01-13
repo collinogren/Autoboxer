@@ -20,6 +20,7 @@ package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
+import ogren.collin.autoboxer.gui.GUIFXController;
 import ogren.collin.autoboxer.process.Official;
 import ogren.collin.autoboxer.process.OfficialScheduleBundle;
 import ogren.collin.autoboxer.utilities.Settings;

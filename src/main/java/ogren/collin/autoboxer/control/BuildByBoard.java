@@ -81,7 +81,7 @@ public class BuildByBoard {
         if (events.isEmpty()) {
             return;
         }
-        for (String rink : Schedule.getRinks()) {
+        for (String rink : MasterController.getSchedule().getRinks()) {
             checkOutputDirectory(rink);
             try {
                 PDDocument merged = merge(events, position, rink);
@@ -122,7 +122,7 @@ public class BuildByBoard {
     }
 
     public static void saveAll() {
-        for (String rink : Schedule.getRinks()) {
+        for (String rink : MasterController.getSchedule().getRinks()) {
             try (PDDocument outputDocument = new PDDocument()) {
                 PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
                 pdfMergerUtility.appendDocument(outputDocument, merge(referee, REFEREE, rink));

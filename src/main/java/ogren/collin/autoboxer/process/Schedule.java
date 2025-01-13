@@ -34,7 +34,7 @@ import java.util.List;
 
 public class Schedule {
 
-    private static final ArrayList<String> rinks = new ArrayList<>();
+    private final ArrayList<String> rinks = new ArrayList<>();
 
     ArrayList<ScheduleElement> elements = new ArrayList<>();
 
@@ -67,9 +67,9 @@ public class Schedule {
                 // index determines which rink is being worked on.
                 index += 1;
                 // Make sure there is no duplicate rink.
-                if (!Schedule.rinks.contains(rink)) {
+                if (!this.rinks.contains(rink)) {
                     // Add the rink to the list
-                    Schedule.rinks.add(rink);
+                    this.rinks.add(rink);
                 }
 
                 // Clearly there is no schedule element here so go to the next line.
@@ -181,7 +181,7 @@ public class Schedule {
         elements.removeIf(element -> element.getEventNumber().trim().isEmpty());
     }
 
-    public static ArrayList<String> getRinks() {
+    public ArrayList<String> getRinks() {
         return rinks;
     }
 

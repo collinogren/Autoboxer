@@ -427,7 +427,7 @@ public class PDFManipulator {
         Sorcery to make free skating - all levels worksheets work.
         Basically "Spins T.E. P.C. Place" on the first line can be used to infer that this is a
         free skating - all levels worksheet and that the event number is on the next line after
-        "Free Skating - All Levels" - Update, this doesn't work.
+        "Free Skating - All Levels"
          */
             if (name.contains("Spins T.E. P.C. Place".toUpperCase())) {
                 try {

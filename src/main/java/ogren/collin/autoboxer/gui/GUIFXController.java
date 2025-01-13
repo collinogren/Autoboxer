@@ -42,11 +42,8 @@ import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -413,6 +410,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
         Brother laser printer as well as to clawPDF. Regardless, disabling spooling seems to fix the problem and doesn't
         take too much longer.
     */
+    // 12/30/2024 Tested this with an elevated C++ program and this method alone doesn't seem to be enough.
+    // Shelving this idea for now.
     @SuppressWarnings("unused")
     private void setClawPDFPrintSpoolingRegVariable(boolean b) {
         String spooling;
@@ -422,7 +421,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
             spooling = "PrintDirect";
         }
         try {
-            String[] regCommand = {"REG", "ADD", "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Print\\Printers\\clawPDF\\DsSpooler", "/v", "printSpooling", "/d", "\"" + spooling + "\"", "/f"};
+            // Mutilated command array. Needs to be re-separated.
+            String[] regCommand = {"REG ADD HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Print\\Printers\\clawPDF\\DsSpooler /v printSpooling /d \"" + spooling + "\" /f"};
             Runtime.getRuntime().exec(regCommand);
         } catch (IOException e) {
             Logging.logger.error(e);
@@ -462,8 +462,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                 ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
                 executorService.execute(() -> {
                     boolean error = false;
+                    MasterController mc = new MasterController(boxDirectory.getPath());
                     try {
-                        MasterController mc = new MasterController(boxDirectory.getPath());
                         mc.begin();
                     } catch (Exception e) {
                         Platform.runLater(() -> {
@@ -475,14 +475,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             Label text = new Label("Failed to generate the box.\n" + e.getMessage());
                             text.setMinWidth(400);
                             alert.getDialogPane().setContent(text);
-                            if (!MasterController.errors.isEmpty()) {
+                            if (!mc.getErrors().isEmpty()) {
                                 ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
                             }
                             e.printStackTrace();
                             Logging.logger.fatal(e.getMessage());
                             Optional<ButtonType> result = alert.showAndWait();
-                            if (result.isPresent() && result.get() == ButtonType.OK && !MasterController.errors.isEmpty()) {
-                                new ErrorsFX().start(MasterController.errors);
+                            if (result.isPresent() && result.get() == ButtonType.OK && !mc.getErrors().isEmpty()) {
+                                new ErrorsFX().start(mc.getErrors());
                             }
                             ProgressGUIFX.setDone(true);
                         });
@@ -498,7 +498,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Success");
                             alert.setHeaderText("Success");
-                            if (MasterController.errors.isEmpty()) {
+                            if (mc.getErrors().isEmpty()) {
                                 Label text = new Label("Successfully generated the box.\nRemember to select a physical printer when attempting to print.");
                                 text.setMinWidth(400);
                                 text.setWrapText(true);
@@ -512,8 +512,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             }
 
                             Optional<ButtonType> result = alert.showAndWait();
-                            if (result.isPresent() && result.get() == ButtonType.OK && !MasterController.errors.isEmpty()) {
-                                new ErrorsFX().start(MasterController.errors);
+                            if (result.isPresent() && result.get() == ButtonType.OK && !mc.getErrors().isEmpty()) {
+                                new ErrorsFX().start(mc.getErrors());
                             }
                         });
                     }

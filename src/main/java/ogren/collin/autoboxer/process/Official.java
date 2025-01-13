@@ -59,9 +59,9 @@ public class Official {
         }
     }
 
-    public static void saveAll(ArrayList<Official> officials) {
+    public static void saveAll(ArrayList<Official> officials, Schedule schedule, String baseDir) {
         officials.sort(Comparator.comparing(Official::getNameLastFirst));
-        for (String rink : Schedule.getRinks()) {
+        for (String rink : schedule.getRinks()) {
             try (PDDocument outputDocument = new PDDocument()) {
                 PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
                 for (Official official : officials) {
@@ -69,7 +69,7 @@ public class Official {
                 }
 
                 checkOutputDirectory(rink);
-                outputDocument.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/All Officials" + " - " + rink + ".pdf"));
+                outputDocument.save(new File(baseDir + "/box/Officials/" + rink + "/All Officials" + " - " + rink + ".pdf"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -127,7 +127,7 @@ public class Official {
 
     public void save() {
         Logging.logger.info("Printing for " + getName());
-        for (String rink : Schedule.getRinks()) {
+        for (String rink : MasterController.getSchedule().getRinks()) {
             checkOutputDirectory(rink);
             try {
                 PDDocument merged = merge(rink);
@@ -165,6 +165,6 @@ public class Official {
                 return;
             }
         }
-        scheduleElements.add(new OfficialScheduleBundle(scheduleElement, new ArrayList<>(Collections.singletonList(role.name()))));
+        scheduleElements.add(new OfficialScheduleBundle(scheduleElement, new ArrayList<>(Collections.singletonList(role.name())))); // Consider using role.toString()
     }
 }
