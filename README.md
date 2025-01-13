@@ -14,10 +14,20 @@ Notable features include:
 
 I hope you find this software useful and I appreciate any and all feedback. You may open an issue in GitHub or [email](https://www.usfsaonline.org/InternalDirectory/Officials) your feedback.<br>
 ## Acknowledgements
-A big thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as alpha and beta testers from the very beginning, without which Autoboxer would not have been possible.
+Special thanks to my mentor John Marasco without whom Autoboxer would not have been possible. Thank you for your years of invaluable guidance and many highly enjoyable weekends.<br>
+Thank you to Deb Dryburgh and Kelly Gillette for their wonderful work as alpha and beta testers from the very beginning. Their work accelerated the development of Autoboxer dramatically.<br>
+Thank you to Val Berger for her great work on the user manual and testing work.<br>
+And one big thank you to everyone else who has used and tested Autoboxer. This program is for all of us.
 ## Usage Instructions
 ### [Video Tutorial](https://www.youtube.com/watch?v=lAsLgOj-KzY)
 ### [User Manual](https://docs.google.com/document/d/1ac6aEsoojl9tfn0mypAnh7wRJRw1rJGbG6PHm9zuZ-M/edit?usp=sharing)
+## Development
+If you are interested in contributing to Autoboxer, or just want to see how it works, feel free to download the source code and have a look or tinker with it.<br>
+You may open a pull request if you would like your changes merged with the master branch. No guarentees it will happen, of course.<br>
+Setting up the development environment is very easy with IntelliJ which is what this program was made using.<br>
+Simply go to File->New->Project From Version Control and enter the URL to this page.<br>
+Make sure you use Bellsoft Liberica Full 21 as the JDK so as to have JavaFX support.<br>
+Happy Autoboxing.
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
 - [Team Totals Calculator](https://github.com/collinogren/ijs_live_team_totals)
