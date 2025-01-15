@@ -59,9 +59,9 @@ public class Official {
         }
     }
 
-    public static void saveAll(ArrayList<Official> officials, Schedule schedule, String baseDir) {
+    public static void saveAll(ArrayList<Official> officials) {
         officials.sort(Comparator.comparing(Official::getNameLastFirst));
-        for (String rink : schedule.getRinks()) {
+        for (String rink : MasterController.getSchedule().getRinks()) {
             try (PDDocument outputDocument = new PDDocument()) {
                 PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
                 for (Official official : officials) {
@@ -69,7 +69,7 @@ public class Official {
                 }
 
                 checkOutputDirectory(rink);
-                outputDocument.save(new File(baseDir + "/box/Officials/" + rink + "/All Officials" + " - " + rink + ".pdf"));
+                outputDocument.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/All Officials" + " - " + rink + ".pdf"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

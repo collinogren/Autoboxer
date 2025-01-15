@@ -36,6 +36,7 @@ public class ErrorsFX {
     public void start(ArrayList<BoxError> errors) {
         Stage stage = new Stage();
         stage.setResizable(true);
+        stage.setAlwaysOnTop(true);
         stage.setWidth(425);
         stage.setHeight(300);
         stage.setTitle("Autoboxer Box Errors");

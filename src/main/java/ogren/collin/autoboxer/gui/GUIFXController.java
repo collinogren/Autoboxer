@@ -33,6 +33,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
@@ -52,6 +55,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GUIFXController implements javafx.fxml.Initializable {
+
+    private boolean isDelimiterValid = false;
 
     private final ArrayList<String> rinkSchedules = new ArrayList<>();
 
@@ -78,6 +83,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private TabPane tabPane;
 
+    @FXML
+    private Text instructionLabel;
+
     private Tab addTab;
 
     public static void viewGithub() {
@@ -89,6 +97,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Settings.loadSettings();
+
+        isDelimiterValid = isDelimiterValid();
+
         if (Settings.getLastBox().isEmpty() || !new File(Settings.getLastBox()).exists()) {
             reopenMenu.setDisable(true);
         }
@@ -99,7 +110,19 @@ public class GUIFXController implements javafx.fxml.Initializable {
         generateTAButton.setSelected(Settings.getGenerateTASheets());
         buildByBoardButton.setSelected(Settings.getBuildByBoard());
         delimiterField.setText(Settings.getEventNameDelimiter());
-        delimiterField.textProperty().addListener((observable, oldValue, newValue) -> Settings.setEventNameDelimiter(newValue));
+        delimiterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            Settings.setEventNameDelimiter(newValue);
+            isDelimiterValid = !Settings.getEventNameDelimiter().isEmpty();
+            for (char c : Settings.getEventNameDelimiter().toCharArray()) {
+                if (Character.isDigit(c) || Character.isLetter(c)) {
+                    isDelimiterValid = false;
+                    break;
+                }
+            }
+            setGenerateButtonDisabledDirectly(!isDelimiterValid || boxDirectory == null || !boxDirectory.exists());
+            updateInstructionLabel();
+        });
+
         newTabButton();
         setDirDependentButtonsDisabled();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -110,7 +133,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
             }
 
             setDirDependentButtonsDisabled();
+            updateInstructionLabel();
         });
+
 
         dayField.textProperty().addListener((observable, oldValue, newValue) -> {
             save();
@@ -268,6 +293,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                 Schedule.saveSchedule(boxDirectory, dayField.getText(), rinkSchedules);
             }
         }
+
+        updateInstructionLabel();
     }
 
     // Called by the close menu item button.
@@ -433,13 +460,13 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private void setDirDependentButtonsDisabled() {
         try {
             setDirDependentButtonsDisabledDirectly(!boxDirectory.exists());
+            setGenerateButtonDisabledDirectly(!isDelimiterValid || !boxDirectory.exists());
         } catch (NullPointerException npe) {
             setDirDependentButtonsDisabledDirectly(true);
         }
     }
 
     private void setDirDependentButtonsDisabledDirectly(boolean b) {
-        generateButton.setDisable(b);
         coversheetsButton.setDisable(b);
         judgeButton.setDisable(b);
         techButton.setDisable(b);
@@ -448,6 +475,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0SSButton.setDisable(b);
         addTab.setDisable(b);
         dayField.setDisable(b);
+    }
+
+    private void setGenerateButtonDisabledDirectly(boolean b) {
+        generateButton.setDisable(b);
     }
 
     private void closeStage(Control control) {
@@ -526,5 +557,41 @@ public class GUIFXController implements javafx.fxml.Initializable {
             Logging.logger.fatal((e));
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isDelimiterValid() {
+        return !Settings.getEventNameDelimiter().isEmpty();
+    }
+
+    private void updateInstructionLabel() {
+        instructionLabel.setFill(Color.RED);
+        if (boxDirectory == null || !boxDirectory.exists()) {
+            instructionLabel.setText("Select a box folder with the \"browse\" button.");
+            return;
+        }
+
+        if (!isDelimiterValid) {
+            instructionLabel.setText("Enter a valid event number delimiter. No letters or numbers.");
+            return;
+        }
+
+        if (tabPane.getTabs().size() <= 2) {
+            instructionLabel.setText("Create rink schedules using the \"+\" button above.");
+            return;
+        }
+
+        try {
+            Schedule schedule = new Schedule(new File(boxDirectory.getPath() + "/schedule.txt"));
+            if (schedule.getElements().isEmpty()) {
+                instructionLabel.setText("No events listed on the rink schedule(s).");
+                return;
+            }
+        } catch (Exception e) {
+            instructionLabel.setText("Bad formatting in a rink schedule.");
+            return;
+        }
+
+        instructionLabel.setFill(Color.GREEN);
+        instructionLabel.setText("Ready to generate if paperwork PDFs are in place.");
     }
 }
