@@ -1,6 +1,6 @@
 /*
     Autoboxer to make creating "boxes" for figure skating competitions easier.
-    Copyright (C) 2024 Collin Ogren
+    Copyright (C) 2025 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,8 +47,10 @@ public class Settings {
     private static String theme = "light";
     private static String lastBox = "";
 
+    public static final String AUTOBOXER_DIRECTORY_APPDATA = System.getenv("APPDATA") + "/Autoboxer";
+
     public static void loadSettings() {
-        settingsFile = new File(System.getenv("APPDATA") + "/Autoboxer/Autoboxer.properties");
+        settingsFile = new File(AUTOBOXER_DIRECTORY_APPDATA + "/Autoboxer.properties");
         if (!settingsFile.getParentFile().exists()) {
             if (!settingsFile.getParentFile().mkdirs()) {
                 Logging.logger.warn("Failed to create Autoboxer settings directories.");

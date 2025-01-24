@@ -37,7 +37,7 @@ It is your responsibility to ensure the accuracy of your paperwork. Even with th
 This software is completely free and open source. Feel free to use, edit, and contribute to the project as much as you like. Remember that because this project uses the GNU GPL v3.0 license, any derivative works must also use the GNU GPL v3.0 license and therefore must also be free and open source software. Any redistribution of this software must also provide access to the source code.
 ## License
 This program is licensed under the GNU General Public License v3.0.<br>
-Copyright (C) 2024 Collin Ogren<br>
+Copyright (C) 2025 Collin Ogren<br>
 <br>
 ![gplv3](https://github.com/user-attachments/assets/df4f59da-f48a-4a27-b83f-b9a6154e4a7f)
 ## See Also

@@ -1,6 +1,6 @@
 /*
     Autoboxer to make creating "boxes" for figure skating competitions easier.
-    Copyright (C) 2024 Collin Ogren
+    Copyright (C) 2025 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

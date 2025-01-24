@@ -1,6 +1,6 @@
 /*
     Autoboxer to make creating "boxes" for figure skating competitions easier.
-    Copyright (C) 2024 Collin Ogren
+    Copyright (C) 2025 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public class CopyrightFX {
         VBox copyrightVBox = new VBox();
         copyrightVBox.setMinHeight(108);
         Text copyrightText = new Text("""
-                Autoboxer Copyright (C) 2024 Collin Ogren
+                Autoboxer Copyright (C) 2025 Collin Ogren
                 This program comes with ABSOLUTELY NO WARRANTY.
                 This is free software, and you are welcome to redistribute it
                 under certain conditions. Details in the license text below.""");

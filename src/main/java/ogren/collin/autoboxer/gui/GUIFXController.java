@@ -1,6 +1,6 @@
 /*
     Autoboxer to make creating "boxes" for figure skating competitions easier.
-    Copyright (C) 2024 Collin Ogren
+    Copyright (C) 2025 Collin Ogren
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -592,6 +591,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
 
         instructionLabel.setFill(Color.GREEN);
-        instructionLabel.setText("Ready to generate if paperwork PDFs are in place.");
+        instructionLabel.setText("Ready to generate the box if all paperwork PDFs are in place.");
     }
 }
