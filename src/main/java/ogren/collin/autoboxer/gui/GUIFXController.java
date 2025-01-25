@@ -44,6 +44,7 @@ import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -71,7 +72,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
 
     @FXML
-    private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton;
+    private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton, openFolderButton;
 
     @FXML
     private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton;
@@ -125,10 +126,17 @@ public class GUIFXController implements javafx.fxml.Initializable {
         newTabButton();
         setDirDependentButtonsDisabled();
         boxDirectoryField.textProperty().addListener((observable, oldValue, newValue) -> {
-            boxDirectory = new File(newValue);
-            if (boxDirectory.exists()) {
+            File newDirectory = new File(boxDirectoryField.getText().trim());
+            if (newDirectory.exists()) {
                 Settings.setLastBox(newValue);
                 reopenMenu.setDisable(false);
+                openDirectory(newDirectory);
+            } else {
+                if (tabPane.getTabs().size() >= 2) {
+                    tabPane.getTabs().removeIf(Tab::isClosable);
+                }
+                boxDirectory = null;
+                dayField.clear();
             }
 
             setDirDependentButtonsDisabled();
@@ -163,7 +171,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Autoboxer");
         File tempBoxDirectory = directoryChooser.showDialog(generateButton.getScene().getWindow());
-        openDirectory(tempBoxDirectory);
+        if (tempBoxDirectory != null && tempBoxDirectory.exists()) {
+            boxDirectoryField.setText(tempBoxDirectory.getPath());
+        }
     }
 
     private void openDirectory(File directory) {
@@ -173,7 +183,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         if (boxDirectory != null) {
             if (boxDirectory.exists()) {
                 rinkSchedules.clear();
-                boxDirectoryField.setText(boxDirectory.getPath());
 
                 if (tabPane.getTabs().size() >= 2) {
                     tabPane.getTabs().removeIf(Tab::isClosable);
@@ -282,7 +291,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
 
     @FXML private void reopenMenuAction() {
         boxDirectoryField.setText(Settings.getLastBox());
-        openDirectory(boxDirectory);
     }
 
     // Called by text property change listeners.
@@ -332,6 +340,15 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private void setLightTheme() {
         Settings.setThemeLight();
         GUIFX.setTheme();
+    }
+
+    @FXML
+    private void openFolder() {
+        try {
+            Desktop.getDesktop().open(boxDirectory);
+        } catch (IOException e) {
+            System.err.println("Could not open directory.");
+        }
     }
 
     // Creates a view for editing schedules per rink.
@@ -474,6 +491,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         six0SSButton.setDisable(b);
         addTab.setDisable(b);
         dayField.setDisable(b);
+        openFolderButton.setDisable(b);
     }
 
     private void setGenerateButtonDisabledDirectly(boolean b) {
@@ -574,7 +592,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
             return;
         }
 
-        if (tabPane.getTabs().size() <= 2) {
+        if (tabPane.getTabs().size() <= 2 || !new File(boxDirectory.getPath() + "/schedule.txt").exists()) {
             instructionLabel.setText("Create rink schedules using the \"+\" button above.");
             return;
         }

@@ -168,19 +168,36 @@
                                                       <Tooltip text="The delimiter is the set of characters that separates the event number from the rest of the event name.&#10;For example, the &quot; - &quot; in 35 &amp; 104 - Senior Women." />
                                                    </tooltip>
                                                 </TextField>
-                                                <TextField fx:id="dayField" prefHeight="26.0" prefWidth="93.0" promptText="Day (optional)" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="dayField" prefHeight="26.0" prefWidth="93.0" promptText="Day (optional)" HBox.hgrow="ALWAYS">
+                                                   <tooltip>
+                                                      <Tooltip text="Contains the day to be displayed on the schedule sheets." />
+                                                   </tooltip></TextField>
                                              </children>
                                           </HBox>
                                           <HBox spacing="5.0">
                                              <children>
-                                                <Label prefHeight="26.0" text="Box Directory" />
-                                                <TextField fx:id="boxDirectoryField" prefHeight="26.0" promptText="Use the &quot;browse&quot; button below" HBox.hgrow="ALWAYS" />
+                                                <Label prefHeight="26.0" text="Box Folder" />
+                                                <TextField fx:id="boxDirectoryField" prefHeight="26.0" promptText="Use the &quot;browse&quot; button below" HBox.hgrow="ALWAYS">
+                                                   <tooltip>
+                                                      <Tooltip text="Contains the directory in which the box will be built." />
+                                                   </tooltip></TextField>
+                                                <Button fx:id="openFolderButton" mnemonicParsing="false" onAction="#openFolder" text="Open Folder">
+                                                   <tooltip>
+                                                      <Tooltip text="Open the box folder." />
+                                                   </tooltip>
+                                                </Button>
                                              </children>
                                           </HBox>
                                           <HBox spacing="5.0">
                                              <children>
-                                                <Button fx:id="browseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browse" text="Browse" HBox.hgrow="ALWAYS" />
-                                                <Button fx:id="generateButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#generate" text="Generate" HBox.hgrow="ALWAYS" />
+                                                <Button fx:id="browseButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browse" text="Browse" HBox.hgrow="ALWAYS">
+                                                   <tooltip>
+                                                      <Tooltip text="Browse for the folder to be used as the box." />
+                                                   </tooltip></Button>
+                                                <Button fx:id="generateButton" disable="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#generate" text="Generate" HBox.hgrow="ALWAYS">
+                                                   <tooltip>
+                                                      <Tooltip text="Sort the box." />
+                                                   </tooltip></Button>
                                              </children>
                                           </HBox>
                                        </children>
@@ -200,12 +217,30 @@
                                           <Insets bottom="1.0" />
                                        </VBox.margin>
                                        <children>
-                                          <Button fx:id="coversheetsButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirCoversheets" text="IJS Coversheets" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="judgeButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirJudge" text="IJS Judge" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="techButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirTech" text="IJS Tech" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="six0Button" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0" text="6.0" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="six0SubButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0Sub" text="6.0 Sub" VBox.vgrow="ALWAYS" />
-                                          <Button fx:id="six0SSButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0SS" text="6.0 Starting Orders" VBox.vgrow="ALWAYS" />
+                                          <Button fx:id="coversheetsButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirCoversheets" text="IJS Coversheets" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using IJS Companion and clawPDF to output coversheets." />
+                                             </tooltip></Button>
+                                          <Button fx:id="judgeButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirJudge" text="IJS Judge" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using IJS Companion and clawPDF to output IJS judges' sheets." />
+                                             </tooltip></Button>
+                                          <Button fx:id="techButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirTech" text="IJS Tech" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using ISUCalcFS and clawPDF to output technical panel sheets." />
+                                             </tooltip></Button>
+                                          <Button fx:id="six0Button" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0" text="6.0" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output primary 6.0 judges' sheets and worksheets.&#10;Not for use with secondary sheets such as generic free skating worksheets." />
+                                             </tooltip></Button>
+                                          <Button fx:id="six0SubButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0Sub" text="6.0 Sub" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output secondary 6.0 worksheets sheets.&#10;For example, generic free skating worksheets." />
+                                             </tooltip></Button>
+                                          <Button fx:id="six0SSButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0SS" text="6.0 Starting Orders" VBox.vgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output 6.0 starting order sheets." />
+                                             </tooltip></Button>
                                        </children>
                                     </VBox>
                                  </children>
