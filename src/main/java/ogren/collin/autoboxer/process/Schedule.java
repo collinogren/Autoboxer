@@ -36,7 +36,7 @@ public class Schedule {
 
     private final ArrayList<String> rinks = new ArrayList<>();
 
-    ArrayList<ScheduleElement> elements = new ArrayList<>();
+    private ArrayList<ScheduleElement> elements = new ArrayList<>();
 
     public Schedule(File file) {
         List<String> lines;
@@ -227,11 +227,7 @@ public class Schedule {
         long startTime = Time.parseTimeMinutes(time);
         for (int i = 0; i < scheduleElements.size(); i++) {
             if (startTime < Time.parseTimeMinutes(scheduleElements.get(i).getStartTime())) {
-                if (i > 0) {
-                    return i;
-                } else {
-                    return i;
-                }
+                return i;
             }
         }
 

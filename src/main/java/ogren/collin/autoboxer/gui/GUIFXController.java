@@ -75,7 +75,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton, openFolderButton;
 
     @FXML
-    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton;
+    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton, combineRinksByTimeButton;
 
     @FXML
     private TextField delimiterField, boxDirectoryField, dayField;
@@ -105,6 +105,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         }
         versionMenu.setText("Version " + APIUtilities.getAPIVersion());
         combinePaperworkButton.setSelected(Settings.getCombinePaperwork());
+        combineRinksByTimeButton.setSelected(Settings.getCombineRinksByTime());
         generateSSButton.setSelected(Settings.getGenerateSchedule());
         generateSOButton.setSelected(Settings.getGenerateStartingOrders());
         generateTAButton.setSelected(Settings.getGenerateTASheets());
@@ -226,6 +227,11 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void combinePaperwork() {
         Settings.setCombinePaperwork(combinePaperworkButton.isSelected());
+    }
+
+    @FXML
+    private void combineRinksByTime() {
+        Settings.setCombineRinksByTime(combineRinksByTimeButton.isSelected());
     }
 
     // Called by the generate schedule sheets checkbox.

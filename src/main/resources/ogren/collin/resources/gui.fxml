@@ -55,7 +55,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
+<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
    <children>
       <VBox layoutX="10.399999618530273" layoutY="10.399999618530273" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -96,9 +96,10 @@
                            <children>
                               <VBox HBox.hgrow="ALWAYS">
                                  <children>
-                                    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0">
+                                    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="124.0" prefWidth="191.0" vgap="5.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="208.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="208.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -133,6 +134,7 @@
                                                 <Tooltip text="Generate paperwork by panel position, not by official." />
                                              </tooltip>
                                           </CheckBox>
+                                          <CheckBox fx:id="combineRinksByTimeButton" mnemonicParsing="false" onAction="#combineRinksByTime" text="Combine Rinks By Time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                        <VBox.margin>
                                           <Insets top="5.0" />

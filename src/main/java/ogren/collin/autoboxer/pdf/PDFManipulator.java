@@ -145,7 +145,7 @@ public class PDFManipulator {
             dance segment.
          */
         int required_index = -1;
-        if (eventName.contains(" P1") || eventName.contains(" PD1") || eventName.toUpperCase().contains(" SHORT PROGRAM")) {
+        if (eventName.contains(" P1") || eventName.contains(" PD1") || eventName.contains(" RHYTHM DANCE") || eventName.toUpperCase().contains(" SHORT PROGRAM")) {
             required_index = 0;
         } else if (eventName.contains(" P2") || eventName.contains(" PD2") || eventName.toUpperCase().contains(" FREE SKATE")) {
             required_index = 1;
@@ -157,7 +157,10 @@ public class PDFManipulator {
         ArrayList<String> scrutinizedEventNumbers = scrutinizeName(eventName);
 
         // Check if the program should force the event number to a specific index.
-        if (required_index >= 0 && required_index < scrutinizedEventNumbers.size()) {
+        if (required_index >= 0) {
+            if (required_index > scrutinizedEventNumbers.size() - 1) {
+                required_index = scrutinizedEventNumbers.size() - 1;
+            }
             return scrutinizedEventNumbers.get(required_index).equalsIgnoreCase(scheduleElement.getEventNumber());
         }
 

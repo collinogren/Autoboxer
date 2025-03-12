@@ -169,10 +169,18 @@ public class MasterController {
     private void save() {
         if (!Settings.getBuildByBoard()) {
             if (Settings.getCombinePaperwork()) {
-                Official.saveAll(officials);
+                if (Settings.getCombineRinksByTime()) {
+                    Official.saveAllCombined(officials);
+                } else {
+                    Official.saveAllByRink(officials);
+                }
             } else {
                 for (Official official : officials) {
-                    official.save();
+                    if (Settings.getCombineRinksByTime()) {
+                        official.saveCombined();
+                    } else {
+                        official.saveByRink();
+                    }
                 }
             }
         } else {

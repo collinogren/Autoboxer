@@ -33,6 +33,7 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,7 +60,7 @@ public class Official {
         }
     }
 
-    public static void saveAll(ArrayList<Official> officials) {
+    public static void saveAllByRink(ArrayList<Official> officials) {
         officials.sort(Comparator.comparing(Official::getNameLastFirst));
         for (String rink : MasterController.getSchedule().getRinks()) {
             try (PDDocument outputDocument = new PDDocument()) {
@@ -76,6 +77,21 @@ public class Official {
         }
     }
 
+    public static void saveAllCombined(ArrayList<Official> officials) {
+        officials.sort(Comparator.comparing(Official::getNameLastFirst));
+        try (PDDocument outputDocument = new PDDocument()) {
+            PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+            for (Official official : officials) {
+                pdfMergerUtility.appendDocument(outputDocument, official.mergeCombined());
+            }
+
+            checkOutputDirectory(COMBINED_RINKS);
+            outputDocument.save(new File(MasterController.getBaseDir() + "/box/Officials/" + COMBINED_RINKS + "/All Officials" + " - " + COMBINED_RINKS + ".pdf"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -88,7 +104,15 @@ public class Official {
         events.add(eventSet);
     }
 
-    public PDDocument merge(String rink) {
+    public PDDocument mergeByRink(String rink) {
+        return merge(rink);
+    }
+
+    public PDDocument mergeCombined() {
+        return merge(null);
+    }
+
+    private PDDocument merge(String rink) {
         PDDocument mergedDocument;
         if (Settings.getGenerateSchedule() && !hasPrinted) {
             mergedDocument = OfficialSchedule.generateSchedule(this);
@@ -104,11 +128,14 @@ public class Official {
         outline.addLast(root);
 
         //PDDocument mergedDocument = new PDDocument();
+        int pageCount = 0;
         for (EventSet event : events) {
-            if (!event.getRink().equals(rink)) {
+            if (rink != null && !event.getRink().equals(rink)) {
                 continue;
             }
-            hasPrinted = true;
+
+            pageCount++;
+
             boolean firstPage = true;
             for (PDPage page : event.mergeDocuments().getPages()) {
                 mergedDocument.addPage(page);
@@ -122,10 +149,47 @@ public class Official {
             }
         }
 
+        // Make it so the schedule sheet doesn't get printed if there are no events on that rink for that official.
+        if (pageCount == 0) {
+            return new PDDocument();
+        }
+
+        hasPrinted = true;
+
         return mergedDocument;
     }
 
-    public void save() {
+    private static String COMBINED_RINKS = "All Rinks";
+
+    public void saveCombined() {
+        Logging.logger.info("Printing for " + getName());
+        checkOutputDirectory(COMBINED_RINKS);
+        try {
+            PDDocument merged = mergeCombined();
+            if (merged.getPages().getCount() <= 0) {
+                System.out.println("Skipping PDF generation for " + name + " on rink " + COMBINED_RINKS + " because they have no assignments there.");
+                return;
+            }
+
+            merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + COMBINED_RINKS + "/" + StringUtils.toLastFirst(name) + " - " + COMBINED_RINKS + ".pdf"));
+            merged.close();
+        } catch (IOException e) {
+            String message = "Failed to save papers for " + getName();
+            // Primarily this is here to explain why you cannot use * in your file name. I guess I could strip the
+            // * out of the file name, but fact is the program won't work correctly if you have "* Bob Johnson" in
+            // Hal but then have "Bob Johnson" in ISUCalc, so I think this is a better way as it will teach the user
+            // the intended lesson and reduce headache for the user in the end.
+            MasterController.errors.add(new BoxError(null, name, ErrorType.FILE_SAVE_ERROR));
+            Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+            throw new RuntimeException(message);
+        }
+
+        for (EventSet eventSet : events) {
+            eventSet.close();
+        }
+    }
+
+    public void saveByRink() {
         Logging.logger.info("Printing for " + getName());
         for (String rink : MasterController.getSchedule().getRinks()) {
             checkOutputDirectory(rink);

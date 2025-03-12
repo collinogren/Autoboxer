@@ -38,6 +38,7 @@ public class Settings {
     private static boolean generateStartingOrders = true;
     private static boolean generateTASheets = true;
     private static boolean combinePaperwork = false;
+    private static boolean combineRinksByTime = false;
     private static final boolean removeLeadingZeros = true; // Fully remove option in later release.
     private static boolean buildByBoard = false;
     private static String eventNameDelimiter = " - ";
@@ -79,6 +80,7 @@ public class Settings {
         generateStartingOrders = Boolean.parseBoolean(properties.getProperty("generateStartingOrders", Boolean.toString(generateStartingOrders)));
         generateTASheets = Boolean.parseBoolean(properties.getProperty("generateTASheets", Boolean.toString(generateTASheets)));
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
+        combineRinksByTime = Boolean.parseBoolean(properties.getProperty("combineRinksByTime", Boolean.toString(combineRinksByTime)));
         buildByBoard = Boolean.parseBoolean(properties.getProperty("buildByBoard", Boolean.toString(buildByBoard)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
         theme = properties.getProperty("theme", theme);
@@ -91,6 +93,7 @@ public class Settings {
 
     private static void updateProperties() {
         properties.put("combinePaperwork", Boolean.toString(combinePaperwork));
+        properties.put("combineRinksByTime", Boolean.toString(combineRinksByTime));
         properties.put("generateSchedule", Boolean.toString(generateSchedule));
         properties.put("generateStartingOrders", Boolean.toString(generateStartingOrders));
         properties.put("generateTASheets", Boolean.toString(generateTASheets));
@@ -162,6 +165,15 @@ public class Settings {
 
     public static void setThemeLight() {
         theme = LIGHT_THEME;
+        updateProperties();
+    }
+
+    public static boolean getCombineRinksByTime() {
+        return combineRinksByTime;
+    }
+
+    public static void setCombineRinksByTime(boolean b) {
+        combineRinksByTime = b;
         updateProperties();
     }
 
