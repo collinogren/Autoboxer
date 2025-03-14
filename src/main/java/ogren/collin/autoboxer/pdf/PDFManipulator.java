@@ -158,6 +158,7 @@ public class PDFManipulator {
 
         // Check if the program should force the event number to a specific index.
         if (required_index >= 0) {
+            // If the required index is out of bounds, then set it to point to the last element.
             if (required_index > scrutinizedEventNumbers.size() - 1) {
                 required_index = scrutinizedEventNumbers.size() - 1;
             }

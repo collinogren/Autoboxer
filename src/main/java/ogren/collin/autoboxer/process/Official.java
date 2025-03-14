@@ -33,7 +33,6 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +44,8 @@ public class Official {
     private final ArrayList<OfficialScheduleBundle> scheduleElements = new ArrayList<>();
 
     private boolean hasPrinted = false;
+
+    private static final String COMBINED_RINKS = "All Rinks";
 
     public Official(String name) {
         this.name = name;
@@ -120,6 +121,8 @@ public class Official {
             mergedDocument = new PDDocument();
         }
 
+        int initialPageCount = mergedDocument.getNumberOfPages();
+
         PDDocumentOutline outline = new PDDocumentOutline();
         mergedDocument.getDocumentCatalog().setDocumentOutline(outline);
 
@@ -128,13 +131,10 @@ public class Official {
         outline.addLast(root);
 
         //PDDocument mergedDocument = new PDDocument();
-        int pageCount = 0;
         for (EventSet event : events) {
             if (rink != null && !event.getRink().equals(rink)) {
                 continue;
             }
-
-            pageCount++;
 
             boolean firstPage = true;
             for (PDPage page : event.mergeDocuments().getPages()) {
@@ -150,7 +150,7 @@ public class Official {
         }
 
         // Make it so the schedule sheet doesn't get printed if there are no events on that rink for that official.
-        if (pageCount == 0) {
+        if (mergedDocument.getNumberOfPages() == initialPageCount) {
             return new PDDocument();
         }
 
@@ -159,8 +159,6 @@ public class Official {
         return mergedDocument;
     }
 
-    private static String COMBINED_RINKS = "All Rinks";
-
     public void saveCombined() {
         Logging.logger.info("Printing for " + getName());
         checkOutputDirectory(COMBINED_RINKS);
@@ -168,6 +166,7 @@ public class Official {
             PDDocument merged = mergeCombined();
             if (merged.getPages().getCount() <= 0) {
                 System.out.println("Skipping PDF generation for " + name + " on rink " + COMBINED_RINKS + " because they have no assignments there.");
+                merged.close();
                 return;
             }
 
@@ -197,8 +196,10 @@ public class Official {
                 PDDocument merged = merge(rink);
                 if (merged.getPages().getCount() <= 0) {
                     System.out.println("Skipping PDF generation for " + name + " on rink " + rink + " because they have no assignments there.");
-                    return;
+                    merged.close();
+                    continue;
                 }
+
                 merged.save(new File(MasterController.getBaseDir() + "/box/Officials/" + rink + "/" + StringUtils.toLastFirst(name) + " - " + rink + ".pdf"));
                 merged.close();
             } catch (IOException e) {
