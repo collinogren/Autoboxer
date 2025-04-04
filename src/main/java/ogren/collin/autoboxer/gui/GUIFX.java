@@ -36,6 +36,9 @@ public class GUIFX extends Application {
     public static Scene mainScene;
     public static Image autoboxerIcon;
 
+    public static int WINDOW_WIDTH = 640;
+    public static int WINDOW_HEIGHT = 400;
+
     public static void main(String[] args) {
         GUIFX.launch(args);
     }
@@ -58,7 +61,7 @@ public class GUIFX extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/ogren/collin/resources/gui.fxml")));
         Parent root = fxmlLoader.load();
 
-        mainScene = new Scene(root, 640, 400);
+        mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         GUIFXController controller = fxmlLoader.getController();
         controller.setup(mainScene);

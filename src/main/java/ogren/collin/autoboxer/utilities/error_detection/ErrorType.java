@@ -32,4 +32,5 @@ public record ErrorType(String description, ErrorLevel errorLevel) {
 
     // Warnings
     public static final ErrorType MISSING_PAPERS_FOR_SCHEDULED_EVENT = new ErrorType("missing papers for scheduled event", ErrorLevel.WARNING);
+    public static final ErrorType MISSING_60_STARTING_ORDERS_FOR_SCHEDULED_EVENT = new ErrorType("missing 6.0 starting orders for scheduled event", ErrorLevel.WARNING);
 }

@@ -67,7 +67,7 @@ public class BuildByBoard {
     public static void clearAll() {
         referee.clear();
         assistant_referee.clear();
-        for (ArrayList judge: judges) {
+        for (ArrayList<EventSet> judge: judges) {
             judge.clear();
         }
         tc.clear();

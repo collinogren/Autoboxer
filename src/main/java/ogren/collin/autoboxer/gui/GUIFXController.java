@@ -38,13 +38,18 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import ogren.collin.autoboxer.Logging;
+import ogren.collin.autoboxer.PrinterUtils;
 import ogren.collin.autoboxer.control.MasterController;
 import ogren.collin.autoboxer.process.Schedule;
 import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
 import java.awt.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -66,7 +71,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     public static AnchorPane basePane;
 
     @FXML
-    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu;
+    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu, clawPDFDefaultMenu, openPrintersScannersMenu, defaultPrinterMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -255,38 +260,39 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void buildByBoard() {
         generateSSButton.setDisable(buildByBoardButton.isSelected());
+        combineRinksByTimeButton.setDisable(buildByBoardButton.isSelected());
         Settings.setBuildByBoard(buildByBoardButton.isSelected());
     }
 
     // Each of the following functions are called by their respective buttons to change print directory.
     @FXML
     private void setClawPrintDirCoversheets() {
-        setClawPDFRegVariable(MasterController.COVERSHEET_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.COVERSHEET_DIR, boxDirectory);
     }
 
     @FXML
     private void setClawPrintDirJudge() {
-        setClawPDFRegVariable(MasterController.JUDGE_SHEETS_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.JUDGE_SHEETS_DIR, boxDirectory);
     }
 
     @FXML
     private void setClawPrintDirTech() {
-        setClawPDFRegVariable(MasterController.TECH_PANEL_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.TECH_PANEL_DIR, boxDirectory);
     }
 
     @FXML
     private void setClawPrintDirSix0() {
-        setClawPDFRegVariable(MasterController.SIX0_PRIMARY_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.SIX0_PRIMARY_DIR, boxDirectory);
     }
 
     @FXML
     private void setClawPrintDirSix0Sub() {
-        setClawPDFRegVariable(MasterController.SIX0_SUBSEQUENT_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.SIX0_SUBSEQUENT_DIR, boxDirectory);
     }
 
     @FXML
     private void setClawPrintDirSix0SS() {
-        setClawPDFRegVariable(MasterController.SIX0_STARTING_ORDERS_DIR);
+        PrinterUtils.setClawPDFRegVariable(MasterController.SIX0_STARTING_ORDERS_DIR, boxDirectory);
     }
 
     // Called by the browse menu item button.
@@ -295,8 +301,24 @@ public class GUIFXController implements javafx.fxml.Initializable {
         browse();
     }
 
-    @FXML private void reopenMenuAction() {
+    @FXML
+    private void reopenMenuAction() {
         boxDirectoryField.setText(Settings.getLastBox());
+    }
+
+    @FXML
+    private void printersMenuAction() {
+        defaultPrinterMenu.setText("Default Printer: " + PrinterUtils.getDefaultPrinter());
+    }
+
+    @FXML
+    private void clawPDFDefaultMenuAction() {
+        PrinterUtils.setDefaultPrinterToClawPDF();
+    }
+
+    @FXML
+    private void openPrintersScannersMenuAction() {
+        PrinterUtils.openPrintersScannersUtility();
     }
 
     // Called by text property change listeners.
@@ -439,18 +461,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         tabPane.getTabs().add(addTab);
     }
 
-    // Function to set the output directory for ClawPDF by editing the Windows registry.
-    private void setClawPDFRegVariable(String endDir) {
-        String directory = boxDirectory.getPath().replace("/", "\\").replace("\\", "\\\\") + "\\\\" + endDir;
-        try {
-            String[] regCommand = {"REG", "ADD", "HKEY_CURRENT_USER\\Software\\clawSoft\\clawPDF\\Settings\\ConversionProfiles\\0\\AutoSave", "/v", "TargetDirectory", "/d", "\"" + directory + "\"", "/f"};
-            Runtime.getRuntime().exec(regCommand);
-        } catch (IOException e) {
-            Logging.logger.error(e);
-            throw new RuntimeException(e);
-        }
-    }
-
     /*
         This would only work if Autoboxer is run as administrator. I made the decision to suggest keeping direct
         printing turned on instead of doing this because of that.
@@ -513,12 +523,12 @@ public class GUIFXController implements javafx.fxml.Initializable {
         try {
             if (boxDirectory.exists()) {
                 new ProgressGUIFX().start();
-                ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
                 executorService.execute(() -> {
                     boolean error = false;
-                    MasterController mc = new MasterController(boxDirectory.getPath());
+                    MasterController masterController = new MasterController(boxDirectory.getPath());
                     try {
-                        mc.begin();
+                        masterController.begin();
                     } catch (Exception e) {
                         Platform.runLater(() -> {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -529,14 +539,14 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             Label text = new Label("Failed to generate the box.\n" + e.getMessage());
                             text.setMinWidth(400);
                             alert.getDialogPane().setContent(text);
-                            if (!mc.getErrors().isEmpty()) {
+                            if (!masterController.getErrors().isEmpty()) {
                                 ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Show Messages");
                             }
                             e.printStackTrace();
                             Logging.logger.fatal(e.getMessage());
                             Optional<ButtonType> result = alert.showAndWait();
-                            if (result.isPresent() && result.get() == ButtonType.OK && !mc.getErrors().isEmpty()) {
-                                new ErrorsFX().start(mc.getErrors());
+                            if (result.isPresent() && result.get() == ButtonType.OK && !masterController.getErrors().isEmpty()) {
+                                new ErrorsFX().start(masterController.getErrors());
                             }
                             ProgressGUIFX.setDone(true);
                         });
@@ -552,7 +562,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             stage.getIcons().add(GUIFX.autoboxerIcon);
                             alert.setTitle("Success");
                             alert.setHeaderText("Success");
-                            if (mc.getErrors().isEmpty()) {
+                            if (masterController.getErrors().isEmpty()) {
                                 Label text = new Label("Successfully generated the box.\nRemember to select a physical printer when attempting to print.");
                                 text.setMinWidth(400);
                                 text.setWrapText(true);
@@ -566,8 +576,8 @@ public class GUIFXController implements javafx.fxml.Initializable {
                             }
 
                             Optional<ButtonType> result = alert.showAndWait();
-                            if (result.isPresent() && result.get() == ButtonType.OK && !mc.getErrors().isEmpty()) {
-                                new ErrorsFX().start(mc.getErrors());
+                            if (result.isPresent() && result.get() == ButtonType.OK && !masterController.getErrors().isEmpty()) {
+                                new ErrorsFX().start(masterController.getErrors());
                             }
                         });
                     }

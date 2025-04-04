@@ -36,7 +36,7 @@ public class Schedule {
 
     private final ArrayList<String> rinks = new ArrayList<>();
 
-    private ArrayList<ScheduleElement> elements = new ArrayList<>();
+    private final ArrayList<ScheduleElement> elements = new ArrayList<>();
 
     public Schedule(File file) {
         List<String> lines;

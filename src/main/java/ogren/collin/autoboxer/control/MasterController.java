@@ -85,6 +85,30 @@ public class MasterController {
         six0StartingOrders = new ArrayList<>();
     }
 
+    private static String getCoversheetDir() {
+        return baseDir + "/" + COVERSHEET_DIR;
+    }
+
+    private static String getJudgeSheetsDir() {
+        return baseDir + "/" + JUDGE_SHEETS_DIR;
+    }
+
+    private static String getTechPanelDir() {
+        return baseDir + "/" + TECH_PANEL_DIR;
+    }
+
+    private static String getSix0PrimaryDir() {
+        return baseDir + "/" + SIX0_PRIMARY_DIR;
+    }
+
+    private static String getSix0SubsequentDir() {
+        return baseDir + "/" + SIX0_SUBSEQUENT_DIR;
+    }
+
+    private static String getSix0StartingOrdersDir() {
+        return baseDir + "/" + SIX0_STARTING_ORDERS_DIR;
+    }
+
     public MasterController(String baseDir) {
         MasterController.baseDir = baseDir;
         BuildByBoard.clearAll();
@@ -158,6 +182,7 @@ public class MasterController {
          Next, sort the paperwork, then print.
          Finally, ensure the progress bar shows 100 percent when it is done.
      */
+
     public void begin() {
         renameFiles();
         doTheBox();
@@ -202,7 +227,7 @@ public class MasterController {
         technicalSheets = getAllFiles(TECH_PANEL_DIR);
 
         // Create executor service to handle multithreading.
-        try (ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2)) {
+        try (ExecutorService executor = Executors.newFixedThreadPool((int) Math.round((double) Runtime.getRuntime().availableProcessors() / 2.0))) {
 
             // Rename coversheets.
             executor.execute(() -> {
@@ -365,15 +390,20 @@ public class MasterController {
         int numberOfEvents = schedule.getElements().size();
         for (ScheduleElement se : schedule.getElements()) {
             boolean[] sheetsExistPtr = {false};
+            boolean[] sheetsExist60Ptr = {false};
+            boolean[] startingOrders60ExistPtr = {false};
 
             sortIJS(se, startingOrders, taSheets, sheetsExistPtr);
 
-            sort60StartingOrders(se, startingOrders, sheetsExistPtr);
+            sort60StartingOrders(se, startingOrders, startingOrders60ExistPtr);
+            sort60Primary(se, sheetsExist60Ptr);
 
-            sort60Primary(se, sheetsExistPtr);
-
-            if (!sheetsExistPtr[0]) {
+            if (!sheetsExistPtr[0] && !sheetsExist60Ptr[0]) {
                 errors.add(new BoxError(se.getEventNumber(), null, ErrorType.MISSING_PAPERS_FOR_SCHEDULED_EVENT));
+            }
+
+            if (sheetsExist60Ptr[0] && !startingOrders60ExistPtr[0]) {
+                errors.add(new BoxError(se.getEventNumber(), null, ErrorType.MISSING_60_STARTING_ORDERS_FOR_SCHEDULED_EVENT));
             }
 
             ProgressGUIFX.addProgress(((1.0 / numberOfEvents)) / 2.0);

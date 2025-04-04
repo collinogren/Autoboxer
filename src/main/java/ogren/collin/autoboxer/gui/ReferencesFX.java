@@ -73,10 +73,10 @@ public class ReferencesFX {
         root.setCenter(vbox);
         root.setPadding(new Insets(10, 10, 10, 10));
 
-        Scene openSourceCreditsScene = new Scene(root, 615, 450);
+        Scene openSourceCreditsScene = new Scene(root, GUIFX.WINDOW_WIDTH, GUIFX.WINDOW_HEIGHT);
 
         proceedButton.setOnAction(e -> {
-            stage.setTitle("Autoboxer Copyright and License Information");
+            stage.setTitle(CopyrightFX.copyrightInfoTitle());
             stage.setScene(copyrightScene);
         });
 

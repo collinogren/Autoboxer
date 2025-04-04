@@ -55,7 +55,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
+<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
    <children>
       <VBox layoutX="10.399999618530273" layoutY="10.399999618530273" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -68,6 +68,13 @@
                     <MenuItem fx:id="closeMenu" mnemonicParsing="false" onAction="#closeMenuAction" text="Close" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" onShowing="#printersMenuAction" text="Printers">
+                    <items>
+                      <MenuItem fx:id="clawPDFDefaultMenu" mnemonicParsing="false" onAction="#clawPDFDefaultMenuAction" text="Set Default Printer to clawPDF" />
+                        <MenuItem fx:id="openPrintersScannersMenu" mnemonicParsing="false" onAction="#openPrintersScannersMenuAction" text="Open Printers &amp; Scanners Utility" />
+                        <MenuItem fx:id="defaultPrinterMenu" disable="true" mnemonicParsing="false" text="Default Printer: None" />
+                    </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Theme">
                     <items>
                         <RadioMenuItem fx:id="lightThemeRadioButtonMenu" mnemonicParsing="false" onAction="#setLightTheme" text="Light" />
@@ -92,18 +99,18 @@
                <tabs>
                   <Tab closable="false" text="Control Panel">
                      <content>
-                        <HBox prefWidth="551.0" spacing="5.0">
+                        <HBox prefWidth="682.0" spacing="5.0">
                            <children>
                               <VBox HBox.hgrow="ALWAYS">
                                  <children>
-                                    <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="124.0" prefWidth="191.0" vgap="5.0">
+                                    <GridPane hgap="5.0" maxHeight="250.0" maxWidth="1.7976931348623157E308" vgap="5.0" VBox.vgrow="ALWAYS">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="208.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="310.0" minWidth="10.0" prefWidth="208.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -114,17 +121,17 @@
                                                 <Tooltip text="Combines all paperwork into one PDF." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateSSButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" GridPane.rowIndex="2">
+                                          <CheckBox fx:id="generateSSButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSS" selected="true" text="Generate Schedule Sheets" GridPane.rowIndex="3">
                                              <tooltip>
                                                 <Tooltip text="Generate a sheet for each official with their personal schedule." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateSOButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="3">
+                                          <CheckBox fx:id="generateSOButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSO" selected="true" text="Generate Starting Orders" GridPane.rowIndex="4">
                                              <tooltip>
                                                 <Tooltip text="Generate a complete set of starting orders for each rink." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="generateTAButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="4">
+                                          <CheckBox fx:id="generateTAButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="5">
                                              <tooltip>
                                                 <Tooltip text="Generate a complete set of TA sheets for each rink." />
                                              </tooltip>
@@ -134,7 +141,10 @@
                                                 <Tooltip text="Generate paperwork by panel position, not by official." />
                                              </tooltip>
                                           </CheckBox>
-                                          <CheckBox fx:id="combineRinksByTimeButton" mnemonicParsing="false" onAction="#combineRinksByTime" text="Combine Rinks By Time" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <CheckBox fx:id="combineRinksByTimeButton" mnemonicParsing="false" onAction="#combineRinksByTime" text="Combine Rinks By Time" GridPane.rowIndex="2">
+                                             <tooltip>
+                                                <Tooltip text="Combines all the paperwork from all rinks together and orders it all by time, then by 104 order.&#10;It also obeys the chosen combine paperwork setting." />
+                                             </tooltip></CheckBox>
                                        </children>
                                        <VBox.margin>
                                           <Insets top="5.0" />

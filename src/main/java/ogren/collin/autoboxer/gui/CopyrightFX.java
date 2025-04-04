@@ -38,7 +38,7 @@ public class CopyrightFX {
     public static void start(boolean startupScreen) throws Exception {
         Stage copyrightStage = new Stage();
         copyrightStage.setResizable(false);
-        copyrightStage.setTitle("Autoboxer v" + APIUtilities.getAPIVersion() + " Copyright and License Information");
+        copyrightStage.setTitle(copyrightInfoTitle());
         copyrightStage.getIcons().add(GUIFX.autoboxerIcon);
         copyrightStage.setAlwaysOnTop(true);
         BorderPane root = new BorderPane();
@@ -103,7 +103,7 @@ public class CopyrightFX {
         root.setCenter(vbox);
         root.setPadding(new Insets(10, 10, 10, 10));
 
-        Scene copyrightScene = new Scene(root, 615, 450);
+        Scene copyrightScene = new Scene(root, GUIFX.WINDOW_WIDTH, GUIFX.WINDOW_HEIGHT);
         copyrightStage.setScene(copyrightScene);
         copyrightStage.show();
 
@@ -118,5 +118,9 @@ public class CopyrightFX {
         proceedButton.setOnAction(e -> {
             copyrightStage.close();
         });
+    }
+
+    protected static String copyrightInfoTitle() {
+        return "Autoboxer v" + APIUtilities.getAPIVersion() + " Copyright and License Information";
     }
 }
