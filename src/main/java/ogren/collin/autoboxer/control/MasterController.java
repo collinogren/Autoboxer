@@ -132,7 +132,12 @@ public class MasterController {
         }
 
         // Read the schedule data from the generated schedule.txt file.
-        schedule = new Schedule(new File(baseDir + "/schedule.txt"));
+        try {
+            schedule = new Schedule(new File(baseDir + "/schedule.txt"));
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            Logging.logger.fatal(ex.getMessage());
+        }
     }
 
     public static String getBaseDir() {
