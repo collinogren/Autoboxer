@@ -113,8 +113,10 @@ public class MasterController {
         MasterController.baseDir = baseDir;
         BuildByBoard.clearAll();
         initArrays();
+    }
 
-       // Delete temporary directories.
+    private void deleteTempDirectories() {
+        // Delete temporary directories.
         try {
             FileUtils.deleteDirectory(new File(baseDir + "/" + COVERSHEET_DIR + "/" + "renamed"));
             FileUtils.deleteDirectory(new File(baseDir + "/" + JUDGE_SHEETS_DIR + "/" + "renamed"));
@@ -130,7 +132,9 @@ public class MasterController {
             Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
             throw new RuntimeException(message);
         }
+    }
 
+    private void readSchedule() {
         // Read the schedule data from the generated schedule.txt file.
         try {
             schedule = new Schedule(new File(baseDir + "/schedule.txt"));
@@ -189,6 +193,8 @@ public class MasterController {
      */
 
     public void begin() {
+        deleteTempDirectories();
+        readSchedule();
         renameFiles();
         doTheBox();
         save();
