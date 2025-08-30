@@ -28,6 +28,31 @@ Setting up the development environment is very easy with IntelliJ which is what 
 Simply go to File->New->Project From Version Control and enter the URL to this page.<br>
 Make sure you use Bellsoft Liberica Full 21 as the JDK so as to have JavaFX support.<br>
 Happy Autoboxing.
+## Pull Requests
+Contributions are highly appreciated and welcome. Pull requests are subject to review and comments.
+The review process is a friendly peer review to ensure high code quality standards in the codebase.
+
+1. Either choose an existing issue to work on, or make a new issue to work on. Just make sure it is documented.
+2. Make a fork of the original Autoboxer repository.
+3. Clone the forked repo to your IDE.
+4. Make a single, short-lived branch for each issue you work on. Please use the (truck-based development branching model)[https://trunkbaseddevelopment.com/].
+5. Make the desired changes to the code and push to your repository.
+6. Come back to this page and go to "pull requests" and make a pull request to merge your fork into master.
+   + Include screenshots and videos when applicable of features or bugfixes.
+   + Link related issue(s) to the PR.
+   + Clearly enumerate what tangible changes were made.
+8. Wait for code review.
+
+Code reviews will be performed by Collin Ogren and merging of pull requests are contingent on his approval.
+## Code Standards
+- Autoboxer uses both functional and object oriented approaches, but tends to be more functional that OOP.
+- Treat classes more like structs and prefer records when possible.
+- Use functional programming when possible. Need a new feature? You probably should write it functionally.
+- Avoid monoliths.
+- Prefer implementing interfaces over extending classes.
+- Write for clarity, safety, and maintainability over being overly concise.
+- Always use braces and place the opening brace on the same line as declarations.
+- Following up on the previous entry, no braceless control structures ever.
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
 - [Team Totals Calculator](https://github.com/collinogren/ijs_live_team_totals)
