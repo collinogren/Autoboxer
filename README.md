@@ -45,7 +45,7 @@ The review process is a friendly peer review to ensure high code quality standar
 
 Code reviews will be performed by Collin Ogren and merging of pull requests are contingent on his approval.
 ## Code Standards
-- Autoboxer uses both functional and object oriented approaches, but tends to be more functional that OOP.
+- Autoboxer uses both functional and object oriented approaches, but tends to be more functional than OOP.
 - Treat classes more like structs and prefer records when possible.
 - Use functional programming when possible. Need a new feature? You probably should write it functionally.
 - Avoid monoliths.
