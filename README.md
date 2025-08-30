@@ -35,7 +35,7 @@ The review process is a friendly peer review to ensure high code quality standar
 1. Either choose an existing issue to work on, or make a new issue to work on. Just make sure it is documented.
 2. Make a fork of the original Autoboxer repository.
 3. Clone the forked repo to your IDE.
-4. Make a single, short-lived branch for each issue you work on. Please use the (truck-based development branching model)[https://trunkbaseddevelopment.com/].
+4. Make a single, short-lived branch for each issue you work on. Please use the [truck-based development branching model](https://trunkbaseddevelopment.com/).
 5. Make the desired changes to the code and push to your repository.
 6. Come back to this page and go to "pull requests" and make a pull request to merge your fork into master.
    + Include screenshots and videos when applicable of features or bugfixes.
