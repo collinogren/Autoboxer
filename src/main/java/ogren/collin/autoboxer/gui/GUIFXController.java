@@ -45,11 +45,7 @@ import ogren.collin.autoboxer.utilities.APIUtilities;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.remote_utilities.RemoteUtilities;
 
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 import java.awt.*;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -71,7 +67,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
     public static AnchorPane basePane;
 
     @FXML
-    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu, clawPDFDefaultMenu, openPrintersScannersMenu, defaultPrinterMenu;
+    private Pane gnomePane;
+
+    @FXML
+    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu, clawPDFDefaultMenu, openPrintersScannersMenu, defaultPrinterMenu, gnomeMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -128,6 +127,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
             setGenerateButtonDisabledDirectly(!isDelimiterValid || boxDirectory == null || !boxDirectory.exists());
             updateInstructionLabel();
         });
+
+        // Don't mind this. -Certified Cable Gnome
+        gnomePane.setPrefHeight(Integer.MAX_VALUE);
+        applyGnomeStyle();
 
         newTabButton();
         setDirDependentButtonsDisabled();
@@ -376,6 +379,20 @@ public class GUIFXController implements javafx.fxml.Initializable {
             Desktop.getDesktop().open(boxDirectory);
         } catch (IOException e) {
             System.err.println("Could not open directory.");
+        }
+    }
+
+    @FXML
+    private void toggleGnome() {
+        Settings.setDisplayGnome(!Settings.displayGnome());
+        applyGnomeStyle();
+    }
+
+    private void applyGnomeStyle() {
+        if (Settings.displayGnome()) {
+            gnomePane.getStyleClass().add("gnome");
+        } else {
+            gnomePane.getStyleClass().remove("gnome");
         }
     }
 

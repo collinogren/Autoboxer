@@ -1,0 +1,6 @@
+.gnome {
+    -fx-background-image: url("../images/gnome.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: contain;
+    -fx-background-position: right center;
+}

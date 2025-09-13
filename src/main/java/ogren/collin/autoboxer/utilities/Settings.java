@@ -28,7 +28,7 @@ import java.util.Properties;
 
 public class Settings {
 
-    public static final int AUTOBOXER_NUMERIC_VERSION = 7;
+    public static final int AUTOBOXER_NUMERIC_VERSION = 8;
 
     public static final String DARK_THEME = "dark";
     public static final String LIGHT_THEME = "light";
@@ -47,6 +47,7 @@ public class Settings {
     private static boolean newInstall = false;
     private static String theme = "light";
     private static String lastBox = "";
+    private static boolean displayGnome = false;
 
     public static final String AUTOBOXER_DIRECTORY_APPDATA = System.getenv("APPDATA") + "/Autoboxer";
 
@@ -82,6 +83,7 @@ public class Settings {
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
         combineRinksByTime = Boolean.parseBoolean(properties.getProperty("combineRinksByTime", Boolean.toString(combineRinksByTime)));
         buildByBoard = Boolean.parseBoolean(properties.getProperty("buildByBoard", Boolean.toString(buildByBoard)));
+        displayGnome = Boolean.parseBoolean(properties.getProperty("displayGnome", Boolean.toString(displayGnome)));
         eventNameDelimiter = properties.getProperty("eventNameDelimiter", eventNameDelimiter);
         theme = properties.getProperty("theme", theme);
         version = properties.getProperty("version", "Unknown Version");
@@ -99,6 +101,7 @@ public class Settings {
         properties.put("generateTASheets", Boolean.toString(generateTASheets));
         properties.put("buildByBoard", Boolean.toString(buildByBoard));
         properties.put("eventNameDelimiter", eventNameDelimiter);
+        properties.put("displayGnome", Boolean.toString(displayGnome));
         properties.put("version", APIUtilities.getAPIVersion());
         properties.put("theme", theme);
         properties.put("lastBox", lastBox);
@@ -177,6 +180,11 @@ public class Settings {
         updateProperties();
     }
 
+    public static void setDisplayGnome(boolean b) {
+        displayGnome = b;
+        updateProperties();
+    }
+
     public static String getTheme() {
         return theme;
     }
@@ -209,5 +217,9 @@ public class Settings {
 
     public static String getLastBox() {
         return lastBox;
+    }
+
+    public static boolean displayGnome() {
+        return displayGnome;
     }
 }
