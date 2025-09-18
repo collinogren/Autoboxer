@@ -181,7 +181,7 @@ public class PDFManipulator {
         ArrayList<String> eventNumbers = new ArrayList<>();
         StringBuilder eventNumber = new StringBuilder();
         for (char c : eventNumberSection.toCharArray()) {
-            // Handle how some accountants use a number format of 001 and similar.
+            // Handle how some scoring officials use a number format of 001 and similar.
             if (Settings.getRemoveLeadingZeros() && c == '0' && eventNumber.isEmpty()) {
                 continue;
             }

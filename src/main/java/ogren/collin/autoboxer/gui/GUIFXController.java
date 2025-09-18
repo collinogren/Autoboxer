@@ -70,7 +70,9 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Pane gnomePane;
 
     @FXML
-    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu, clawPDFDefaultMenu, openPrintersScannersMenu, defaultPrinterMenu, gnomeMenu;
+    private MenuItem openMenu, reopenMenu, closeMenu, documentationMenu, copyrightMenu, versionMenu, viewManualMenu, clawPDFDefaultMenu, openPrintersScannersMenu, defaultPrinterMenu;
+
+    @FXML CheckMenuItem gnomeMenu;
 
     @FXML
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
@@ -131,6 +133,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         // Don't mind this. -Certified Cable Gnome
         gnomePane.setPrefHeight(Integer.MAX_VALUE);
         applyGnomeStyle();
+        gnomeMenu.setSelected(Settings.displayGnome());
 
         newTabButton();
         setDirDependentButtonsDisabled();
@@ -385,6 +388,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     @FXML
     private void toggleGnome() {
         Settings.setDisplayGnome(!Settings.displayGnome());
+        gnomeMenu.setSelected(Settings.displayGnome());
         applyGnomeStyle();
     }
 
