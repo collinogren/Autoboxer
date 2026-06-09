@@ -53,6 +53,8 @@ Code reviews will be performed by Collin Ogren and merging of pull requests are 
 - Write for clarity, safety, and maintainability over being overly concise.
 - Always use braces and place the opening brace on the same line as declarations.
 - Following up on the previous entry, no braceless control structures ever.
+- Keep changes scoped to the problem at hand.
+- Do not use AI for contributions.
 ## Try My Other Accounting Software
 - [Skater Name Formatter For ISUCalcFS](https://github.com/collinogren/Skater-Formatter)
 - [Team Totals Calculator](https://github.com/collinogren/ijs_live_team_totals)
@@ -65,6 +67,9 @@ This program is licensed under the GNU General Public License v3.0.<br>
 Copyright (C) 2025 Collin Ogren<br>
 <br>
 ![gplv3](https://github.com/user-attachments/assets/df4f59da-f48a-4a27-b83f-b9a6154e4a7f)
+## Additional Information
+This program is proudly created and maintained without the use of AI.<br>
+Protect the environment, code quality, and collective human intellect by learning skills and applying them to create your own works to be proud of and to share with the world.
 ## See Also
 https://www.youtube.com/watch?v=l3LFML_pxlY<br>
 https://www.youtube.com/watch?v=3n_7acSpvuo<br>
