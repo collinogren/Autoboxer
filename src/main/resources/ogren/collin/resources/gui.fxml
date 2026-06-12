@@ -35,6 +35,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -56,8 +57,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.CheckMenuItem?>
-<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
+<AnchorPane fx:id="basePane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="325.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ogren.collin.autoboxer.gui.GUIFXController">
    <children>
       <VBox layoutX="10.399999618530273" layoutY="10.399999618530273" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -242,29 +242,17 @@
                                           <Insets bottom="1.0" />
                                        </VBox.margin>
                                        <children>
-                                          <Button fx:id="coversheetsButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirCoversheets" text="IJS Coversheets" VBox.vgrow="ALWAYS">
+                                          <Button fx:id="coversheetsButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirCoversheets" text="Coversheets" VBox.vgrow="ALWAYS">
                                              <tooltip>
                                                 <Tooltip text="Click before using IJS Companion and clawPDF to output coversheets." />
                                              </tooltip></Button>
-                                          <Button fx:id="judgeButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirJudge" text="IJS Judge" VBox.vgrow="ALWAYS">
+                                          <Button fx:id="judgeButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirJudge" text="Judges' Sheets" VBox.vgrow="ALWAYS">
                                              <tooltip>
                                                 <Tooltip text="Click before using IJS Companion and clawPDF to output IJS judges' sheets." />
                                              </tooltip></Button>
-                                          <Button fx:id="techButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirTech" text="IJS Tech" VBox.vgrow="ALWAYS">
+                                          <Button fx:id="techButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirTech" text="Tech Panel Sheets" VBox.vgrow="ALWAYS">
                                              <tooltip>
                                                 <Tooltip text="Click before using ISUCalcFS and clawPDF to output technical panel sheets." />
-                                             </tooltip></Button>
-                                          <Button fx:id="six0Button" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0" text="6.0" VBox.vgrow="ALWAYS">
-                                             <tooltip>
-                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output primary 6.0 judges' sheets and worksheets.&#10;Not for use with secondary sheets such as generic free skating worksheets." />
-                                             </tooltip></Button>
-                                          <Button fx:id="six0SubButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0Sub" text="6.0 Sub" VBox.vgrow="ALWAYS">
-                                             <tooltip>
-                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output secondary 6.0 worksheets sheets.&#10;For example, generic free skating worksheets." />
-                                             </tooltip></Button>
-                                          <Button fx:id="six0SSButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#setClawPrintDirSix0SS" text="6.0 Starting Orders" VBox.vgrow="ALWAYS">
-                                             <tooltip>
-                                                <Tooltip text="Click before using Hal2v3 and clawPDF to output 6.0 starting order sheets." />
                                              </tooltip></Button>
                                        </children>
                                     </VBox>

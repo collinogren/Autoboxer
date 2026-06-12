@@ -78,7 +78,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private RadioMenuItem lightThemeRadioButtonMenu, darkThemeRadioButtonMenu;
 
     @FXML
-    private Button browseButton, generateButton, six0Button, six0SubButton, six0SSButton, coversheetsButton, judgeButton, techButton, openFolderButton;
+    private Button browseButton, generateButton, coversheetsButton, judgeButton, techButton, openFolderButton;
 
     @FXML
     private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton, combineRinksByTimeButton;
@@ -523,9 +523,6 @@ public class GUIFXController implements javafx.fxml.Initializable {
         coversheetsButton.setDisable(b);
         judgeButton.setDisable(b);
         techButton.setDisable(b);
-        six0Button.setDisable(b);
-        six0SubButton.setDisable(b);
-        six0SSButton.setDisable(b);
         addTab.setDisable(b);
         dayField.setDisable(b);
         openFolderButton.setDisable(b);
