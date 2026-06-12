@@ -209,30 +209,6 @@ public class PDFManipulator {
         return (element >= 'a' && element <= 'z') || (element >= 'A' && element <= 'Z') || (element >= '0' && element <= '9');
     }
 
-    // Check if a character is a number or letter. Old function, probably should delete.
-    @Deprecated
-    private boolean isNumberOrLetterOld(char element) {
-        for (char c = 'a'; c <= 'z'; c++) {
-            if (element == c) {
-                return true;
-            }
-        }
-
-        for (char c = 'A'; c <= 'Z'; c++) {
-            if (element == c) {
-                return true;
-            }
-        }
-
-        for (char c = '0'; c <= '9'; c++) {
-            if (element == c) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     // Copy PDFs to the renamed/ directory and rename them in such a manner as to store important sorting information in the name.
     public void rename(String eventNumber) {
         String offset = "renamed/";
@@ -381,14 +357,10 @@ public class PDFManipulator {
         // Handle
 
         if (fileType == IJS_JUDGE_SHEET) {
-            int notesValueOccurred = 0;
             for (line = 0; line < lines.length; line++) {
                 if (lines[line].toLowerCase().contains("notes value")) {
-                    notesValueOccurred++;
-                    if (notesValueOccurred >= 3) {
-                        line += 2;
-                        break;
-                    }
+                    line += 3;
+                    break;
                 }
             }
         } else {
@@ -496,11 +468,12 @@ public class PDFManipulator {
     private String extractName(String line) {
         String[] split = line.split(getUniqueTextByType());
         String correctedName = "Error";
+
         //noinspection UnreachableCode
         try {
             correctedName = split[0] + " " + split[1];
-        } catch (ArrayIndexOutOfBoundsException ignored) {
-        }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
+
         correctedName = correctedName.toUpperCase();
         return correctedName;
     }
@@ -654,21 +627,8 @@ public class PDFManipulator {
 
     public ArrayList<IdentityBundle> getCoversheetsOfficialNames() {
         ArrayList<IdentityBundle> officialNames = new ArrayList<>();
-        // While I said the next line is horrible, I actually think it might be the best possible solution given the
-        // parameters I have to work with. I still do not really like it though, feels hacky. -Two months on.
-        boolean refSecond = contents.contains("Judge 5 "); // This is horrible.
+        boolean refSecond = contents.contains("Judge 5 ");
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(contents.split("\n")));
-
-        /*
-            TODO: Handle the issue where an official lacking an affiliation will cause a terrible mess in the paperwork.
-            This is a moderately rare occurrence and can be spotted easily by proofing the box prior to printing, but
-            it would be nice to be able to either handle it without issue or to throw an error message.
-            In either case the program would need to check if the name has one of the official roles in their name.
-            As an example, if judge 1 does not have an affiliation, the name often ends up being
-            "<judge's name> Referee <referee's name>" so the program could check if the string " Referee " is in the
-            official's name in order to determine what the name should be. Alternatively, people could just not hide
-            their hometown since it's standard practice to have an affiliation. Silly me for assuming I guess.
-         */
 
         if (fileType == IJS_COVERSHEET) {
             lines.removeLast();
