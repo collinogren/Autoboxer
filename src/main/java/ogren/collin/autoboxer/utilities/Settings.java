@@ -36,7 +36,7 @@ public class Settings {
     private static final Properties properties = new Properties();
     private static boolean generateSchedule = true;
     private static boolean generateStartingOrders = true;
-    private static boolean generateTASheets = true;
+    private static boolean generateSSTSheets = true;
     private static boolean combinePaperwork = false;
     private static boolean combineRinksByTime = false;
     private static final boolean removeLeadingZeros = true; // Fully remove option in later release.
@@ -79,7 +79,7 @@ public class Settings {
 
         generateSchedule = Boolean.parseBoolean(properties.getProperty("generateSchedule", Boolean.toString(generateSchedule)));
         generateStartingOrders = Boolean.parseBoolean(properties.getProperty("generateStartingOrders", Boolean.toString(generateStartingOrders)));
-        generateTASheets = Boolean.parseBoolean(properties.getProperty("generateTASheets", Boolean.toString(generateTASheets)));
+        generateSSTSheets = Boolean.parseBoolean(properties.getProperty("generateTASheets", Boolean.toString(generateSSTSheets)));
         combinePaperwork = Boolean.parseBoolean(properties.getProperty("combinePaperwork", Boolean.toString(combinePaperwork)));
         combineRinksByTime = Boolean.parseBoolean(properties.getProperty("combineRinksByTime", Boolean.toString(combineRinksByTime)));
         buildByBoard = Boolean.parseBoolean(properties.getProperty("buildByBoard", Boolean.toString(buildByBoard)));
@@ -98,7 +98,7 @@ public class Settings {
         properties.put("combineRinksByTime", Boolean.toString(combineRinksByTime));
         properties.put("generateSchedule", Boolean.toString(generateSchedule));
         properties.put("generateStartingOrders", Boolean.toString(generateStartingOrders));
-        properties.put("generateTASheets", Boolean.toString(generateTASheets));
+        properties.put("generateTASheets", Boolean.toString(generateSSTSheets));
         properties.put("buildByBoard", Boolean.toString(buildByBoard));
         properties.put("eventNameDelimiter", eventNameDelimiter);
         properties.put("displayGnome", Boolean.toString(displayGnome));
@@ -143,12 +143,12 @@ public class Settings {
         updateProperties();
     }
 
-    public static boolean getGenerateTASheets() {
-        return generateTASheets;
+    public static boolean getGenerateSSTSheets() {
+        return generateSSTSheets;
     }
 
-    public static void setGenerateTASheets(boolean b) {
-        generateTASheets = b;
+    public static void setGenerateSSTSheets(boolean b) {
+        generateSSTSheets = b;
         updateProperties();
     }
 

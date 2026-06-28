@@ -54,7 +54,7 @@ public class MasterController {
 
     // Constants for output directories for Autoboxer
     private static final String BOX_DIR = "box";
-    private static final String TA_DIR = "box/TA";
+    private static final String SST_DIR = "box/SST";
     private static final String STARTING_ORDER_DIR = "box/Starting Orders";
 
     // Array to hold all BoxErrors that are emitted during box generation.
@@ -124,7 +124,7 @@ public class MasterController {
             FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_PRIMARY_DIR + "/" + "renamed"));
             FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_SUBSEQUENT_DIR + "/" + "renamed"));
             FileUtils.deleteDirectory(new File(baseDir + "/" + SIX0_STARTING_ORDERS_DIR + "/" + "renamed"));
-            FileUtils.deleteDirectory(new File(baseDir + "/" + TA_DIR));
+            FileUtils.deleteDirectory(new File(baseDir + "/" + SST_DIR));
             FileUtils.deleteDirectory(new File(baseDir + "/" + STARTING_ORDER_DIR));
             FileUtils.deleteDirectory(new File(baseDir + "/" + BOX_DIR));
         } catch (IOException e) {
@@ -421,7 +421,7 @@ public class MasterController {
         }
 
         generateStartingOrders(startingOrders);
-        generateTASheets(taSheets);
+        generateSSTSheets(taSheets);
     }
 
     private void sortIJS(ScheduleElement se, HashMap<String, PDDocument> startingOrders, HashMap<String, PDDocument> taSheets, boolean[] sheetsExistPtr) {
@@ -431,7 +431,7 @@ public class MasterController {
                 PDFManipulator pdfManipulator = new PDFManipulator(file, FileType.IJS_COVERSHEET);
                 sortIJSTAAndStartingOrders(Settings.getGenerateStartingOrders(), startingOrders, se, pdfManipulator);
 
-                sortIJSTAAndStartingOrders(Settings.getGenerateTASheets(), taSheets, se, pdfManipulator);
+                sortIJSTAAndStartingOrders(Settings.getGenerateSSTSheets(), taSheets, se, pdfManipulator);
                 ArrayList<IdentityBundle> identityBundles = pdfManipulator.getCoversheetsOfficialNames();
                 processEvent(eventNumber, identityBundles, pdfManipulator, se, true);
                 sheetsExistPtr[0] = true;
@@ -470,7 +470,7 @@ public class MasterController {
         }
     }
 
-    // Sort IJSCompanion Judges' sheets for starting orders and TA sheets.
+    // Sort IJSCompanion Judges' sheets for starting orders and SST sheets.
     private void sortIJSTAAndStartingOrders(boolean generate, HashMap<String, PDDocument> sheets, ScheduleElement se, PDFManipulator pdfManipulator) {
         if (generate) {
             if (!sheets.containsKey(se.getRink())) {
@@ -505,24 +505,24 @@ public class MasterController {
         }
     }
 
-    // Place all IJSCompanion judges' sheets in 104 order to create the TA sheets set.
-    private void generateTASheets(HashMap<String, PDDocument> taSheets) {
-        if (Settings.getGenerateTASheets()) {
+    // Place all IJSCompanion judges' sheets in 104 order to create the SST sheets set.
+    private void generateSSTSheets(HashMap<String, PDDocument> taSheets) {
+        if (Settings.getGenerateSSTSheets()) {
             for (String rink : schedule.getRinks()) {
                 if (taSheets.containsKey(rink)) {
                     try {
-                        File file = new File(baseDir + "/" + TA_DIR + "/TA Sheets - " + rink + ".pdf");
+                        File file = new File(baseDir + "/" + SST_DIR + "/SST Sheets - " + rink + ".pdf");
                         if (!file.getParentFile().exists()) {
                             if (!file.getParentFile().mkdirs()) {
-                                Logging.logger.fatal("Failed to create directories necessary for printing TA sheets.");
-                                throw new RuntimeException("Failed to create directories necessary for printing TA sheets.");
+                                Logging.logger.fatal("Failed to create directories necessary for printing SST sheets.");
+                                throw new RuntimeException("Failed to create directories necessary for printing SST sheets.");
                             }
                         }
                         PDDocument document = taSheets.get(rink);
                         document.save(file);
                     } catch (IOException e) {
                         Logging.logger.fatal((e));
-                        throw new RuntimeException("Failed to save TA sheets.");
+                        throw new RuntimeException("Failed to save SST sheets.");
                     }
                 }
             }

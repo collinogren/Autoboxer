@@ -144,9 +144,9 @@
                                                       <Tooltip text="Generate a complete set of starting orders for each rink." />
                                                    </tooltip>
                                                 </CheckBox>
-                                                <CheckBox fx:id="generateTAButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateTA" selected="true" text="Generate TA Sheets" GridPane.rowIndex="5">
+                                                <CheckBox fx:id="generateSSTButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#generateSST" selected="true" text="Generate SST Sheets" GridPane.rowIndex="5">
                                                    <tooltip>
-                                                      <Tooltip text="Generate a complete set of TA sheets for each rink." />
+                                                      <Tooltip text="Generate a complete set of SST sheets for each rink." />
                                                    </tooltip>
                                                 </CheckBox>
                                                 <CheckBox fx:id="buildByBoardButton" mnemonicParsing="false" onAction="#buildByBoard" text="Build By Board">

@@ -81,7 +81,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
     private Button browseButton, generateButton, coversheetsButton, judgeButton, techButton, openFolderButton;
 
     @FXML
-    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateTAButton, buildByBoardButton, combineRinksByTimeButton;
+    private CheckBox combinePaperworkButton, generateSSButton, generateSOButton, generateSSTButton, buildByBoardButton, combineRinksByTimeButton;
 
     @FXML
     private TextField delimiterField, boxDirectoryField, dayField;
@@ -114,7 +114,7 @@ public class GUIFXController implements javafx.fxml.Initializable {
         combineRinksByTimeButton.setSelected(Settings.getCombineRinksByTime());
         generateSSButton.setSelected(Settings.getGenerateSchedule());
         generateSOButton.setSelected(Settings.getGenerateStartingOrders());
-        generateTAButton.setSelected(Settings.getGenerateTASheets());
+        generateSSTButton.setSelected(Settings.getGenerateSSTSheets());
         buildByBoardButton.setSelected(Settings.getBuildByBoard());
         delimiterField.setText(Settings.getEventNameDelimiter());
         delimiterField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -257,10 +257,10 @@ public class GUIFXController implements javafx.fxml.Initializable {
         Settings.setGenerateStartingOrders(generateSOButton.isSelected());
     }
 
-    // Called by the generate TA sheets checkbox.
+    // Called by the generate SST sheets checkbox.
     @FXML
-    private void generateTA() {
-        Settings.setGenerateTASheets(generateTAButton.isSelected());
+    private void generateSST() {
+        Settings.setGenerateSSTSheets(generateSSTButton.isSelected());
     }
 
     @FXML
