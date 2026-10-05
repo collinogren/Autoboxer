@@ -20,9 +20,7 @@ package ogren.collin.autoboxer.pdf;
 
 import ogren.collin.autoboxer.Logging;
 import ogren.collin.autoboxer.control.MasterController;
-import ogren.collin.autoboxer.gui.GUIFXController;
-import ogren.collin.autoboxer.process.Official;
-import ogren.collin.autoboxer.process.OfficialScheduleBundle;
+import ogren.collin.autoboxer.process.*;
 import ogren.collin.autoboxer.utilities.Settings;
 import ogren.collin.autoboxer.utilities.error_detection.BoxError;
 import ogren.collin.autoboxer.utilities.error_detection.ErrorType;
@@ -38,6 +36,7 @@ import org.vandeseer.easytable.structure.cell.TextCell;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 // Generates schedule sheets for each official.
@@ -85,7 +84,7 @@ public class OfficialSchedule {
                                             .build())
                             .add(
                                     TextCell.builder()
-                                            .text(day.replaceAll("\t", " "))
+                                            .text(day.replace("\t", " "))
                                             .horizontalAlignment(HorizontalAlignment.RIGHT)
                                             //.borderWidth(1)
                                             .colSpan(1)
@@ -111,7 +110,9 @@ public class OfficialSchedule {
                             .horizontalAlignment(HorizontalAlignment.CENTER)
                             .build());
 
-            for (OfficialScheduleBundle scheduleElement : official.getScheduleElements()) {
+            int scheduleElementIterator = 0;
+            ArrayList<OfficialScheduleBundle> scheduleElements = official.getScheduleElements();
+            for (OfficialScheduleBundle scheduleElement : scheduleElements) {
                 StringBuilder roles = new StringBuilder();
                 scheduleElement.role().sort(String::compareToIgnoreCase);
                 for (int i = 0; i < scheduleElement.role().size(); i++) {
@@ -124,31 +125,18 @@ public class OfficialSchedule {
                         roles.append(", ");
                     }
                 }
-                try {
-                    tableBuilder.addRow(
-                            Row.builder()
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(Settings.getEventNameDelimiter(), 2)[1].trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
-                                    .add(TextCell.builder().text(roles.toString().trim().replaceAll("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
-                                    .backgroundColor(Color.WHITE)
-                                    .textColor(Color.BLACK)
-                                    .font(Standard14Fonts.FontName.HELVETICA)
-                                    .fontSize(10)
-                                    .horizontalAlignment(HorizontalAlignment.CENTER)
-                                    .build());
-                } catch (IndexOutOfBoundsException e) {
-                    String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName() + "\nCheck your delimiter.";
-                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
-                    MasterController.errors.add(new BoxError(scheduleElement.scheduleElement().getEventNumber(), null, ErrorType.LIKELY_WRONG_DELIMITER));
-                    throw new RuntimeException(message);
-                } catch (Exception e) {
-                    String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName();
-                    Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
-                    throw new RuntimeException(message);
+                createScheduleRow(scheduleElement, tableBuilder, roles);
+
+                if (scheduleElementIterator + 1 >= scheduleElements.size()) {
+                    continue;
                 }
+                ScheduleElement secondScheduleElement = scheduleElements.get(scheduleElementIterator + 1).scheduleElement();
+
+                if (isBreakBetween(scheduleElement.scheduleElement(), secondScheduleElement)) {
+                    createBreakRow(tableBuilder);
+                }
+
+                scheduleElementIterator++;
             }
 
             RepeatedHeaderTableDrawer.builder()
@@ -166,6 +154,83 @@ public class OfficialSchedule {
         return document;
     }
 
+    private static void createBreakRow(Table.TableBuilder tableBuilder) {
+        tableBuilder.addRow(
+                Row.builder()
+                        .add(TextCell.builder()
+                                .text("")
+                                .backgroundColor(Color.GRAY)
+                                .borderColorRight(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .add(TextCell.builder()
+                                .text("BREAK")
+                                .backgroundColor(Color.GRAY)
+                                .borderColorRight(Color.GRAY)
+                                .borderColorLeft(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .add(TextCell.builder()
+                                .text("")
+                                .backgroundColor(Color.GRAY)
+                                .borderColorRight(Color.GRAY)
+                                .borderColorLeft(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .add(TextCell.builder()
+                                .text("").backgroundColor(Color.GRAY)
+                                .borderColorRight(Color.GRAY)
+                                .borderColorLeft(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .add(TextCell.builder()
+                                .text("")
+                                .backgroundColor(Color.GRAY)
+                                .borderColorRight(Color.GRAY)
+                                .borderColorLeft(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .add(TextCell.builder()
+                                .text("")
+                                .backgroundColor(Color.GRAY)
+                                .borderColorLeft(Color.GRAY)
+                                .borderWidth(1)
+                                .build())
+                        .textColor(Color.WHITE)
+                        .font(Standard14Fonts.FontName.HELVETICA)
+                        .fontSize(10)
+                        .horizontalAlignment(HorizontalAlignment.CENTER)
+                        .build());
+    }
+
+    private static void createScheduleRow(OfficialScheduleBundle scheduleElement, Table.TableBuilder tableBuilder, StringBuilder roles) {
+        try {
+            tableBuilder.addRow(
+                    Row.builder()
+                            .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventNumber().trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text(scheduleElement.scheduleElement().getStartTime().trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text(scheduleElement.scheduleElement().getEndTime().trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text(scheduleElement.scheduleElement().getRink().trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .add(TextCell.builder().text(scheduleElement.scheduleElement().getEventName().split(Settings.getEventNameDelimiter(), 2)[1].trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.LEFT).borderWidth(1).build())
+                            .add(TextCell.builder().text(roles.toString().trim().replace("\t", " ")).horizontalAlignment(HorizontalAlignment.CENTER).borderWidth(1).build())
+                            .backgroundColor(Color.WHITE)
+                            .textColor(Color.BLACK)
+                            .font(Standard14Fonts.FontName.HELVETICA)
+                            .fontSize(10)
+                            .horizontalAlignment(HorizontalAlignment.CENTER)
+                            .build());
+        } catch (IndexOutOfBoundsException e) {
+            String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName() + "\nCheck your delimiter.";
+            Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+            MasterController.errors.add(new BoxError(scheduleElement.scheduleElement().getEventNumber(), null, ErrorType.LIKELY_WRONG_DELIMITER));
+            throw new RuntimeException(message);
+        } catch (Exception e) {
+            String message = "Error processing event " + scheduleElement.scheduleElement().getEventNumber() + "\nwith name " + scheduleElement.scheduleElement().getEventName();
+            Logging.logger.fatal("{}\n{}", Arrays.toString(e.getStackTrace()), message);
+            throw new RuntimeException(message);
+        }
+    }
+
     // Used to shorten the role text in the schedule sheet if the official is serving multiple roles.
     private static String truncateRole(String role) {
         return switch (role) {
@@ -175,5 +240,12 @@ public class OfficialSchedule {
             default -> role;
         };
 
+    }
+
+    private static boolean isBreakBetween(ScheduleElement firstElement, ScheduleElement secondElement) {
+        long secondElementStartTime = Time.parseTimeMinutes(secondElement.getStartTime());
+        long firstElementEndTime = Time.parseTimeMinutes(firstElement.getEndTime());
+
+        return secondElementStartTime > firstElementEndTime;
     }
 }

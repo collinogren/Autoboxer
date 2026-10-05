@@ -374,7 +374,6 @@ public class MasterController {
                 }
             }
 
-            se.setProcessed(true);
             ProgressGUIFX.addProgress(((1.0 / numberOfEvents) / 10.0) / 2.0);
         }
 

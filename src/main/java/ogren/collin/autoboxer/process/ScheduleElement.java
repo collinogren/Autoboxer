@@ -27,11 +27,10 @@ public class ScheduleElement {
     private final String day;
     private final String rink;
     private String eventName;
-    private boolean processed = false;
 
     public ScheduleElement(String eventNumber, String eventName, String startTime, String endTime, String day, String rink) {
         if (eventNumber != null) {
-            this.eventNumber = eventNumber.replaceAll(" ", "");
+            this.eventNumber = eventNumber.replace(" ", "");
         } else {
             this.eventNumber = null;
         }
@@ -73,14 +72,6 @@ public class ScheduleElement {
 
     public String getRink() {
         return rink;
-    }
-
-    public boolean isProcessed() {
-        return processed;
-    }
-
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
     }
 
     public void setStartTime(String startTime) {
