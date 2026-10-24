@@ -130,7 +130,30 @@ public class OfficialSchedule {
                 if (scheduleElementIterator + 1 >= scheduleElements.size()) {
                     continue;
                 }
-                ScheduleElement secondScheduleElement = scheduleElements.get(scheduleElementIterator + 1).scheduleElement();
+
+                ScheduleElement secondScheduleElement = null;
+                while (secondScheduleElement == null) {
+                    try {
+                        ScheduleElement prospectiveSecondScheduleElement = scheduleElements
+                                .get(scheduleElementIterator + 1)
+                                .scheduleElement();
+                        if (prospectiveSecondScheduleElement
+                                .getEventNumber()
+                                .trim()
+                                .isEmpty()
+                        ) {
+                            scheduleElementIterator++;
+                        } else {
+                            secondScheduleElement = prospectiveSecondScheduleElement;
+                        }
+                    } catch (IndexOutOfBoundsException _ignored) {
+                        break;
+                    }
+                }
+
+                if (secondScheduleElement == null) {
+                    continue;
+                }
 
                 if (isBreakBetween(scheduleElement.scheduleElement(), secondScheduleElement)) {
                     createBreakRow(tableBuilder);
